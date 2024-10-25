@@ -7,4 +7,5 @@ model User {
     gender      String?
     phoneNumber String?
     avatar      String?
+    shop        Shop?
 }
