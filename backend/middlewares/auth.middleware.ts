@@ -7,7 +7,7 @@ import { Algorithm } from 'jsonwebtoken';
 import prisma from '../prisma/index.js';
 
 const key = await prisma.key.findUnique({
-  where: { keyName: 'JWT_PUBLIC_KEY' },
+  where: { name: 'JWT_PUBLIC_KEY' },
   select: { value: true },
 });
 
@@ -25,8 +25,8 @@ passport.use(
   new JwtStrategy(opts, async (jwt_payload: any, done: any) => {
     try {
       const userId = jwt_payload.sub;
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
+      const user = await prisma.userAccount.findUnique({
+        where: { userId: userId },
       });
       if (!user) return done(null, false);
       return done(null, user);

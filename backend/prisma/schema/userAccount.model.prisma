@@ -1,0 +1,7 @@
+model UserAccount {
+    userId   Int    @id
+    username String @unique
+    password String
+
+    profile UserProfile @relation(fields: [userId], references: [userId])
+}
