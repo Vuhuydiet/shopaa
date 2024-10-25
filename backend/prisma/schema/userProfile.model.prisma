@@ -1,0 +1,11 @@
+model UserProfile {
+  userId      Int       @id @default(autoincrement())
+  fullname    String?
+  dateOfBirth DateTime?
+  gender      String?
+  phoneNumber String?
+  avatar      String?
+
+  userAccount   UserAccount?
+  oAuthProvider OAuthProvider[]
+}
