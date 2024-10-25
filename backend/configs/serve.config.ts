@@ -1,4 +1,4 @@
-import { getPathFromBackend } from './getPath.js';
+import getPathFromBackend from '../utils/getPath.js';
 import path from 'path';
 
 const envArg = process.argv.find((arg) => arg.startsWith('NODE_ENV='));
@@ -8,14 +8,11 @@ const servePath = (() => {
     case 'production':
       return getPathFromBackend('../frontend/dist');
     case 'development':
-      return getPathFromBackend('../frontend');
+      return '';
   }
   console.error('NODE_ENV not set');
   process.exit(1);
 })();
-const serveIndexPath = path.join(servePath, 'index.html');
+const serveIndexPath = servePath ? path.join(servePath, 'index.html') : '';
 
-export default {
-  servePath,
-  serveIndexPath,
-};
+export { servePath, serveIndexPath, NODE_ENV };

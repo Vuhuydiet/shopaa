@@ -3,6 +3,13 @@
 private_key.pem
 public_key.pem
 
+dist/
+
+*.test.*
+
+# vscode
+.vscode/
+
 # Logs
 logs
 *.log

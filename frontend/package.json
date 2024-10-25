@@ -1,19 +1,23 @@
 {
-  "name": "frontend",
-  "version": "1.0.0",
-  "main": "vite.config.js",
+  "name": "shopaa-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preview": "vite preview",
+    "build": "tsc -b && vite build",
+    "dev": "vite"
   },
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "vite": "^2.4.4",
-    "@vitejs/plugin-react-swc": "^1.0.0"
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "globals": "^15.9.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.8"
   }
 }
