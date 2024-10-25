@@ -1,0 +1,10 @@
+model Shop {
+    shopOwnerId     Int     @id @default(autoincrement())
+    shopName        String
+    shopDescription String?
+    address         String?
+    bankingBalance  Int @default(0)
+
+    shopOwner User @relation(fields: [shopOwnerId], references: [userId])
+    products Product[]
+}
