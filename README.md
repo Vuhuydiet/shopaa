@@ -10,7 +10,7 @@ DATABASE_URL="postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DB_NAME>?schema=publ
 
 - create a database <DB_NAME> in your local machine.
 - run 'npm run prisma:generate'
-- run 'npm run prisma:generate:dev'
+- run 'npm run prisma:migrate:dev'
 
 3. set up private/public key for authentication
 
