@@ -1,0 +1,12 @@
+model OAuthProvider {
+  userId       Int      @id
+  providerName String
+  providerUID  String
+  accessToken  String?
+  refreshToken String?
+  createdAt    DateTime @default(now())
+
+  profile UserProfile @relation(fields: [userId], references: [userId])
+
+  @@unique([providerName, providerUID])
+}
