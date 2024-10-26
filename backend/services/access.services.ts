@@ -1,25 +1,19 @@
 import { BadRequestError, InternalServerError } from "../core/ErrorResponse";
-import { CreatedResponse } from "../core/SuccessResponse";
+import { CreatedResponse, OKResponse } from "../core/SuccessResponse";
 import prisma from "../prisma";
-import { invalidatePassword } from "../utils/cryptoUtils";
+import { getHashedPassword, invalidatePassword } from "../utils/cryptoUtils";
 import TokenService from "./token.service";
+import UserService from "./user.service";
 
 async function signUp({ username, password }: { username: string, password: string }) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.userAccount.findUnique({
     where: { username }
   });
-
   if (user) {
     throw new BadRequestError('User already exists');
   }
 
-  const newUser = prisma.user.create({
-    data: {
-      username,
-      password
-    }
-  });
-
+  const newUser = await UserService.createUserAccount(username, getHashedPassword(password));
   if (!newUser) {
     throw new InternalServerError('User creation failed');
   }
@@ -28,20 +22,20 @@ async function signUp({ username, password }: { username: string, password: stri
 }
 
 async function signIn({ username, password }: { username: string, password: string }) {
-  const user = await prisma.user.findUnique({
-    where: { username }
+  const user = await prisma.userAccount.findUnique({
+    where: { username: username }
   });
 
   if (!user) {
     throw new BadRequestError('User does not exist');
   }
 
-  if (invalidatePassword(password, user.password)) {
+  if (!invalidatePassword(password, user.password)) {
     throw new BadRequestError('Invalid password');
   }
 
-  const token = TokenService.generateToken(user.userId);
-  return new CreatedResponse({
+  const token = await TokenService.generateToken(user.userId);
+  return new OKResponse({
     message: 'User signed in successfully',
     metadata: {
       token

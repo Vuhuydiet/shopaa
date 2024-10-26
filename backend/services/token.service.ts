@@ -14,7 +14,7 @@ class TokenService {
     };
 
     const key = await prisma.key.findUnique({
-      where: { keyName: 'JWT_PRIVATE_KEY' },
+      where: { name: 'JWT_PRIVATE_KEY' },
       select: { value: true },
     });
 
@@ -27,7 +27,7 @@ class TokenService {
 
   static async verifyToken(token: string) {
     const key = await prisma.key.findUnique({
-      where: { keyName: 'JWT_PUBLIC_KEY' },
+      where: { name: 'JWT_PUBLIC_KEY' },
       select: { value: true },
     });
 

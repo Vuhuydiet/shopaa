@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "backend/app.ts",
+  "type": "module",
   "scripts": {
     "genkey": "tsx ./backend/configs/generateKeyPair.ts",
     "build": "cd frontend && npm run build",

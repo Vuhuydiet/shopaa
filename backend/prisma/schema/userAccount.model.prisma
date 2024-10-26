@@ -3,5 +3,5 @@ model UserAccount {
     username String @unique
     password String
 
-    profile UserProfile @relation(fields: [userId], references: [userId])
+    profile UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }

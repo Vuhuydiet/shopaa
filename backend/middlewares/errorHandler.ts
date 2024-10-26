@@ -8,12 +8,12 @@ const errorHandler = (
   _next: NextFunction,
 ) => {
   if (!(err instanceof RequestError)) {
-    console.error(`Error of unknown type:\n ${err.stack}`);
+    console.error(`ERROR HANDLER: Error of unknown type:\n ${err.stack}`);
     res.status(500).json({ message: 'Internal Server Error' });
     return;
   }
 
-  console.error(err.message);
+  console.error(`ERROR HANDLER: ${err.message}`);
   const requestError = err as RequestError;
   res.status(requestError.statusCode || 500).json({
     message: err.message || 'Internal Server Error',
