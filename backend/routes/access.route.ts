@@ -55,7 +55,6 @@ router.post('/sign-up', accessController.signUp);
  */
 router.post('/sign-in', accessController.signIn);
 
-
 /**
  * @swagger
  * /auth/google:
@@ -67,7 +66,17 @@ router.post('/sign-in', accessController.signIn);
  *         description: Redirect to Google OAuth
  */
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+router.get(
+  '/auth/google/callback', 
+  passport.authenticate('google', { session: false }), 
+  accessController.signInWithOAuth,
+);
 
-router.get('/auth/google/callback', passport.authenticate('google', { session: false }), accessController.signInWithGoogle);
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['public_profile'] }));
+router.get(
+  '/auth/facebook/callback', 
+  passport.authenticate('facebook', { session: false }), 
+  accessController.signInWithOAuth
+);
 
 export default router;

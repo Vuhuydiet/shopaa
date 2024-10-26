@@ -1,16 +1,31 @@
 import prisma from "../prisma";
 
 class UserService {
-  static async createOAuthProvider(providerName: string, profile: any) {
+  static async createOAuthProviderIfNotExists(providerName: string, providerUID: string, userFullname: string) {
     return await prisma.$transaction(async (tx) => {
+      const userId = await tx.oAuthProvider.findUnique({
+        where: { 
+          providerName_providerUID: { 
+            providerName: providerName, 
+            providerUID: providerUID 
+          }
+        },
+        select: {
+          userId: true
+        }
+      });
+
+      if (userId)
+        return userId;
+      
       const userProfile = await tx.userProfile.create({
         data: {
-          fullname: profile.displayName,
+          fullname: userFullname,
         },
       })
       return await tx.oAuthProvider.create({
         data: {
-          providerUID: profile.id,
+          providerUID: providerUID,
           providerName: providerName,
           profile: {
             connect: {
@@ -18,9 +33,7 @@ class UserService {
             }
           }
         },
-        include: {
-          profile: true,
-        }
+        select: { userId: true }
       });
     });
   }
@@ -38,9 +51,7 @@ class UserService {
             }
           }
         },
-        include: {
-          profile: true,
-        }
+        select: { userId: true }
       });
     })
   }
