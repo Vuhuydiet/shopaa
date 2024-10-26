@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const GoogleCallback: React.FC = () => {
+const FacebookCallback: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await fetch(
-          'http://localhost:3000/auth/google/callback',
+          'http://localhost:3000/auth/facebook/callback',
         );
         const { token } = await response.json();
         localStorage.setItem('token', token);
@@ -22,7 +22,7 @@ const GoogleCallback: React.FC = () => {
     fetchUser();
   }, [navigate]);
 
-  return <div>Signing in with Google...</div>;
+  return <div>Signing in with Facebook...</div>;
 };
 
-export default GoogleCallback;
+export default FacebookCallback;
