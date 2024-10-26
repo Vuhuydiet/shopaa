@@ -18,7 +18,7 @@ export default {
     SuccessResponse.send(res, result);
   },
 
-  signInWithOAuth: async (req: Request, res: Response) => {
+  signInWithGoogle: async (req: Request, res: Response) => {
     const { token } = req.user as any;
     SuccessResponse.send(res, new CreatedResponse({ message: 'User signed in successfully', metadata: { token } }));
   },
