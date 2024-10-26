@@ -7,10 +7,8 @@ const GoogleCallback: React.FC = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(
-          'http://localhost:3000/auth/google/callback',
-        );
-        const { token } = await response.json();
+        const response = await fetch('http://localhost:3000/auth/google/callback');
+        const { user, token } = await response.json();
         localStorage.setItem('token', token);
         // Redirect or update UI with user information
         navigate('/'); // Redirect to a dashboard or home page

@@ -8,9 +8,8 @@ import passport from 'passport';
 import { Algorithm } from 'jsonwebtoken';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { Strategy as FacebookStrategy } from 'passport-facebook';
+import OAuthService from '../services/user.service.js';
 import TokenService from '../services/token.service.js';
-import UserService from '../services/user.service.js';
 
 
 const key = await prisma.key.findUnique({
@@ -31,8 +30,11 @@ passport.use(
     async (jwt_payload: any, done: any) => {
       try {
         const userId = jwt_payload.sub;
-        const user = await prisma.userProfile.findUnique({
+        const user = await prisma.userAccount.findUnique({
           where: { userId: userId },
+          include: {
+            profile: true,
+          }
         });
         return done(null, user);
       } catch (err) {
@@ -54,9 +56,18 @@ passport.use(
   },
     async (_accessToken: string, _refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
       try {
-        const { userId } = await UserService.createOAuthProviderIfNotExists('google', profile.id, profile.displayName);
+        let user = await prisma.oAuthProvider.findUnique({
+          where: { providerName_providerUID: { providerName: 'google', providerUID: profile.id } },
+          include: {
+            profile: true,
+          }
+        });
 
-        const token = await TokenService.generateToken(userId);
+        if (!user) {
+          user = await OAuthService.createOAuthProvider('google', profile);
+        }
+
+        const token = await TokenService.generateToken(user.userId);
         return done(null, { token });
       }
       catch (err) {
@@ -64,31 +75,5 @@ passport.use(
       }
     })
 );
-
-
-if (!process.env.FACEBOOK_CLIENT_ID || !process.env.FACEBOOK_CLIENT_SECRET) {
-  throw new Error('Facebook OAuth credentials are not defined in the environment variables');
-}
-
-passport.use(
-  new FacebookStrategy({
-    clientID: process.env.FACEBOOK_CLIENT_ID,
-    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/callback",
-    profileFields: ['id', 'displayName']
-  },
-    async (_accessToken: string, _refreshToken: string, public_profile: any, done: (err: any, user?: any) => void) => {
-      try {
-        const { userId } = await UserService.createOAuthProviderIfNotExists('facebook', public_profile.id, public_profile.displayName);
-
-        const token = await TokenService.generateToken(userId);
-        return done(null, { token });
-      }
-      catch (err) {
-        done(err);
-      }
-    })
-);
-
 
 export default passport;
