@@ -7,7 +7,6 @@ import {
   NODE_ENV,
 } from '../configs/serve.config.js';
 
-import apiDocsRouter from './docs/index.js';
 import accessRouter from './access.route.js';
 
 import { NotFoundError } from '../core/ErrorResponse.js';
@@ -23,7 +22,6 @@ if (NODE_ENV === 'development') {
   });
 }
 
-router.use('/api-docs', apiDocsRouter);
 router.use('/', accessRouter)
 
 router.use('*', (_req: Request, _res: Response) => {
