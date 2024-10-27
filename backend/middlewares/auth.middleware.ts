@@ -34,7 +34,7 @@ passport.use(
 );
 
 function authenticateJWT(req: Request, res: Response, next: NextFunction) {
-  if (publicPaths.includes(req.path)) {
+  if (publicPaths.match(req.method, req.path)) {
     return next();
   }
 

@@ -41,13 +41,14 @@ class UserService {
     });
   }
 
-  static async createUserAccount(username: string, password: string) {
+  static async createUserAccount(username: string, password: string, email: string) {
     return await prisma.$transaction(async (tx) => {
       const userProfile = await tx.userProfile.create({});
       return await tx.userAccount.create({
         data: {
           username,
           password,
+          email,
           profile: {
             connect: {
               userId: userProfile.userId,
@@ -59,12 +60,18 @@ class UserService {
     })
   }
 
+  static async getUserAccount(userId: number) {
+    return await prisma.userAccount.findUnique({
+      where: { userId: userId }
+    });
+  }
+
   static async getUserProfile(userId: number) {
     const profile = await prisma.userProfile.findUnique({
       where: { userId: userId }
     });
     if (!profile)
-      throw new NotFoundError(`User profile for userId: '${userId} does not exist`)
+      throw new NotFoundError(`User profile for userId: '${userId}' does not exist`)
 
     return profile;
   }

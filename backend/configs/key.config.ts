@@ -21,6 +21,12 @@ if (!process.env.FACEBOOK_CLIENT_ID || !process.env.FACEBOOK_CLIENT_SECRET) {
   throw new Error('Facebook OAuth credentials are not defined in the environment variables');
 }
 
+// GMAIL
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+  throw new Error('Email credentials are not defined in the environment variables');
+}
+
+
 export default {
   JWT_PUBLIC_KEY: jwtPublicKey.value,
   JWT_PRIVATE_KEY: jwtPrivateKey.value,
@@ -30,4 +36,8 @@ export default {
 
   FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
   FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
+
+  EMAIL_USER: process.env.EMAIL_USER,
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
+
 }
