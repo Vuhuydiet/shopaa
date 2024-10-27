@@ -1,4 +1,7 @@
+ import { UserProfile } from "@prisma/client";
 import prisma from "../prisma";
+import { BadRequestError, NotFoundError } from "../core/ErrorResponse";
+import { getHashedPassword } from "../utils/cryptoUtils";
 
 class UserService {
   static async createOAuthProviderIfNotExists(providerName: string, providerUID: string, userFullname: string) {
@@ -55,6 +58,53 @@ class UserService {
       });
     })
   }
+
+  static async getUserProfile(userId: number) {
+    const profile = await prisma.userProfile.findUnique({
+      where: { userId: userId }
+    });
+    if (!profile)
+      throw new NotFoundError(`User profile for userId: '${userId} does not exist`)
+
+    return profile;
+  }
+
+  static async updateUserProfile(userId: number, newProfile: Partial<UserProfile>) {
+    try {
+      await prisma.userProfile.update({
+        where: { userId: userId },
+        data: newProfile,
+      });
+    }
+    catch (err) {
+      throw new BadRequestError(`Failed to update user profile for userId: '${userId}'`);
+    }
+  }
+
+  static async updateUserAccountPassword(userId: number, newPassword: string) {
+    try {
+      await prisma.userAccount.update({
+        where: { userId: userId },
+        data: { password: getHashedPassword(newPassword) },
+        select: { userId: true }
+      })
+    }
+    catch (err) {
+      throw new BadRequestError(`Failed to update password for userId: '${userId}'`);
+    }
+  }
+
+  static async deleteUser(userId: number) {
+    try {
+      await prisma.userProfile.delete({
+        where: { userId: userId }
+      });
+    }
+    catch (err) {
+      throw new BadRequestError(`Failed to delete user profile for userId: '${userId}'`);
+    }
+  }
+
 }
 
 export default UserService;

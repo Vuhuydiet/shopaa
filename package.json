@@ -5,7 +5,7 @@
   "main": "backend/app.ts",
   "type": "module",
   "scripts": {
-    "genkey": "tsx ./backend/configs/generateKeyPair.ts",
+    "genkey": "tsx ./backend/scripts/generateKeyPair.ts",
     "build": "cd frontend && npm run build",
     "preview": "cd frontend && preview",
     "client": "cd frontend && npm run dev",
@@ -50,6 +50,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-async-errors": "^3.1.1",
+    "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",

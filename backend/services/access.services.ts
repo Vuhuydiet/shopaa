@@ -1,5 +1,4 @@
 import { BadRequestError, InternalServerError } from "../core/ErrorResponse";
-import { CreatedResponse, OKResponse } from "../core/SuccessResponse";
 import prisma from "../prisma";
 import { getHashedPassword, invalidatePassword } from "../utils/cryptoUtils";
 import TokenService from "./token.service";
@@ -17,8 +16,6 @@ async function signUp({ username, password }: { username: string, password: stri
   if (!newUser) {
     throw new InternalServerError('User creation failed');
   }
-
-  return new CreatedResponse({ message: 'User created successfully' });
 }
 
 async function signIn({ username, password }: { username: string, password: string }) {
@@ -35,12 +32,7 @@ async function signIn({ username, password }: { username: string, password: stri
   }
 
   const token = await TokenService.generateToken(user.userId);
-  return new OKResponse({
-    message: 'User signed in successfully',
-    metadata: {
-      token
-    }
-  });
+  return token;
 }
 
 export default {

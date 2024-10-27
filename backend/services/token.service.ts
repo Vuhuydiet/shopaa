@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import prisma from '../prisma';
+import keyConfig from '../configs/key.config';
 
 class TokenService {
   static async generateToken(userId: number, expiresInDays: number = 1) {
@@ -13,16 +14,7 @@ class TokenService {
       exp: Math.floor(Date.now() / 1000) + expiresInSeconds,
     };
 
-    const key = await prisma.key.findUnique({
-      where: { name: 'JWT_PRIVATE_KEY' },
-      select: { value: true },
-    });
-
-    if (!key) {
-      throw new Error('JWT_PRIVATE_KEY is not defined');
-    }
-
-    return jwt.sign(payload, key.value, { algorithm: 'RS256' });
+    return jwt.sign(payload, keyConfig.JWT_PRIVATE_KEY, { algorithm: 'RS256' });
   }
 
   static async verifyToken(token: string) {
