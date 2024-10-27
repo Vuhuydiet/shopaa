@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import prisma from '../prisma/index.js';
+import keyConfig from '../configs/key.config'
 
 import passport from 'passport';
 
@@ -12,28 +12,20 @@ import { Strategy as FacebookStrategy } from 'passport-facebook';
 import TokenService from '../services/token.service.js';
 import UserService from '../services/user.service.js';
 
+import { Request, Response, NextFunction } from 'express';
+import publicPaths from '../configs/publicPaths.config.js'
 
-const key = await prisma.key.findUnique({
-  where: { name: 'JWT_PUBLIC_KEY' },
-  select: { value: true },
-});
-
-if (!key) {
-  throw new Error('JWT_PUBLIC_KEY is not defined');
-}
-
+// ----------------- JWT Token ------------------------------- //
 passport.use(
   new JwtStrategy({
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: key.value,
+    secretOrKey: keyConfig.JWT_PUBLIC_KEY,
     algorithms: ['RS256'] as Algorithm[],
   },
     async (jwt_payload: any, done: any) => {
       try {
         const userId = jwt_payload.sub;
-        const user = await prisma.userProfile.findUnique({
-          where: { userId: userId },
-        });
+        const user = await UserService.getUserProfile(userId);
         return done(null, user);
       } catch (err) {
         return done(err, false);
@@ -41,15 +33,22 @@ passport.use(
     }),
 );
 
+function authenticateJWT(req: Request, res: Response, next: NextFunction) {
+  if (publicPaths.match(req.method, req.path)) {
+    return next();
+  }
 
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  throw new Error('Google OAuth credentials are not defined in the environment variables');
+  return passport.authenticate('jwt', { session: false })(req, res, next);
 }
 
+
+// ----------------------------------------------------------- //
+// ----------------- OAuth Strategies ------------------------ //
+// ----------------------------------------------------------- //
 passport.use(
   new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    clientID: keyConfig.GOOGLE_CLIENT_ID,
+    clientSecret: keyConfig.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/callback"
   },
     async (_accessToken: string, _refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
@@ -66,14 +65,11 @@ passport.use(
 );
 
 
-if (!process.env.FACEBOOK_CLIENT_ID || !process.env.FACEBOOK_CLIENT_SECRET) {
-  throw new Error('Facebook OAuth credentials are not defined in the environment variables');
-}
 
 passport.use(
   new FacebookStrategy({
-    clientID: process.env.FACEBOOK_CLIENT_ID,
-    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    clientID: keyConfig.FACEBOOK_CLIENT_ID,
+    clientSecret: keyConfig.FACEBOOK_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/facebook/callback",
     profileFields: ['id', 'displayName']
   },
@@ -91,4 +87,5 @@ passport.use(
 );
 
 
+export { authenticateJWT };
 export default passport;

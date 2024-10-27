@@ -4,8 +4,9 @@ const router = express.Router();
 import { servePath, serveIndexPath, NODE_ENV, } from '../configs/serve.config.js';
 import { NotFoundError } from '../core/ErrorResponse.js';
 
-import passport from '../middlewares/auth.middleware.js';
+import { authenticateJWT } from '../middlewares/auth.middleware.js';
 import accessRouter from './access.route.js';
+import userRouter from './user.route.js';
 
 // serve static files
 if (NODE_ENV === 'development') {
@@ -19,11 +20,15 @@ if (NODE_ENV === 'development') {
   });
 }
 
-// routes
+// passport middleware
+router.use(authenticateJWT);
+
+// public routes
 router.use('/', accessRouter);
+router.use('/user', userRouter);
 
-router.use('/api', passport.authenticate('jwt', { session: false }));
 
+// catch all 404 error
 router.use('*', (_req: Request, _res: Response) => {
   throw new NotFoundError('Resource not found');
 });
