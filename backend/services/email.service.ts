@@ -20,11 +20,19 @@ class OtpStorage {
   }
 
   static validate(clientEmail: string, otp: number) {
-    if (!this.m_OtpStorage[clientEmail] || this.m_OtpStorage[clientEmail].exp < Date.now()) {
-      delete this.m_OtpStorage[clientEmail];
+    this.invalidate();
+    if (!this.m_OtpStorage[clientEmail])
       return false;
-    }
+    
     return this.m_OtpStorage[clientEmail].otp == otp;
+  }
+
+  static invalidate() {
+    for (const clientEmail in this.m_OtpStorage) {
+      if (this.m_OtpStorage[clientEmail].exp < Date.now()) {
+        delete this.m_OtpStorage[clientEmail];
+      }
+    }
   }
 }
 

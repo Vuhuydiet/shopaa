@@ -1,4 +1,4 @@
- import { UserProfile } from "@prisma/client";
+import { UserProfile } from "@prisma/client";
 import prisma from "../prisma";
 import { BadRequestError, NotFoundError } from "../core/ErrorResponse";
 import { getHashedPassword } from "../utils/cryptoUtils";
@@ -7,10 +7,10 @@ class UserService {
   static async createOAuthProviderIfNotExists(providerName: string, providerUID: string, userFullname: string) {
     return await prisma.$transaction(async (tx) => {
       const userId = await tx.oAuthProvider.findUnique({
-        where: { 
-          providerName_providerUID: { 
-            providerName: providerName, 
-            providerUID: providerUID 
+        where: {
+          providerName_providerUID: {
+            providerName: providerName,
+            providerUID: providerUID
           }
         },
         select: {
@@ -20,7 +20,7 @@ class UserService {
 
       if (userId)
         return userId;
-      
+
       const userProfile = await tx.userProfile.create({
         data: {
           fullname: userFullname,
@@ -63,6 +63,18 @@ class UserService {
   static async getUserAccount(userId: number) {
     return await prisma.userAccount.findUnique({
       where: { userId: userId }
+    });
+  }
+
+  static async checkUserAccountExists({ userId, username, email }: { userId?: number, username?: string, email?: string }) {
+    return !!await prisma.userAccount.findFirst({
+      where: {
+        OR: [
+          { userId },
+          { username },
+          { email }
+        ]
+      }
     });
   }
 

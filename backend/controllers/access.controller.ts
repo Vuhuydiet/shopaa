@@ -10,6 +10,9 @@ export default {
 
   sendOtp: async (req: Request, res: Response) => {
     const { email } = req.body;
+    if (await UserService.checkUserAccountExists({email: email}))
+      throw new BadRequestError('Email has already been registered');
+    
     await EmailService.sendOtpEmail(email);
 
     new OKResponse({
