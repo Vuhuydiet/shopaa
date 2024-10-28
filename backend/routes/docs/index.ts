@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 
 import swaggerjsdoc from 'swagger-jsdoc';
-import swaggerUI from 'swagger-ui-express'; 
+import swaggerUI from 'swagger-ui-express';
 
 const options = {
   definition: {
@@ -13,16 +13,16 @@ const options = {
       description: 'API Documentation for shopaa',
       contact: {
         name: 'API Support',
-      }
+      },
     },
     servers: [
       {
-        url: 'http://localhost:3000'
-      }
+        url: 'http://localhost:3000',
+      },
     ],
   },
-  apis: ['../**/*.ts']
-}
+  apis: ['../**/*.ts'],
+};
 const spacs = swaggerjsdoc(options);
 router.use('/', swaggerUI.serve, swaggerUI.setup(spacs));
 

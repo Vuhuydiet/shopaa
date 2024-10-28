@@ -91,7 +91,7 @@ export default [
     languageOptions: {
       ecmaVersion: 2020,
       globals: { ...globals.node, ...globals.browser },
-      "parser": "@babel/eslint-parser",
+      parser: '@babel/eslint-parser',
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
