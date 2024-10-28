@@ -17,6 +17,7 @@ const errorHandler = (
   const requestError = err as RequestError;
   res.status(requestError.statusCode || 500).json({
     message: err.message || 'Internal Server Error',
+    error: err.error,
   });
 };
 

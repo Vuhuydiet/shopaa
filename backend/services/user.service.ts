@@ -1,7 +1,6 @@
 import { UserProfile } from "@prisma/client";
 import prisma from "../prisma";
 import { BadRequestError, NotFoundError } from "../core/ErrorResponse";
-import { getHashedPassword } from "../utils/cryptoUtils";
 
 class UserService {
   static async createOAuthProviderIfNotExists(providerName: string, providerUID: string, userFullname: string) {
@@ -97,19 +96,6 @@ class UserService {
     }
     catch (err) {
       throw new BadRequestError(`Failed to update user profile for userId: '${userId}'`);
-    }
-  }
-
-  static async updateUserAccountPassword(userId: number, newPassword: string) {
-    try {
-      await prisma.userAccount.update({
-        where: { userId: userId },
-        data: { password: getHashedPassword(newPassword) },
-        select: { userId: true }
-      })
-    }
-    catch (err) {
-      throw new BadRequestError(`Failed to update password for userId: '${userId}'`);
     }
   }
 
