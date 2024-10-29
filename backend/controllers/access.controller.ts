@@ -6,6 +6,7 @@ import { BadRequestError } from "../core/ErrorResponse";
 import UserService from "../services/user.service";
 import { invalidatePassword } from "../utils/cryptoUtils";
 import { matchedData } from "express-validator";
+import TokenService from "../services/token.service";
 
 export default {
 
@@ -61,7 +62,8 @@ export default {
   },
 
   signInWithOAuth: async (req: Request, res: Response) => {
-    const { token } = req.user as any;
+    const { userId } = req.user as any;
+    const token = TokenService.generateToken(userId);
     new CreatedResponse({
       message: 'User signed in successfully',
       metadata: { token }

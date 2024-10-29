@@ -12,8 +12,4 @@ DATABASE_URL="postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DB_NAME>?schema=publ
 - run 'npm run prisma:generate'
 - run 'npm run prisma:migrate:dev'
 
-3. set up private/public key for authentication
-
-- run 'npm run genkey'
-
 see more commands in the 'package.json' file.
