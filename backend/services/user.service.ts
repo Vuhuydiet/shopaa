@@ -1,16 +1,15 @@
- import { UserProfile } from "@prisma/client";
+import { UserProfile } from "@prisma/client";
 import prisma from "../prisma";
 import { BadRequestError, NotFoundError } from "../core/ErrorResponse";
-import { getHashedPassword } from "../utils/cryptoUtils";
 
 class UserService {
   static async createOAuthProviderIfNotExists(providerName: string, providerUID: string, userFullname: string) {
     return await prisma.$transaction(async (tx) => {
       const userId = await tx.oAuthProvider.findUnique({
-        where: { 
-          providerName_providerUID: { 
-            providerName: providerName, 
-            providerUID: providerUID 
+        where: {
+          providerName_providerUID: {
+            providerName: providerName,
+            providerUID: providerUID
           }
         },
         select: {
@@ -20,7 +19,7 @@ class UserService {
 
       if (userId)
         return userId;
-      
+
       const userProfile = await tx.userProfile.create({
         data: {
           fullname: userFullname,
@@ -66,6 +65,18 @@ class UserService {
     });
   }
 
+  static async checkUserAccountExists({ userId, username, email }: { userId?: number, username?: string, email?: string }) {
+    return !!await prisma.userAccount.findFirst({
+      where: {
+        OR: [
+          { userId },
+          { username },
+          { email }
+        ]
+      }
+    });
+  }
+
   static async getUserProfile(userId: number) {
     const profile = await prisma.userProfile.findUnique({
       where: { userId: userId }
@@ -85,19 +96,6 @@ class UserService {
     }
     catch (err) {
       throw new BadRequestError(`Failed to update user profile for userId: '${userId}'`);
-    }
-  }
-
-  static async updateUserAccountPassword(userId: number, newPassword: string) {
-    try {
-      await prisma.userAccount.update({
-        where: { userId: userId },
-        data: { password: getHashedPassword(newPassword) },
-        select: { userId: true }
-      })
-    }
-    catch (err) {
-      throw new BadRequestError(`Failed to update password for userId: '${userId}'`);
     }
   }
 

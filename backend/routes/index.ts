@@ -1,12 +1,12 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
 
-import { servePath, serveIndexPath, NODE_ENV, } from '../configs/serve.config.js';
-import { NotFoundError } from '../core/ErrorResponse.js';
+import { servePath, serveIndexPath, NODE_ENV, } from '../configs/serve.config';
+import { NotFoundError } from '../core/ErrorResponse';
 
-import { authenticateJWT } from '../middlewares/auth.middleware.js';
-import accessRouter from './access.route.js';
-import userRouter from './user.route.js';
+import { authenticateJWT } from '../middlewares/auth.middleware';
+import accessRouter from './access.route';
+import userRouter from './user.route';
 
 // serve static files
 if (NODE_ENV === 'development') {

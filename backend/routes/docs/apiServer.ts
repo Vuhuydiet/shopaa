@@ -36,7 +36,7 @@ const options = {
       }
     ],
   },
-  apis: ['../**/*.ts']
+  apis: ['../*.ts']
 }
 const spacs = swaggerjsdoc(options);
 app.use('/', swaggerUI.serve, swaggerUI.setup(spacs));

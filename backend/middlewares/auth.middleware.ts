@@ -9,7 +9,6 @@ import { Algorithm } from 'jsonwebtoken';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import TokenService from '../services/token.service.js';
 import UserService from '../services/user.service.js';
 
 import { Request, Response, NextFunction } from 'express';
@@ -53,10 +52,8 @@ passport.use(
   },
     async (_accessToken: string, _refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
       try {
-        const { userId } = await UserService.createOAuthProviderIfNotExists('google', profile.id, profile.displayName);
-
-        const token = await TokenService.generateToken(userId);
-        return done(null, { token });
+        const user = await UserService.createOAuthProviderIfNotExists('google', profile.id, profile.displayName);
+        return done(null, user);
       }
       catch (err) {
         done(err);
@@ -75,10 +72,8 @@ passport.use(
   },
     async (_accessToken: string, _refreshToken: string, public_profile: any, done: (err: any, user?: any) => void) => {
       try {
-        const { userId } = await UserService.createOAuthProviderIfNotExists('facebook', public_profile.id, public_profile.displayName);
-
-        const token = await TokenService.generateToken(userId);
-        return done(null, { token });
+        const user = await UserService.createOAuthProviderIfNotExists('facebook', public_profile.id, public_profile.displayName);
+        return done(null, user);
       }
       catch (err) {
         done(err);

@@ -37,7 +37,7 @@ async function signIn(username: string, password: string) {
     throw new BadRequestError('Invalid password');
   }
 
-  const token = await TokenService.generateToken(user.userId);
+  const token = TokenService.generateToken(user.userId);
   return token;
 }
 
