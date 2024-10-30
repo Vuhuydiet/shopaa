@@ -35,10 +35,10 @@ class SuccessResponse {
     this.metadata = metadata;
   }
 
-  static send(res: Response, successResponse: SuccessResponse) {
-    res.status(successResponse.statusCode).json({
-      message: successResponse.message,
-      metadata: successResponse.metadata,
+  send(res: Response) {
+    res.status(this.statusCode).json({
+      message: this.message,
+      metadata: this.metadata,
     });
   }
 }

@@ -1,25 +1,20 @@
+import genKey from '../scripts/generateKeyPair.js';
 import prisma from './index.js';
 
 // import { getHashedPassword } from '../utils/cryptoUtils.js';
 
 async function main() {
-  const user = {
-    username: 'vuhuydiet',
-    password: 'hihi',
-  };
+  console.log('Start seeding ...');
 
-  await prisma.user.upsert({
-    create: user,
-    update: user,
-    where: {
-      username: user.username,
-    },
-  });
+  await genKey();
 
-  console.log('Database has been seeded!');
+
 }
 
 main()
+  .then(() => {
+    console.log('Database has been seeded!');
+  })
   .catch((e) => {
     console.error(e);
     process.exit(1);
