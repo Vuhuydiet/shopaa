@@ -6,6 +6,7 @@ import FacebookCallback from './FacebookCallback';
 import SignInWithFacebookButton from './SignInWithFacebookButton';
 
 const App: React.FC = () => {
+  console.log('afdasdf');
   return (
     <>
       <Router>
