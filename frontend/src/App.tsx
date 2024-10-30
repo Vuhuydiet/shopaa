@@ -1,24 +1,30 @@
-import { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import SignInWithGoogleButton from './SignInWithGoogleButton';
+import GoogleCallback from './GoogleCallback';
+import FacebookCallback from './FacebookCallback';
+import SignInWithFacebookButton from './SignInWithFacebookButton';
 
-function App() {
-  const [count, setCount] = useState(0);
-
+const App: React.FC = () => {
   return (
     <>
-      <h1>Vite + React asdfasd fa sdf asd fasdf</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Router>
+        <Routes>
+          <Route path="/" element={<SignInWithGoogleButton />} />
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
+        </Routes>
+      </Router>
+      <Router>
+        <Routes>
+          <Route path="/" element={<SignInWithFacebookButton />} />
+          <Route
+            path="/auth/facebook/callback"
+            element={<FacebookCallback />}
+          />
+        </Routes>
+      </Router>
     </>
   );
-}
+};
 
 export default App;
