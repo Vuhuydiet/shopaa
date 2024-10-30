@@ -1,10 +1,10 @@
 model Shop {
-    shopOwnerId     Int     @id @default(autoincrement())
+    shopOwnerId     Int     @id 
     shopName        String
     shopDescription String?
     address         String?
     bankingBalance  Int @default(0)
 
-    shopOwner User @relation(fields: [shopOwnerId], references: [userId])
+    shopOwner UserProfile @relation(fields: [shopOwnerId], references: [userId], onDelete: Cascade)
     products Product[]
 }

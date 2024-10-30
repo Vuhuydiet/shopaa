@@ -8,4 +8,6 @@ model UserProfile {
 
   userAccount    UserAccount?
   oAuthProvider OAuthProvider?
+
+  shop Shop?
 }
