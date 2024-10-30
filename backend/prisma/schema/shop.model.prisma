@@ -5,6 +5,6 @@ model Shop {
     address         String?
     bankingBalance  Int @default(0)
 
-    shopOwner User @relation(fields: [shopOwnerId], references: [userId], onDelete: Cascade)
+    shopOwner UserProfile @relation(fields: [shopOwnerId], references: [userId], onDelete: Cascade)
     products Product[]
 }
