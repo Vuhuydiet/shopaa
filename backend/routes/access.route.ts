@@ -152,28 +152,28 @@ const router = express.Router();
  */
 
 router.get('/otp',
-  body('email').isEmail().withMessage('Invalid email'),
+  body('email').notEmpty().isEmail().withMessage('Invalid email'),
   handleValidationErrors,
   accessController.sendOtp);
 
 router.post('/sign-up', 
-  body('username').isString().withMessage('Invalid username'),
-  body('password').isString().withMessage('Invalid password'),
-  body('email').isEmail().withMessage('Invalid email'),
-  body('otp').isInt().withMessage('Invalid OTP'),
+  body('username').notEmpty().withMessage('Username is required').isString().withMessage('Invalid username'),
+  body('password').notEmpty().isString().withMessage('Invalid password'),
+  body('email').notEmpty().isEmail().withMessage('Invalid email'),
+  body('otp').notEmpty().isInt().withMessage('Invalid OTP'),
   handleValidationErrors,
   accessController.signUp);
 
 router.post('/sign-in', 
-  body('username').isString().withMessage('Invalid username'),
-  body('password').isString().withMessage('Invalid password'),
+  body('username').notEmpty().isString().withMessage('Invalid username'),
+  body('password').notEmpty().isString().withMessage('Invalid password'),
   handleValidationErrors,
   accessController.signIn);
 
 router.post('/change-password', 
   body('otp').isInt().withMessage('Invalid OTP'),
   body('oldPassword').isString().withMessage('Invalid old password'),
-  body('newPassword').isString().withMessage('Invalid new password'),
+  body('newPassword').notEmpty().isString().withMessage('Invalid new password'),
   handleValidationErrors,
   accessController.changePassword);
 

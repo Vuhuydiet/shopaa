@@ -16,6 +16,7 @@ const publicPaths = {
   POST: [
     '/sign-up',
     '/sign-in',
+    '/change-password',
   ],
 
   PUT: [

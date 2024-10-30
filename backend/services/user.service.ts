@@ -84,7 +84,11 @@ class UserService {
     if (!profile)
       throw new NotFoundError(`User profile for userId: '${userId}' does not exist`)
 
-    return profile;
+    return {
+      fullname: profile.fullname,
+      gender: profile.gender,
+      avatar: profile.avatar
+    };
   }
 
   static async updateUserProfile(userId: number, newProfile: Partial<UserProfile>) {
