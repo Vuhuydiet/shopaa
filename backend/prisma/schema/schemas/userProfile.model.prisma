@@ -1,5 +1,6 @@
 model UserProfile {
   userId      Int       @id @default(autoincrement())
+  role        Role      @default(USER)
   fullname    String?
   dateOfBirth DateTime?
   gender      String?

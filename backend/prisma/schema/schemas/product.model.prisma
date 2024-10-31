@@ -1,14 +1,15 @@
 model Product {
-    productId          Int     @id @default(autoincrement())
+    productId          Int      @id @default(autoincrement())
     productName        String
     sellerId           Int
-    quanity            Int     @default(0)
     currentPrice       Int
     originalPrice      Int
+    quantity           Int      @default(0)
+    publishedAt        DateTime @default(now())
     brand              String?
     productDescription String?
-    isDeleted          Boolean @default(false)
-    numSoldProduct     Int     @default(0)
+    isDeleted          Boolean  @default(false)
+    numSoldProduct     Int      @default(0)
 
     shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId])
     categories    ProductCategory[]

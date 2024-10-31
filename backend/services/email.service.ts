@@ -14,7 +14,7 @@ class OtpStorage {
 
   static storeOtp(clientEmail: string, otp: number) {
     this.m_OtpStorage[clientEmail] = {
-      otp: otp, 
+      otp: otp,
       exp: Date.now() + (this.EXPIRES_IN * 60 * 1000),
     };
   }
@@ -23,7 +23,7 @@ class OtpStorage {
     this.invalidate();
     if (!this.m_OtpStorage[clientEmail])
       return false;
-    
+
     return this.m_OtpStorage[clientEmail].otp == otp;
   }
 
@@ -36,7 +36,6 @@ class OtpStorage {
   }
 }
 
-// Send OTP via email using Nodemailer
 async function sendOtpEmail(clientEmail: string) {
   const transporter = nodemailer.createTransport({
     // host: keyConfig.SMTP_HOST,
@@ -49,7 +48,6 @@ async function sendOtpEmail(clientEmail: string) {
     },
   });
 
-  // Email details
   const otp = generateOtp();
   OtpStorage.storeOtp(clientEmail, otp);
 

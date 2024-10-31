@@ -14,7 +14,6 @@ import UserService from '../services/user.service.js';
 import { Request, Response, NextFunction } from 'express';
 import publicPaths from '../configs/publicPaths.config.js'
 
-// ----------------- JWT Token ------------------------------- //
 passport.use(
   new JwtStrategy({
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -32,18 +31,6 @@ passport.use(
     }),
 );
 
-function authenticateJWT(req: Request, res: Response, next: NextFunction) {
-  if (publicPaths.match(req.method, req.path)) {
-    return next();
-  }
-
-  return passport.authenticate('jwt', { session: false })(req, res, next);
-}
-
-
-// ----------------------------------------------------------- //
-// ----------------- OAuth Strategies ------------------------ //
-// ----------------------------------------------------------- //
 passport.use(
   new GoogleStrategy({
     clientID: keyConfig.GOOGLE_CLIENT_ID,
@@ -80,6 +67,16 @@ passport.use(
       }
     })
 );
+
+
+function authenticateJWT(req: Request, res: Response, next: NextFunction) {
+  if (publicPaths.match(req.method, req.path)) {
+    return next();
+  }
+
+  return passport.authenticate('jwt', { session: false })(req, res, next);
+}
+
 
 
 export { authenticateJWT };

@@ -1,0 +1,9 @@
+model ProductImage {
+    productId     Int
+    ordinalNumber Int    @unique @default(autoincrement())
+    URL           String
+
+    product Product @relation(fields: [productId], references: [productId])
+
+    @@id([productId, ordinalNumber])
+}

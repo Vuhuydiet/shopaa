@@ -4,7 +4,7 @@ const router = express.Router();
 import { servePath, serveIndexPath, NODE_ENV, } from '../configs/serve.config';
 import { NotFoundError } from '../core/ErrorResponse';
 
-import { authenticateJWT } from '../middlewares/auth.middleware';
+import { authenticateJWT } from '../middlewares/authenticate.middleware';
 import accessRouter from './access.route';
 import userRouter from './user.route';
 

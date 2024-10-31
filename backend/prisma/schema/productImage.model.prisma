@@ -1,9 +1,0 @@
-model ProductImage {
-    productId     Int
-    ordinalNumber Int @unique
-    URL           String
-
-    @@id([productId, ordinalNumber])
-
-    product       Product @relation(fields: [productId], references: [productId])
-}
