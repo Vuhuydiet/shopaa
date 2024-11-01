@@ -3,8 +3,8 @@ import { ForbiddenError } from '../core/ErrorResponse';
 import { Role, UserProfile } from '@prisma/client';
 
 
-async function authorize(roles: Role[], message?: string) {
-  return async (req: Request, _res: Response, next: NextFunction) => {
+function authorize(roles: Role[], message?: string) {
+  return (req: Request, _res: Response, next: NextFunction) => {
     const user = req.user as UserProfile;
     if (!user)
       throw new ForbiddenError('Unauthenticated');

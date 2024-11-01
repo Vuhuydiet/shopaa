@@ -62,7 +62,6 @@ const defaultProductQueryParams: ProductQueryParams = {
 
 class ProductService {
 
-
   static async createProductCategory({ name, description }: ProductCategoryData) {
     await prisma.productCategory.create({
       data: {

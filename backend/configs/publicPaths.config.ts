@@ -3,7 +3,7 @@ import { pathToRegexp } from "path-to-regexp";
 const publicPaths = {
   GET: [
     '/',
-    '/otp',
+    '/send-otp',
 
     '/auth/google',
     '/auth/google/callback',
