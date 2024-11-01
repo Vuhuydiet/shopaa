@@ -151,7 +151,7 @@ const router = express.Router();
  *         description: Authentication failed
  */
 
-router.get('/otp',
+router.post('/send-otp',
   body('email').notEmpty().isEmail().withMessage('Invalid email'),
   handleValidationErrors,
   accessController.sendOtp);
