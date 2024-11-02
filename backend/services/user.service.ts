@@ -103,6 +103,7 @@ class UserService {
         userId: profile.userId,
         fullname: profile.fullname,
         avatar: profile.avatar,
+        gender: profile.gender
       }
     }
 

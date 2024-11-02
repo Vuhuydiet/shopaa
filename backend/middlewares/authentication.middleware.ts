@@ -9,10 +9,7 @@ import { Algorithm } from 'jsonwebtoken';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import UserService from '../services/user.service.js';
-
-import { Request, Response, NextFunction } from 'express';
-import publicPaths from '../configs/publicPaths.config.js'
+import UserService from '../services/user.service';
 
 passport.use(
   new JwtStrategy({
@@ -23,14 +20,16 @@ passport.use(
     async (jwt_payload: any, done: any) => {
       try {
         const userId = jwt_payload.sub;
-        const user = await UserService.getUserProfile(userId);
-        return done(null, user);
+        return done(null, { userId });
       } catch (err) {
         return done(err, false);
       }
     }),
 );
 
+// ----------------------------------------------------------- //
+// ----------------- OAuth Strategies ------------------------ //
+// ----------------------------------------------------------- //
 passport.use(
   new GoogleStrategy({
     clientID: keyConfig.GOOGLE_CLIENT_ID,
@@ -68,16 +67,4 @@ passport.use(
     })
 );
 
-
-function authenticateJWT(req: Request, res: Response, next: NextFunction) {
-  if (publicPaths.match(req.method, req.path)) {
-    return next();
-  }
-
-  return passport.authenticate('jwt', { session: false })(req, res, next);
-}
-
-
-
-export { authenticateJWT };
 export default passport;
