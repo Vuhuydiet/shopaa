@@ -1,6 +1,7 @@
 import prisma from "../prisma";
 import { BadRequestError, NotFoundError } from "../core/ErrorResponse";
 import { Role } from "@prisma/client";
+import UserService from "./user.service";
 
 type ShopData = {
   shopName: string;
@@ -20,12 +21,8 @@ class ShopService {
   }
 
   static async createShop(userId: number, shopdata: ShopData) {
-    const user = await prisma.userProfile.findUnique({
-      where: { userId: userId }
-    })
-    if (!user)
-      throw new NotFoundError('User not found, cannot create shop');
-
+    UserService.checkUserExists(userId);
+    
     const shop = await prisma.shop.findUnique({
       where: { shopOwnerId: userId }
     });
@@ -50,7 +47,7 @@ class ShopService {
     });
   }
 
-  static async getShop(shopId: number) {
+  static async getShopById(shopId: number) {
     const shop = await prisma.shop.findUnique({
       where: { shopOwnerId: shopId }
     })

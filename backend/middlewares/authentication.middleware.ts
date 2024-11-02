@@ -19,8 +19,8 @@ passport.use(
   },
     async (jwt_payload: any, done: any) => {
       try {
-        const userId = jwt_payload.sub;
-        return done(null, { userId });
+        const { userId, role } = jwt_payload.sub;
+        return done(null, { userId, role });
       } catch (err) {
         return done(err, false);
       }

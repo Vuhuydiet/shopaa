@@ -1,4 +1,4 @@
-import { BadRequestError, InternalServerError } from "../core/ErrorResponse";
+import { BadRequestError, InternalServerError, NotFoundError } from "../core/ErrorResponse";
 import prisma from "../prisma";
 import { getHashedPassword, invalidatePassword } from "../utils/cryptoUtils";
 import TokenService from "./token.service";
@@ -29,7 +29,16 @@ class AccessService {
 
   static async signIn(username: string, password: string) {
     const user = await prisma.userAccount.findUnique({
-      where: { username: username }
+      where: { username: username },
+      select: {
+        userId: true,
+        password: true,
+        profile: {
+          select: {
+            role: true
+          }
+        }
+      }
     });
 
     if (!user) {
@@ -40,7 +49,7 @@ class AccessService {
       throw new BadRequestError('Invalid password');
     }
 
-    const token = TokenService.generateToken(user.userId);
+    const token = TokenService.generateToken(user.userId, user.profile.role);
     return token;
   }
 
@@ -80,7 +89,18 @@ class AccessService {
       where: { email },
       data: { password: getHashedPassword(newPassword) }
     });
+  }
 
+  static async signInWithOAuth(userId: number) {
+    const profile = await prisma.userProfile.findUnique({
+      where: { userId },
+      select: { role: true }
+    });
+    if (!profile) {
+      throw new NotFoundError('User not found');
+    }
+
+    return TokenService.generateToken(userId, profile.role);
   }
 }
 

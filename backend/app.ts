@@ -10,11 +10,11 @@ import helmet from 'helmet';
 import compression from 'compression';
 import 'express-async-errors';
 
-import { NODE_ENV } from './configs/serve.config.js';
+import { NODE_ENV } from './configs/serve.config';
 
 // import middlewares and routes
-import router from './routes/index.js';
-import errorHandler from './middlewares/errorHandler.js';
+import router from './routes';
+import errorHandler from './middlewares/errorHandler';
 
 // middlewares
 app.use(cors());

@@ -5,7 +5,6 @@ import EmailService from "../services/email.service";
 import { BadRequestError } from "../core/ErrorResponse";
 import UserService from "../services/user.service";
 import { matchedData } from "express-validator";
-import TokenService from "../services/token.service";
 
 export default {
 
@@ -65,7 +64,7 @@ export default {
 
   signInWithOAuth: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
-    const token = TokenService.generateToken(userId);
+    const token = await AccessService.signInWithOAuth(userId);
     new CreatedResponse({
       message: 'User signed in successfully',
       metadata: { token }
