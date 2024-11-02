@@ -1,36 +1,76 @@
-import faceboook from "../../images/logo_facebook.png"
-import google from "../../images/logo_google.png" 
+import { Button, Divider, Space, Col, Row, Typography } from 'antd';
+import FacebookIcon from '../../images/logo_facebook.png';
+import GoogleIcon from '../../images/logo_google.png';
+import { Link } from 'react-router-dom';
 
 export const OtherLogin = () => {
   return (
-    <div className="other-login">
-      <div className="forgot-password">
-        <a href="#">Forgot password</a>
-      </div>
-      <div className="divider">
-        <p>
-          <hr />
-          OR
-          <hr />
-        </p>
+    <Space
+      direction="vertical"
+      style={{ width: '100%', margin: '0 auto', gap: '0px' }}
+    >
+      <div style={{ width: '80%', margin: '0 auto' }}>
+        <Link to="/forgot-password" style={{ textDecoration: 'underline' }}>
+          Forgot password
+        </Link>
       </div>
 
-      <div className="login-with">
-        <div className="login-with-facebook">
-          <img src={faceboook} alt="Facebook" />
-          <span>Facebook</span>
+      <div style={{ width: '80%', margin: '0 auto' }}>
+        <Divider style={{ borderColor: 'black' }}>OR</Divider>
+      </div>
+
+      <Row
+        className="btnLogin"
+        style={{
+          width: '80%',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Col span={11} className="btnFacebook">
+          <Button style={{ padding: '20px', fontSize: '1rem' }} block>
+            <img
+              src={FacebookIcon}
+              alt="Facebook"
+              style={{
+                width: '2rem',
+                background: 'transparent',
+              }}
+            />
+            Facebook
+          </Button>
+        </Col>
+
+        <Col span={11} offset={2} className="btnFacebook">
+          <Button style={{ padding: '20px', fontSize: '1rem' }} block>
+            <img
+              src={GoogleIcon}
+              alt="Google"
+              style={{
+                width: '2rem',
+                background: 'transparent',
+              }}
+            />
+            Google
+          </Button>
+        </Col>
+      </Row>
+
+      <div style={{ width: '80%', margin: '30px auto' }}>
+        <div style={{ textAlign: 'center' }}>
+          <Typography.Text style={{ fontWeight: 'lighter', fontSize: '1rem' }}>
+            Do you have an account yet?{' '}
+            <Link
+              to="/register"
+              style={{ fontWeight: 'normal', textDecoration: 'underline' }}
+            >
+              Register
+            </Link>
+          </Typography.Text>
         </div>
-
-        <div className="login-with-google">
-          <img src={google} alt="Google" />
-          <span>Google</span>
-        </div>
       </div>
-
-      <div className="container-create-account">
-        <div className="title">Do you have an account yet?</div>
-        <a href="#">Register</a>
-      </div>
-    </div>
+    </Space>
   );
 };
