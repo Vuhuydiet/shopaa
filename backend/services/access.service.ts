@@ -49,7 +49,7 @@ class AccessService {
       throw new BadRequestError('Invalid password');
     }
 
-    const token = TokenService.generateToken(user.userId, user.profile.role);
+    const token = TokenService.generateToken(user.userId);
     return token;
   }
 
@@ -100,7 +100,7 @@ class AccessService {
       throw new NotFoundError('User not found');
     }
 
-    return TokenService.generateToken(userId, profile.role);
+    return TokenService.generateToken(userId);
   }
 }
 

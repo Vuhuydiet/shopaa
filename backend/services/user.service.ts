@@ -1,6 +1,13 @@
-import { UserProfile } from "@prisma/client";
 import prisma from "../prisma";
 import { BadRequestError, NotFoundError } from "../core/ErrorResponse";
+
+type ProfileData = {
+  fullname?: string;
+  dateOfBirth?: Date;
+  gender?: string;
+  phoneNumber?: string;
+  avatar?: string;
+}
 
 class UserService {
 
@@ -110,13 +117,19 @@ class UserService {
     return profile;
   }
 
-  static async updateUserProfile(userId: number, newProfile: Partial<UserProfile>) {
-    this.checkUserExists(userId);
+  static async updateUserProfile(userId: number, newProfile: ProfileData) {
+    await this.checkUserExists(userId);
 
     try {
       await prisma.userProfile.update({
         where: { userId: userId },
-        data: newProfile,
+        data: {
+          fullname: newProfile.fullname,
+          dateOfBirth: newProfile.dateOfBirth,
+          phoneNumber: newProfile.phoneNumber,
+          avatar: newProfile.avatar,
+          gender: newProfile.gender
+        },
       });
     }
     catch (err) {

@@ -3,7 +3,7 @@ model ProductImage {
     ordinalNumber Int    @unique @default(autoincrement())
     URL           String
 
-    product Product @relation(fields: [productId], references: [productId])
+    product Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
 
     @@id([productId, ordinalNumber])
 }

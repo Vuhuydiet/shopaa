@@ -19,8 +19,10 @@ passport.use(
   },
     async (jwt_payload: any, done: any) => {
       try {
-        const { userId, role } = jwt_payload.sub;
-        return done(null, { userId, role });
+        const { userId } = jwt_payload.sub;
+        await UserService.checkUserExists(userId);
+        const userProfile = await UserService.getUserProfile(userId, true);
+        return done(null, { userId, role: (userProfile as any).role });
       } catch (err) {
         return done(err, false);
       }

@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError } from '../core/ErrorResponse';
-import { Role, UserProfile } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 
 function authorize(roles: Role[], message?: string) {
   return (req: Request, _res: Response, next: NextFunction) => {
-    const user = req.user as UserProfile;
-    if (!user)
+    if (!req.user)
       throw new ForbiddenError('Unauthenticated');
-    if (!roles.includes(user.role))
+    const { role } = req.user as any;
+    if (!roles.includes(role))
       throw new ForbiddenError(message);
     
     next();

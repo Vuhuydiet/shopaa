@@ -3,15 +3,42 @@ import express from 'express'
 import Auth from '../middlewares/authorization.middleware';
 import { Role } from '@prisma/client';
 import shopController from '../controllers/shop.controller';
+import passport from '../middlewares/authentication.middleware';
+import { body, param } from 'express-validator';
+import { handleValidationErrors } from '../core/validator';
 
 const router = express.Router();
 
-router.get('/:shopId', shopController.getShop);
+router.get(
+  '/:shopId',
+  param('shopId').isNumeric().withMessage('shopId must be a number'),
+  handleValidationErrors,
+  shopController.getShop
+);
 
-router.post('/register', Auth.authorize([Role.USER], 'Only user can register a shop'), shopController.registerShop);
+router.post(
+  '/register',
+  passport.authenticate('jwt', { session: false }),
+  Auth.authorize([Role.USER], 'Only user can register a shop'),
+  body('shopData').isObject().withMessage('shopData is required'),
+  body('shopData.shopName').isString().withMessage('shopName must be a string'),
+  handleValidationErrors,
+  shopController.registerShop
+);
 
-router.patch('/', Auth.authorize([Role.SHOP_MANAGER], 'Only shop manager can update their shop'), shopController.updateShop);
+router.patch(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  Auth.authorize([Role.SHOP_MANAGER], 'Only shop manager can update their shop'),
+  body('shopData').isObject().withMessage('shopData is required'),
+  handleValidationErrors,
+  shopController.updateShop
+);
 
-router.delete('/', Auth.authorize([Role.SHOP_MANAGER, Role.ADMIN], 'Only shop manager can delete their shop'), shopController.deleteShop);
+router.delete(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  Auth.authorize([Role.SHOP_MANAGER, Role.ADMIN], 'Only shop manager can delete their shop'), shopController.deleteShop
+);
 
 export default router;

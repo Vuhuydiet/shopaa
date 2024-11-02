@@ -1,6 +1,6 @@
 import prisma from "../prisma";
 import { BadRequestError, NotFoundError } from "../core/ErrorResponse";
-import { Role } from "@prisma/client";
+import { Role, Shop } from "@prisma/client";
 import UserService from "./user.service";
 
 type ShopData = {
@@ -21,13 +21,13 @@ class ShopService {
   }
 
   static async createShop(userId: number, shopdata: ShopData) {
-    UserService.checkUserExists(userId);
-    
+    await UserService.checkUserExists(userId);
+
     const shop = await prisma.shop.findUnique({
       where: { shopOwnerId: userId }
     });
     if (shop)
-      throw new BadRequestError('User\'s already created a shop exists');
+      throw new BadRequestError('User\'s already created a shop');
 
     return await prisma.$transaction(async (tx) => {
       await tx.shop.create({
@@ -47,22 +47,31 @@ class ShopService {
     });
   }
 
-  static async getShopById(shopId: number) {
+  static async getShopById(shopId: number, includeBankingBalance = false) {
     const shop = await prisma.shop.findUnique({
       where: { shopOwnerId: shopId }
     })
     if (!shop)
       throw new NotFoundError('Shop not found');
+    if (!includeBankingBalance) {
+      const returnedShop = shop as Partial<Shop>;
+      delete returnedShop.bankingBalance;
+      return returnedShop;
+    }
 
     return shop;
   }
 
   static async updateShop(shopId: number, shopData: ShopData) {
-    this.checkShopExists(shopId);
+    await this.checkShopExists(shopId);
 
     return await prisma.shop.update({
       where: { shopOwnerId: shopId },
-      data: shopData,
+      data: {
+        shopName: shopData.shopName,
+        shopDescription: shopData.shopDescription,
+        address: shopData.address
+      },
       select: {
         shopName: true,
         shopDescription: true,
@@ -72,7 +81,7 @@ class ShopService {
   }
 
   static async deleteShop(shopId: number) {
-    this.checkShopExists(shopId);
+    await this.checkShopExists(shopId);
 
     await prisma.$transaction(async (tx) => {
       await prisma.shop.delete({

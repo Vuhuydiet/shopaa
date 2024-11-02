@@ -128,10 +128,9 @@ class ProductService {
     const product = await prisma.product.findUnique({
       where: {
         productId: productId,
-        isDeleted: false
       }
     });
-    if (!product || product.isDeleted)
+    if (!product)
       throw new NotFoundError('Product not found');
   }
 
@@ -139,7 +138,6 @@ class ProductService {
     const product = await prisma.product.findUnique({
       where: {
         productId: productId,
-        isDeleted: false
       },
       include: {
         categories: true,
@@ -155,7 +153,6 @@ class ProductService {
   static async getAllProducts(queryParams: ProductQueryParams = defaultProductQueryParams) {
     return await prisma.product.findMany({
       where: {
-        isDeleted: false,
         sellerId: queryParams.shopId,
         categories: {
           some: {
@@ -191,12 +188,11 @@ class ProductService {
   }
 
   static async incrementProductQuantity(productId: number, quantity: number) {
-    this.checkProductExists(productId);
+    await this.checkProductExists(productId);
 
     await prisma.product.update({
       where: { 
         productId: productId,
-        isDeleted: false
       },
       data: {
         quantity: {
@@ -207,12 +203,11 @@ class ProductService {
   }
 
   static async updateProduct(productId: number, { name, description, quantity, price, brand, categories, images }: UpdateProductData) {
-    this.checkProductExists(productId);
+    await this.checkProductExists(productId);
 
     return await prisma.product.update({
       where: { 
         productId: productId,
-        isDeleted: false
       },
       data: {
         productName: name,
@@ -241,12 +236,11 @@ class ProductService {
     });
   }
   static async deleteProduct(productId: number) {
-    this.checkProductExists(productId);
+    await this.checkProductExists(productId);
 
-    await prisma.product.update({
-      where: { productId: productId },
-      data: {
-        isDeleted: true
+    await prisma.product.delete({
+      where: {
+        productId: productId
       }
     });
   }
