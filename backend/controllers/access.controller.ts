@@ -3,7 +3,6 @@ import { CreatedResponse, OKResponse } from "../core/SuccessResponse";
 import AccessService from "../services/access.service";
 import EmailService from "../services/email.service";
 import { BadRequestError } from "../core/ErrorResponse";
-import UserService from "../services/user.service";
 import { matchedData } from "express-validator";
 import TokenService from "../services/token.service";
 
@@ -11,8 +10,6 @@ export default {
 
   sendOtp: async (req: Request, res: Response) => {
     const { email } = matchedData(req);
-    if (await UserService.checkUserAccountExists({ email: email }))
-      throw new BadRequestError('Email has already been registered');
 
     await EmailService.sendOtpEmail(email);
 
