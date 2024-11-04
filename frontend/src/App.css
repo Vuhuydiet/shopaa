@@ -9,11 +9,3 @@
   min-height: 100vh;
   font-size: 1rem;
 }
-
-@media screen and (max-width: 1023px) {
-  .btnFacebook {
-    width: 100%;
-    min-width: 50vw;
-    margin: 10px auto;
-  }
-}
