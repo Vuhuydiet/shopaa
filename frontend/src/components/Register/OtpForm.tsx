@@ -74,8 +74,8 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
   return (
     <div
       style={{
-        margin: '0',
-        marginTop: '20px',
+        margin: '40px',
+        marginTop: '50px',
         textAlign: 'center',
         position: 'relative',
       }}
@@ -85,8 +85,8 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
           textAlign: 'left',
           marginBottom: '16px',
           position: 'absolute',
-          top: '-15px',
-          left: '-70px',
+          top: '-30px',
+          left: '-40px',
         }}
       >
         <ArrowLeftOutlined
