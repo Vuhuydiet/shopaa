@@ -1,7 +1,8 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
+import { KeyOutlined, UserOutlined } from '@ant-design/icons';
 
 export const FormLogin = () => {
   useEffect(() => {
@@ -14,14 +15,24 @@ export const FormLogin = () => {
   const navigate = useNavigate();
 
   const login = async (values: any) => {
-    const res = await axios.post('http://localhost:3000/sign-in', values);
-    console.log(res.data);
-    localStorage.setItem('token', res.data.metadata.token);
+    try {
+      const res = await axios.post('http://localhost:3000/sign-in', values);
+      console.log(res.data);
+      localStorage.setItem('token', res.data.metadata.token);
+      navigate('/');
+    } catch (error: any) {
+      console.log(error?.response?.data);
+      Modal.confirm({
+        title: error?.response?.data?.message,
+        okText: "Oke",
+        okType: "danger",
+        cancelText: "Cancel",
+      });
+    }
   };
 
   const onFinish = (values: any) => {
     login(values);
-    navigate('/');
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -49,7 +60,7 @@ export const FormLogin = () => {
         rules={[
           {
             required: true,
-            message: 'Please enter your email',
+            message: 'Please enter your email/phone number',
           },
           {
             validator: async (_, value) => {
@@ -69,7 +80,7 @@ export const FormLogin = () => {
           },
         ]}
       >
-        <Input placeholder="Email/Phone number" />
+        <Input prefix={<UserOutlined />} placeholder="Email/Phone number" />
       </Form.Item>
       <Form.Item
         name="password"
@@ -100,7 +111,7 @@ export const FormLogin = () => {
           },
         ]}
       >
-        <Input.Password placeholder="Password" />
+        <Input.Password prefix={<KeyOutlined />} placeholder="Password" />
       </Form.Item>
       <Form.Item style={{ width: '80%', margin: '0' }}>
         <Button type="primary" htmlType="submit" block>
