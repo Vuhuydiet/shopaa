@@ -5,37 +5,25 @@ import { Link } from 'react-router-dom';
 
 export const OtherLogin = () => {
   return (
-    <Space
-      direction="vertical"
-      style={{ width: '100%', margin: '0 auto', gap: '0px' }}
-    >
-      <div style={{ width: '80%', margin: '0 auto' }}>
-        <Link to="/forgot-password" style={{ textDecoration: 'underline' }}>
+    <Space direction="vertical" className="login__content__other">
+      <div className="login__content-form__item" style={{ margin: '0 auto' }}>
+        <Link to="/reset-password" style={{ textDecoration: 'underline' }}>
           Forgot password
         </Link>
       </div>
 
-      <div style={{ width: '80%', margin: '0 auto' }}>
+      <div className="login__content-form__item" style={{ margin: '0 auto' }}>
         <Divider style={{ borderColor: 'black' }}>OR</Divider>
       </div>
 
-      <Row
-        className="btnLogin"
-        style={{
-          width: '80%',
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Col span={11} className="btnFacebook">
-          <Button style={{ padding: '20px', fontSize: '1rem' }} block>
+      <Row className="login__content__button-container">
+        <Col span={11} className="login__content__button-child-container">
+          <Button className="login__content__button" block>
             <img
               src={FacebookIcon}
               alt="Facebook"
               style={{
-                width: '2rem',
+                width: '2.8rem',
                 background: 'transparent',
               }}
             />
@@ -43,8 +31,12 @@ export const OtherLogin = () => {
           </Button>
         </Col>
 
-        <Col span={11} offset={2} className="btnFacebook">
-          <Button style={{ padding: '20px', fontSize: '1rem' }} block>
+        <Col
+          span={11}
+          offset={2}
+          className="login__content__button-child-container"
+        >
+          <Button className="login__content__button" block>
             <img
               src={GoogleIcon}
               alt="Google"
@@ -58,7 +50,10 @@ export const OtherLogin = () => {
         </Col>
       </Row>
 
-      <div style={{ width: '80%', margin: '30px auto' }}>
+      <div
+        className="login__content-form__item"
+        style={{ margin: '30px auto' }}
+      >
         <div style={{ textAlign: 'center' }}>
           <Typography.Text style={{ fontWeight: 'lighter', fontSize: '1rem' }}>
             Do you have an account yet?{' '}

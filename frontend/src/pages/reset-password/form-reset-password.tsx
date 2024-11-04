@@ -1,179 +1,198 @@
-import { Button, Col, Form, Input, Space, Typography } from 'antd';
+import { Button, Col, Form, Input, Space, Typography, Modal } from 'antd';
 import { useState } from 'react';
-import { KeyOutlined, UserOutlined } from '@ant-design/icons';
+import { KeyOutlined, RollbackOutlined, UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const FormResetPassword = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
 
   const onFinishEmail = async (values: any) => {
-    setEmail(values.email);
-    console.log(values);
-    const res = await axios.post('http://localhost:3000/send-otp', values, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log(res.data);
+    try {
+      setEmail(values.email);
+      const res = await axios.post('http://localhost:3000/send-otp', values, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log(res);
+    } catch (error: any) {
+      console.log(error?.response?.data);
+    }
   };
 
   const onFinishResetPassword = async (values: any) => {
     const data = { ...values, email: email };
     console.log(data);
-    const res = await axios.post(
-      'http://localhost:3000/forgot-password',
-      data,
-      {
-        headers: {
-          'Content-Type': 'application/json',
+    try {
+      const res = await axios.post(
+        'http://localhost:3000/forgot-password',
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    );
-    console.log(res.data);
+      );
+      console.log(res.data);
+      navigate('/login');
+    } catch (error: any) {
+      console.log(error?.response?.data);
+      Modal.confirm({
+        title: error?.response?.data?.message,
+        okText: 'Oke',
+        okType: 'danger',
+        cancelText: 'Cancel',
+      });
+    }
   };
 
   const resendOTP = async () => {
-    const values = {
-      email: email
+    try {
+      const values = {
+        email: email,
+      };
+      const res = await axios.post('http://localhost:3000/send-otp', values, {
+        headers: {
+          'Content-type': 'application/json',
+        },
+      });
+      console.log(res);
+      Modal.confirm({
+        title: 'OTP has been sent',
+        okText: 'Oke',
+        type: 'success',
+        okType: 'primary',
+      });
+    } catch (error: any) {
+      console.log(error?.response?.data);
+      Modal.confirm({
+        title: error?.response?.data?.message,
+        okText: 'Oke',
+        okType: 'danger',
+        cancelText: 'Cancel',
+      });
     }
-    const res = await axios.post("http://localhost:3000/send-otp", values, {
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-    console.log(res)
+  };
+
+  const onClickBack = () => {
+    setEmail('');
   };
 
   return (
-    <Space
-      className="content-login"
-      size={0}
-      direction="vertical"
-      style={{
-        width: '90%',
-        height: '100%',
-        margin: '0',
-        gap: '0',
-        borderRadius: '20px',
-        background: 'transparent',
-        backgroundImage: 'linear-gradient(to right, #cbcff5, #f2fcfe)',
-      }}
-    >
-      <Typography.Title
-        level={3}
-        style={{ marginLeft: '20px', marginTop: '20px' }}
-      >
+    <Space className="login__content-container" size={0} direction="vertical">
+      <Typography.Title level={3} className="login__content-title">
         Reset Password
       </Typography.Title>
       {email ? (
-        <Form
-          onFinish={onFinishResetPassword}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            margin: '10px auto',
-          }}
-        >
-          <Col
-            className="reset-password"
-            span={24}
-            style={{ width: '80%', display: 'flex', marginBottom: '24px' }}
+        <>
+          <Button
+            icon={
+              <RollbackOutlined
+                style={{
+                  fontSize: '1.2rem',
+                  color: 'black',
+                }}
+              />
+            }
+            className="login__content-back"
+            onClick={onClickBack}
           >
+            Back
+          </Button>
+          <Form
+            onFinish={onFinishResetPassword}
+            className="login__content-form"
+          >
+            <Col
+              className="login__content-form__item reset-password"
+              span={24}
+              style={{ display: 'flex', marginBottom: '24px' }}
+            >
+              <Form.Item
+                style={{ margin: '0' }}
+                name="otp"
+                required
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter your OTP',
+                  },
+                  {
+                    len: 6,
+                    message: 'OTP must be 6 characters long',
+                  },
+                  {
+                    validator: async (_, value: string) => {
+                      return RegExp(/^\d{6}$/).test(value)
+                        ? Promise.resolve()
+                        : Promise.reject(
+                            new Error('OTP must contain only numbers'),
+                          );
+                    },
+                  },
+                ]}
+              >
+                <Input.OTP length={6} autoFocus />
+              </Form.Item>
+              <Form.Item style={{ margin: '0' }}>
+                <Button
+                  type="link"
+                  style={{ margin: '0' }}
+                  onClick={() => resendOTP()}
+                >
+                  Resend OTP
+                </Button>
+              </Form.Item>
+            </Col>
             <Form.Item
-              style={{ margin: '0' }}
-              name="otp"
+              name="newPassword"
               required
+              className="login__content-form__item"
               hasFeedback
               rules={[
                 {
                   required: true,
-                  message: 'Please enter your OTP',
+                  message: 'Please enter your new password',
                 },
                 {
-                  len: 6,
-                  message: 'OTP must be 6 characters long',
+                  min: 8,
+                  message: 'Password must be at least 8 characters long',
                 },
                 {
                   validator: async (_, value: string) => {
-                    return RegExp(/^\d{6}$/).test(value)
+                    return RegExp(
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*_]{8,}$/,
+                    ).test(value)
                       ? Promise.resolve()
                       : Promise.reject(
-                          new Error('OTP must contain only numbers'),
+                          new Error(
+                            'Password must contain at least one uppercase letter, one lowercase letter, and one number',
+                          ),
                         );
                   },
                 },
               ]}
             >
-              <Input.OTP length={6} autoFocus />
+              <Input.Password
+                prefix={<KeyOutlined />}
+                placeholder="New Password"
+              />
             </Form.Item>
-            <Form.Item style={{ margin: '0' }}>
-              <Button
-                type="link"
-                style={{ margin: '0' }}
-                onClick={() => resendOTP()}
-              >
-                Resend OTP
+            <Form.Item className="login__content-form__item">
+              <Button type="primary" htmlType="submit" block>
+                Reset
               </Button>
             </Form.Item>
-          </Col>
-          <Form.Item
-            name="newPassword"
-            required
-            style={{ width: '80%' }}
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: 'Please enter your new password',
-              },
-              {
-                min: 8,
-                message: 'Password must be at least 8 characters long',
-              },
-              {
-                validator: async (_, value: string) => {
-                  return RegExp(
-                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*_]{8,}$/,
-                  ).test(value)
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error(
-                          'Password must contain at least one uppercase letter, one lowercase letter, and one number',
-                        ),
-                      );
-                },
-              },
-            ]}
-          >
-            <Input.Password
-              prefix={<KeyOutlined />}
-              placeholder="New Password"
-            />
-          </Form.Item>
-          <Form.Item style={{ width: '80%' }}>
-            <Button type="primary" htmlType="submit" block>
-              Reset
-            </Button>
-          </Form.Item>
-        </Form>
+          </Form>
+        </>
       ) : (
-        <Form
-          onFinish={onFinishEmail}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            margin: '10px auto',
-          }}
-        >
+        <Form onFinish={onFinishEmail} className="login__content-form">
           <Form.Item
             name="email"
-            style={{ width: '80%' }}
+            className="login__content-form__item"
             hasFeedback
             required
             rules={[
@@ -198,7 +217,7 @@ export const FormResetPassword = () => {
           >
             <Input prefix={<UserOutlined />} placeholder="Email" />
           </Form.Item>
-          <Form.Item style={{ width: '80%' }}>
+          <Form.Item className="login__content-form__item">
             <Button type="primary" htmlType="submit" block>
               Next
             </Button>

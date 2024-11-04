@@ -24,9 +24,9 @@ export const FormLogin = () => {
       console.log(error?.response?.data);
       Modal.confirm({
         title: error?.response?.data?.message,
-        okText: "Oke",
-        okType: "danger",
-        cancelText: "Cancel",
+        okText: 'Oke',
+        okType: 'danger',
+        cancelText: 'Cancel',
       });
     }
   };
@@ -43,18 +43,11 @@ export const FormLogin = () => {
     <Form
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        margin: '10px auto',
-      }}
+      className="login__content-form"
     >
       <Form.Item
         name="username"
-        style={{ width: '80%' }}
+        className="login__content-form__item"
         hasFeedback
         required
         rules={[
@@ -85,7 +78,7 @@ export const FormLogin = () => {
       <Form.Item
         name="password"
         required
-        style={{ width: '80%' }}
+        className="login__content-form__item"
         hasFeedback
         rules={[
           {
@@ -113,7 +106,7 @@ export const FormLogin = () => {
       >
         <Input.Password prefix={<KeyOutlined />} placeholder="Password" />
       </Form.Item>
-      <Form.Item style={{ width: '80%', margin: '0' }}>
+      <Form.Item className="login__content-form__item" style={{ margin: '0' }}>
         <Button type="primary" htmlType="submit" block>
           Log In
         </Button>
