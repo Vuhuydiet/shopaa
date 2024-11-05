@@ -1,10 +1,16 @@
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import AllRoute from './components/AllRoutes';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LogIn } from './pages/login/login';
 import { ResetPassword } from './pages/reset-password/reset-password';
 
 function App() {
-  return (
+  return (<>
+    <BrowserRouter>
+      <AllRoute />
+    </BrowserRouter>
+
     <div className="App">
       <Router>
         <Routes>
@@ -14,6 +20,7 @@ function App() {
         </Routes>
       </Router>
     </div>
+      </>
   );
 }
 
