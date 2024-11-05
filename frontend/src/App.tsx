@@ -10,16 +10,6 @@ function App() {
     <BrowserRouter>
       <AllRoute />
     </BrowserRouter>
-
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/" element={<div>Home</div>} />
-          <Route path="/login" element={<LogIn />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-        </Routes>
-      </Router>
-    </div>
       </>
   );
 }
