@@ -1,7 +1,7 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LogIn } from './pages/login/login';
-
+import { ResetPassword } from './pages/reset-password/reset-password';
 
 function App() {
   return (
@@ -10,6 +10,7 @@ function App() {
         <Routes>
           <Route path="/" element={<div>Home</div>} />
           <Route path="/login" element={<LogIn />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </Router>
     </div>
