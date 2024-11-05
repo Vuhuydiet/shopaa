@@ -1,0 +1,152 @@
+import { Link } from 'react-router-dom';
+import { Button, Form, Input, Space, Row, Col } from 'antd';
+import { useRegisterContext } from '../../context/RegisterContext';
+import { useEffect } from 'react';
+import './FormStyle.css';
+
+const layout = {
+  labelCol: { span: 24 },
+  wrapperCol: { span: 24 },
+};
+
+interface RegisterFormProps {
+  onContinue: () => void;
+}
+
+const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
+  const { registerData, setRegisterData } = useRegisterContext();
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFields([
+      { name: 'name', value: registerData?.username },
+      { name: 'email', value: registerData?.email },
+      { name: 'password', value: registerData?.password },
+      { name: 'rePassword', value: registerData?.password },
+    ]);
+  }, [form, registerData]);
+
+  const onFinish = (values: any) => {
+    setRegisterData({
+      username: values.name,
+      email: values.email,
+      password: values.password,
+    });
+    onContinue();
+  };
+
+  const onReset = () => {
+    form.resetFields();
+  };
+  return (
+    <>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0',
+        }}
+      >
+        <div style={{ margin: '20px' }}>
+          <h1>Create account</h1>
+        </div>
+        <Form
+          {...layout}
+          form={form}
+          name="control-hooks"
+          onFinish={onFinish}
+          style={{ maxWidth: 600 }}
+          className="large-font "
+        >
+          <Form.Item
+            label="Your Name"
+            name="name"
+            rules={[{ required: true, message: 'Please input your name!' }]}
+          >
+            <Input placeholder="Enter your name" />
+          </Form.Item>
+
+          <Form.Item
+            label="Email Address"
+            name="email"
+            rules={[
+              { required: true, message: 'Please input your email!' },
+              { type: 'email', message: 'Please enter a valid email address!' },
+            ]}
+          >
+            <Input placeholder="Enter your email" />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password placeholder="Enter your password" />
+          </Form.Item>
+
+          <Form.Item
+            label="Re-password"
+            name="rePassword"
+            rules={[
+              { required: true, message: 'Please re-enter your password!' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('Passwords do not match!'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="Re-enter your password" />
+          </Form.Item>
+
+          <Form.Item>
+            <Row justify="center" gutter={16}>
+              <Col span={13}>
+                {' '}
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: '100%',
+                  }}
+                  className="large-button"
+                >
+                  Register
+                </Button>
+              </Col>
+              <Col span={7}>
+                {' '}
+                <Button
+                  htmlType="button"
+                  onClick={onReset}
+                  style={{
+                    width: '100%',
+                  }}
+                  className="large-button-white"
+                >
+                  Reset
+                </Button>
+              </Col>
+            </Row>
+          </Form.Item>
+        </Form>
+        <div style={{ marginBottom: '20px' }}>
+          <Space>
+            <h3>Do you have an account?</h3>
+            <Link to="/login" style={{ fontSize: '18px' }}>
+              Log in
+            </Link>
+          </Space>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default RegisterForm;
