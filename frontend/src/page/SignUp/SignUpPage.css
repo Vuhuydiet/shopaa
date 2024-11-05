@@ -1,0 +1,33 @@
+.signup-container {
+  display: flex;
+  background: linear-gradient(to left, #d4c4ea, #8d35fa); /* Màu gradient */
+  min-height: 100vh;
+}
+
+.image-container {
+  flex: 1; /* Chiếm 1 phần chiều rộng */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+}
+
+.logo-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover; /* Đảm bảo hình ảnh được điều chỉnh đúng kích thước */
+}
+
+.form-container {
+  width: 35%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* Thêm khoảng cách xung quanh form */
+  border: 1px solid #4caf50;
+  background: linear-gradient(to bottom, #84d1d5, #d7f9f6);
+  border-radius: 30px;
+  height: 75%; /* Chiều cao tự động để chỉ bao quanh nội dung */
+  margin: auto; /* Giúp căn giữa phần tử trong cha nếu cần */
+  margin-right: 70px;
+}
