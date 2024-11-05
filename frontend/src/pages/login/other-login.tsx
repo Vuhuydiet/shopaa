@@ -5,25 +5,37 @@ import { Link } from 'react-router-dom';
 
 export const OtherLogin = () => {
   return (
-    <Space direction="vertical" className="login__content__other">
-      <div className="login__content-form__item" style={{ margin: '0 auto' }}>
-        <Link to="/reset-password" style={{ textDecoration: 'underline' }}>
+    <Space
+      direction="vertical"
+      style={{ width: '100%', margin: '0 auto', gap: '0px' }}
+    >
+      <div style={{ width: '80%', margin: '0 auto' }}>
+        <Link to="/forgot-password" style={{ textDecoration: 'underline' }}>
           Forgot password
         </Link>
       </div>
 
-      <div className="login__content-form__item" style={{ margin: '0 auto' }}>
+      <div style={{ width: '80%', margin: '0 auto' }}>
         <Divider style={{ borderColor: 'black' }}>OR</Divider>
       </div>
 
-      <Row className="login__content__button-container">
-        <Col span={11} className="login__content__button-child-container">
-          <Button className="login__content__button" block>
+      <Row
+        className="btnLogin"
+        style={{
+          width: '80%',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Col span={11} className="btnFacebook">
+          <Button style={{ padding: '20px', fontSize: '1rem' }} block>
             <img
               src={FacebookIcon}
               alt="Facebook"
               style={{
-                width: '2.8rem',
+                width: '2rem',
                 background: 'transparent',
               }}
             />
@@ -31,12 +43,8 @@ export const OtherLogin = () => {
           </Button>
         </Col>
 
-        <Col
-          span={11}
-          offset={2}
-          className="login__content__button-child-container"
-        >
-          <Button className="login__content__button" block>
+        <Col span={11} offset={2} className="btnFacebook">
+          <Button style={{ padding: '20px', fontSize: '1rem' }} block>
             <img
               src={GoogleIcon}
               alt="Google"
@@ -50,10 +58,7 @@ export const OtherLogin = () => {
         </Col>
       </Row>
 
-      <div
-        className="login__content-form__item"
-        style={{ margin: '30px auto' }}
-      >
+      <div style={{ width: '80%', margin: '30px auto' }}>
         <div style={{ textAlign: 'center' }}>
           <Typography.Text style={{ fontWeight: 'lighter', fontSize: '1rem' }}>
             Do you have an account yet?{' '}
