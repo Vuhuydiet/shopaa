@@ -39,6 +39,8 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
       message.info('Please log in to continue.');
     } catch (error: any) {
       message.error(error.message || 'Failed to verify OTP.');
+      console.log(error.message);
+      onBack();
     }
   };
 
