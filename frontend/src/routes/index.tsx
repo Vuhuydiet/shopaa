@@ -1,4 +1,4 @@
-import RegisterPage from '../page/RegisterPage';
+import RegisterPage from '../pages/RegisterPage';
 
 export const routes = [
   {

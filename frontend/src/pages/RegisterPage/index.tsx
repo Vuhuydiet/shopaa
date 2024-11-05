@@ -1,6 +1,6 @@
 import RegisterForm from '../../components/Register/RegisterForm';
 import './SignUpPage.css';
-import logo from '../../image/logo.png';
+import logo from '../../images/logo.png';
 import { useState } from 'react';
 import { RegisterProvider } from '../../context/RegisterContext';
 import OtpForm from '../../components/Register/OtpForm';
