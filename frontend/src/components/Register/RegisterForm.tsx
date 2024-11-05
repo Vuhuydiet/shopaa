@@ -9,11 +9,6 @@ const layout = {
   wrapperCol: { span: 24 },
 };
 
-// const tailLayout = {
-//   wrapperCol: { span: 24 },
-// };
-
-// Định nghĩa kiểu cho props
 interface RegisterFormProps {
   onContinue: () => void;
 }

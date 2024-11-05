@@ -17,7 +17,7 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
   const navigate = useNavigate();
   const { registerData } = useRegisterContext();
   const [initalOtpSent, setInitalOtpSent] = useState(false);
-  const email = registerData?.email || ''; // Sử dụng optional chaining
+  const email = registerData?.email || '';
   const username = registerData?.username || '';
   const password = registerData?.password || '';
 
