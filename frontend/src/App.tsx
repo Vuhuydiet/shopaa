@@ -1,19 +1,30 @@
-import './App.css';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { LogIn } from './pages/login/login';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import SignInWithGoogleButton from './SignInWithGoogleButton';
+import GoogleCallback from './GoogleCallback';
+import FacebookCallback from './FacebookCallback';
+import SignInWithFacebookButton from './SignInWithFacebookButton';
 
-
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
+    <>
       <Router>
         <Routes>
-          <Route path="/" element={<div>Home</div>} />
-          <Route path="/login" element={<LogIn />} />
+          <Route path="/" element={<SignInWithGoogleButton />} />
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
         </Routes>
       </Router>
-    </div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<SignInWithFacebookButton />} />
+          <Route
+            path="/auth/facebook/callback"
+            element={<FacebookCallback />}
+          />
+        </Routes>
+      </Router>
+    </>
   );
-}
+};
 
 export default App;
