@@ -26,8 +26,8 @@ crypto.generateKeyPair(
       const keys = await prisma.$transaction(async (tx) => {
         return tx.key.createMany({
           data: [
-            { name: 'JWT_PUBLIC_KEY', value: publicKey },
-            { name: 'JWT_PRIVATE_KEY', value: privateKey },
+            { keyName: 'JWT_PUBLIC_KEY', value: publicKey },
+            { keyName: 'JWT_PRIVATE_KEY', value: privateKey },
           ],
         });
       });
