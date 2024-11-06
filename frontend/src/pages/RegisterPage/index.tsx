@@ -18,11 +18,15 @@ const RegisterPage: React.FC = () => {
   return (
     <>
       <RegisterProvider>
-        <div className="signup-container">
-          <div className="image-container">
-            <img src={logo} alt="Description" className="logo-image" />
+        <div className="Register__container">
+          <div className="Register__image">
+            <img
+              src={logo}
+              alt="Description"
+              className="Register__image-logo"
+            />
           </div>
-          <div className="form-container">
+          <div className="Register__form">
             {showOtpForm ? (
               <OtpForm onBack={handleBack} />
             ) : (

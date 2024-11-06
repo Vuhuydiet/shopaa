@@ -93,7 +93,12 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
       >
         <ArrowLeftOutlined
           onClick={onBack}
-          style={{ fontSize: '24px', fontWeight: '500', cursor: 'pointer' }}
+          style={{
+            fontSize: '24px',
+            color: 'black',
+            fontWeight: '500',
+            cursor: 'pointer',
+          }}
         />
       </div>
       <Title level={2}>OTP Verification</Title>
@@ -128,7 +133,8 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
           <Button
             type="primary"
             htmlType="submit"
-            style={{ width: '70%' }}
+            style={{ width: '70%', color: 'white' }}
+
             className="large-button"
           >
             Verify
@@ -137,7 +143,7 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
       </Form>
 
       <Space style={{ marginTop: 16, marginBottom: 16 }} className="large-font">
-        <div>Didn't receive the code?</div>
+        <div style={{ color: 'black' }}>Didn't receive the code?</div>
         <Button type="link" onClick={onResendOtp}>
           Resend OTP
         </Button>
