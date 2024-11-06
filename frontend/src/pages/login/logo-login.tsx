@@ -1,4 +1,4 @@
-import img from '../../images/logo_app.png';
+import img from '../../images/logo.png';
 
 export const LogoLogin = () => {
   return (
