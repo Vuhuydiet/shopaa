@@ -23,7 +23,6 @@ class OtpStorage {
     this.invalidate();
     if (!this.m_OtpStorage[clientEmail])
       return false;
-
     return this.m_OtpStorage[clientEmail].otp == otp;
   }
 
