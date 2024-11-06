@@ -134,6 +134,7 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
             type="primary"
             htmlType="submit"
             style={{ width: '70%', color: 'white' }}
+
             className="large-button"
           >
             Verify

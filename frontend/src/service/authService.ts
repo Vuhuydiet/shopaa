@@ -1,5 +1,6 @@
 import { AUTH_API_ENDPOINTS } from '../config/API_config';
 
+
 const handleResponse = async (response: Response): Promise<any> => {
   if (!response.ok) {
     const errorData = await response.json();
