@@ -1,10 +1,7 @@
-import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import path from 'path';
 
 function getPathFromBackend(pathFromBackend: string) {
-  let dirPath = __dirname;
+  let dirPath = import.meta.url;
   while (path.basename(dirPath) !== 'backend') {
     dirPath = path.resolve(dirPath, '..');
   }

@@ -6,6 +6,7 @@ import { NotFoundError } from '../core/ErrorResponse';
 
 import accessRouter from './access.route';
 import userRouter from './user.route';
+import shopRouter from './shop.route'
 
 // serve static files
 if (NODE_ENV === 'development') {
@@ -22,6 +23,7 @@ if (NODE_ENV === 'development') {
 // routes
 router.use('/', accessRouter);
 router.use('/user', userRouter);
+router.use('/shop', shopRouter);
 
 
 // catch all 404 error

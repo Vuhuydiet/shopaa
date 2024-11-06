@@ -8,7 +8,9 @@ class TokenService {
   static generateToken(userId: number, expiresInDays: number = 1) {
     const expiresInSeconds = expiresInDays * 24 * 60 * 60; // 1 day in seconds
     const payload = {
-      sub: userId,
+      sub: {
+        userId: userId
+      },
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + expiresInSeconds,
     };

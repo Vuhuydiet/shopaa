@@ -1,8 +1,25 @@
-import { UserProfile } from "@prisma/client";
 import prisma from "../prisma";
 import { BadRequestError, NotFoundError } from "../core/ErrorResponse";
 
+type ProfileData = {
+  fullname?: string;
+  dateOfBirth?: Date;
+  gender?: string;
+  phoneNumber?: string;
+  avatar?: string;
+}
+
 class UserService {
+
+  static async checkUserExists(userId: number) {
+    const user = await prisma.userProfile.findUnique({
+      where: { userId: userId }
+    });
+
+    if (!user)
+      throw new NotFoundError(`User with userId: '${userId}' does not exist`);
+  }
+
   static async createOAuthProviderIfNotExists(providerName: string, providerUID: string, userFullname: string) {
     return await prisma.$transaction(async (tx) => {
       const userId = await tx.oAuthProvider.findUnique({
@@ -60,9 +77,13 @@ class UserService {
   }
 
   static async getUserAccount(userId: number) {
-    return await prisma.userAccount.findUnique({
+    const account = await prisma.userAccount.findUnique({
       where: { userId: userId }
     });
+    if (!account)
+      throw new NotFoundError(`User account for userId: '${userId}' does not exist`);
+    
+    return account;
   }
 
   static async checkUserAccountExists({ userId, username, email }: { userId?: number, username?: string, email?: string }) {
@@ -77,21 +98,38 @@ class UserService {
     });
   }
 
-  static async getUserProfile(userId: number) {
+  static async getUserProfile(userId: number, includeSensitiveData = false) {
     const profile = await prisma.userProfile.findUnique({
       where: { userId: userId }
     });
     if (!profile)
       throw new NotFoundError(`User profile for userId: '${userId}' does not exist`)
 
+    if (!includeSensitiveData) {
+      return {
+        userId: profile.userId,
+        fullname: profile.fullname,
+        avatar: profile.avatar,
+        gender: profile.gender
+      }
+    }
+
     return profile;
   }
 
-  static async updateUserProfile(userId: number, newProfile: Partial<UserProfile>) {
+  static async updateUserProfile(userId: number, newProfile: ProfileData) {
+    await this.checkUserExists(userId);
+
     try {
       await prisma.userProfile.update({
         where: { userId: userId },
-        data: newProfile,
+        data: {
+          fullname: newProfile.fullname,
+          dateOfBirth: newProfile.dateOfBirth,
+          phoneNumber: newProfile.phoneNumber,
+          avatar: newProfile.avatar,
+          gender: newProfile.gender
+        },
       });
     }
     catch (err) {

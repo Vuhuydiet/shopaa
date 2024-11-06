@@ -1,6 +1,6 @@
 import express from 'express';
 import accessController from '../controllers/access.controller';
-import passport from '../middlewares/auth.middleware';
+import passport from '../middlewares/authentication.middleware';
 import { handleValidationErrors } from '../core/validator';
 import { body } from 'express-validator';
 const router = express.Router();

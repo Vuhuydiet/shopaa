@@ -11,7 +11,6 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import UserService from '../services/user.service';
 
-// ----------------- JWT Token ------------------------------- //
 passport.use(
   new JwtStrategy({
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -20,8 +19,10 @@ passport.use(
   },
     async (jwt_payload: any, done: any) => {
       try {
-        const userId = jwt_payload.sub;
-        return done(null, { userId });
+        const { userId } = jwt_payload.sub;
+        await UserService.checkUserExists(userId);
+        const userProfile = await UserService.getUserProfile(userId, true);
+        return done(null, { userId, role: (userProfile as any).role });
       } catch (err) {
         return done(err, false);
       }

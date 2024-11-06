@@ -1,4 +1,4 @@
-import getPathFromBackend from '../utils/getPath.js';
+import getPathFromBackend from '../utils/getPath';
 import path from 'path';
 
 const envArg = process.argv.find((arg) => arg.startsWith('NODE_ENV='));

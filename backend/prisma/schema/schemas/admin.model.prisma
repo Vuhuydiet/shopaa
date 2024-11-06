@@ -1,0 +1,7 @@
+model Admin {
+    adminId  Int     @id @default(autoincrement())
+    role     Role    @default(ADMIN)
+    username String  @unique
+    password String
+    fullname String?
+}

@@ -2,7 +2,7 @@ import express from 'express';
 import userController from '../controllers/user.controller';
 import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../core/validator';
-import passport from '../middlewares/auth.middleware';
+import passport from '../middlewares/authentication.middleware';
 const router = express.Router();
 
 router.get(
