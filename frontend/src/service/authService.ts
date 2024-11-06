@@ -1,4 +1,4 @@
-const API_DOMAIN = 'http://localhost:3000/';
+import { AUTH_API_ENDPOINTS } from '../config/API_config';
 
 const handleResponse = async (response: Response): Promise<any> => {
   if (!response.ok) {
@@ -9,7 +9,7 @@ const handleResponse = async (response: Response): Promise<any> => {
 };
 
 export const sendOtp = async (email: string): Promise<{ message: string }> => {
-  const response = await fetch(`${API_DOMAIN}send-otp`, {
+  const response = await fetch(AUTH_API_ENDPOINTS.SEND_OTP, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export const signUp = async (
   email: string,
   otp: number,
 ): Promise<{ message: string }> => {
-  const response = await fetch(`${API_DOMAIN}sign-up`, {
+  const response = await fetch(AUTH_API_ENDPOINTS.SIGN_UP, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

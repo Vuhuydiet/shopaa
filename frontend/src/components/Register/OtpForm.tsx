@@ -17,7 +17,7 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
   const navigate = useNavigate();
   const { registerData } = useRegisterContext();
   const [initalOtpSent, setInitalOtpSent] = useState(false);
-  const email = registerData?.email || ''; // Sử dụng optional chaining
+  const email = registerData?.email || '';
   const username = registerData?.username || '';
   const password = registerData?.password || '';
 
@@ -39,6 +39,8 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
       message.info('Please log in to continue.');
     } catch (error: any) {
       message.error(error.message || 'Failed to verify OTP.');
+      console.log(error.message);
+      onBack();
     }
   };
 
@@ -74,8 +76,8 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
   return (
     <div
       style={{
-        margin: '0',
-        marginTop: '20px',
+        margin: '40px',
+        marginTop: '50px',
         textAlign: 'center',
         position: 'relative',
       }}
@@ -85,13 +87,18 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
           textAlign: 'left',
           marginBottom: '16px',
           position: 'absolute',
-          top: '-15px',
-          left: '-70px',
+          top: '-30px',
+          left: '-40px',
         }}
       >
         <ArrowLeftOutlined
           onClick={onBack}
-          style={{ fontSize: '24px', fontWeight: '500', cursor: 'pointer' }}
+          style={{
+            fontSize: '24px',
+            color: 'black',
+            fontWeight: '500',
+            cursor: 'pointer',
+          }}
         />
       </div>
       <Title level={2}>OTP Verification</Title>
@@ -126,7 +133,7 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
           <Button
             type="primary"
             htmlType="submit"
-            style={{ width: '70%' }}
+            style={{ width: '70%', color: 'white' }}
             className="large-button"
           >
             Verify
@@ -135,7 +142,7 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
       </Form>
 
       <Space style={{ marginTop: 16, marginBottom: 16 }} className="large-font">
-        <div>Didn't receive the code?</div>
+        <div style={{ color: 'black' }}>Didn't receive the code?</div>
         <Button type="link" onClick={onResendOtp}>
           Resend OTP
         </Button>

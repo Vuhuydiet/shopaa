@@ -9,11 +9,6 @@ const layout = {
   wrapperCol: { span: 24 },
 };
 
-// const tailLayout = {
-//   wrapperCol: { span: 24 },
-// };
-
-// Định nghĩa kiểu cho props
 interface RegisterFormProps {
   onContinue: () => void;
 }
@@ -55,7 +50,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
         }}
       >
         <div style={{ margin: '20px' }}>
-          <h1>Create account</h1>
+          <h1 style={{ color: 'black' }}>Create account</h1>
         </div>
         <Form
           {...layout}
@@ -87,7 +82,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
           <Form.Item
             label="Password"
             name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            rules={[
+              { required: true, message: 'Please input your password!' },
+              {
+                pattern:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*_]{8,}$/,
+                message:
+                  'Password must be 8+ chars, include upper, lower, and a number.',
+              },
+            ]}
           >
             <Input.Password placeholder="Enter your password" />
           </Form.Item>
@@ -95,6 +98,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
           <Form.Item
             label="Re-password"
             name="rePassword"
+            dependencies={['password']}
             rules={[
               { required: true, message: 'Please re-enter your password!' },
               ({ getFieldValue }) => ({
@@ -111,7 +115,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
           </Form.Item>
 
           <Form.Item>
-            <Row justify="center" gutter={16}>
+            <Row justify="center" gutter={16} style={{ marginTop: '20px' }}>
               <Col span={13}>
                 {' '}
                 <Button
@@ -119,6 +123,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
                   htmlType="submit"
                   style={{
                     width: '100%',
+                    color: '#ffff',
                   }}
                   className="large-button"
                 >
@@ -143,7 +148,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
         </Form>
         <div style={{ marginBottom: '20px' }}>
           <Space>
-            <h3>Do you have an account?</h3>
+            <h3 style={{ color: 'black' }}>Do you have an account?</h3>
             <Link to="/login" style={{ fontSize: '18px' }}>
               Log in
             </Link>

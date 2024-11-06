@@ -1,19 +1,19 @@
-.signup-container {
+.Register__container {
   display: flex;
   background: linear-gradient(to left, #8edbe8bf, #fef3ff, #ed8bf0);
   min-height: 100vh;
   padding: 0 40px;
 }
 
-.image-container {
-  flex: 1; /* Chiếm 1 phần chiều rộng */
+.Register__image {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   height: auto;
 }
 
-.logo-image {
+.Register__image-logo {
   max-width: 100%;
   max-height: 100%;
   object-fit: cover;
@@ -21,23 +21,26 @@
   box-shadow: 0px 0px 60px #76707089;
 }
 
-.form-container {
-  width: 35%;
+.Register__form {
+  width: 45%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px; /* Thêm khoảng cách xung quanh form */
+  padding: 30px;
   border: 1px solid #4c56af;
   background: linear-gradient(to right, #cbcff5, #f2fcfe);
   border-radius: 30px;
-  height: 75%; /* Chiều cao tự động để chỉ bao quanh nội dung */
-  margin: auto; /* Giúp căn giữa phần tử trong cha nếu cần */
+  height: 75%;
+  margin: auto;
   margin-right: 70px;
   box-shadow: 0px 0px 10px #43494391;
 }
 
+@media only screen and (max-width: 1200px) {
+}
+
 @media only screen and (max-width: 1023px) {
-  .signup-container {
+  .Register__container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -45,15 +48,15 @@
     padding-top: 30px;
   }
 
-  .logo-image {
+  .Register__image-logo {
     max-width: 80%;
     max-height: 80%;
   }
 
-  .form-container {
-    width: 50%;
+  .Register__form {
+    width: 70%;
     margin: 50px;
-    padding: 40px 20px;
+    padding: 40px;
     height: auto;
   }
 }
