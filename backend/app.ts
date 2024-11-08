@@ -1,10 +1,6 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
 const app = express();
 import cors from 'cors';
-
 import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -14,6 +10,7 @@ import { NODE_ENV } from './configs/serve.config';
 
 // import middlewares and routes
 import router from './routes';
+import notFoundHandler from './middlewares/notFoundHandler';
 import errorHandler from './middlewares/errorHandler';
 
 // middlewares
@@ -29,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', router);
 
 // error handler
+router.use(notFoundHandler);
 app.use(errorHandler);
 
 // start server
