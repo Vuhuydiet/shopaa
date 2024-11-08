@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Layout, Menu, Input, Badge, Dropdown, Avatar, Row, Col } from 'antd';
 import {
   BellOutlined,
@@ -7,7 +8,6 @@ import {
   LogoutOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
 import './HeaderStyle.css';
 import logo from '../../images/logo.png';
 
@@ -24,14 +24,15 @@ const HeaderComponent: React.FC = () => {
     console.log('Logged out');
   };
 
+  const location = useLocation();
+
   return (
     <Header className="header">
       <div className="header__container">
         <div className="header__logo">
-          <Link to="/" className="header__icon">
+          <NavLink to="/" className="header__icon">
             <img src={logo} alt="logo shop" />
-            {/* <span>Shopaa</span> */}
-          </Link>
+          </NavLink>
         </div>
         <div className="header__component">
           <Row
@@ -42,32 +43,50 @@ const HeaderComponent: React.FC = () => {
           >
             {isLoginedIn ? (
               <>
-                <Col>
-                  <div
+                <Col
+                  style={{
+                    marginRight: '20px',
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                  }}
+                >
+                  <NavLink
+                    to="/notifications"
+                    className={
+                      location.pathname === '/notifications'
+                        ? 'active-link'
+                        : ''
+                    }
                     style={{
-                      marginRight: '20px',
                       display: 'flex',
-                      alignItems: 'center',
+                      alignItems: 'flex-end',
                     }}
                   >
                     <Badge count={unreadNotifications}>
                       <BellOutlined
-                        style={{ fontSize: '28px' }}
+                        style={{ fontSize: '30px' }}
                         className="header__icon"
                       />
                     </Badge>
-                  </div>
+                  </NavLink>
                 </Col>
 
-                <Col>
+                <Col style={{ display: 'flex', alignItems: 'center' }}>
                   <Dropdown
                     overlay={
                       <Menu>
                         <Menu.Item>
-                          <Link to="/profile">
+                          <NavLink
+                            to="/profile"
+                            className={
+                              location.pathname === '/profile'
+                                ? 'active-link'
+                                : ''
+                            }
+                          >
                             <UserOutlined style={{ marginRight: '10px' }} />
                             Profile
-                          </Link>
+                          </NavLink>
                         </Menu.Item>
                         <Menu.Item onClick={handleLogout}>
                           <LogoutOutlined
@@ -94,12 +113,22 @@ const HeaderComponent: React.FC = () => {
             ) : (
               <Col>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Link to="/login" className="header__link">
+                  <NavLink
+                    to="/login"
+                    className={
+                      location.pathname === '/login' ? 'active-link' : ''
+                    }
+                  >
                     Login
-                  </Link>
-                  <Link to="/register" className="header__link">
+                  </NavLink>
+                  <NavLink
+                    to="/register"
+                    className={
+                      location.pathname === '/register' ? 'active-link' : ''
+                    }
+                  >
                     Signup
-                  </Link>
+                  </NavLink>
                 </div>
               </Col>
             )}
@@ -120,12 +149,15 @@ const HeaderComponent: React.FC = () => {
 
             <Col xs={24} sm={6} md={6} lg={3}>
               <Badge count={cartItemCount} offset={[3, 0]}>
-                <Link to="/cart">
+                <NavLink
+                  to="/cart"
+                  className={location.pathname === '/cart' ? 'active-link' : ''}
+                >
                   <ShoppingCartOutlined
                     style={{ fontSize: '42px', color: '#0033FF' }}
                     className="header__icon"
                   />
-                </Link>
+                </NavLink>
               </Badge>
             </Col>
           </Row>
