@@ -7,7 +7,6 @@ type ProductCategoryData = {
 }
 
 type PrimaryProductData = {
-  shopId: number;
   name: string;
   description?: string;
   quantity: number;
@@ -62,7 +61,7 @@ const defaultProductQueryParams: ProductQueryParams = {
 
 class ProductService {
 
-  static async createProductCategory({ name, description }: ProductCategoryData) {
+  static async createCategory({ name, description }: ProductCategoryData) {
     await prisma.productCategory.create({
       data: {
         categoryName: name,
@@ -75,7 +74,7 @@ class ProductService {
     return await prisma.productCategory.findMany();
   }
 
-  static async updateProductCategory(categoryId: number, { name, description }: ProductCategoryData) {
+  static async updateCategory(categoryId: number, { name, description }: ProductCategoryData) {
     await prisma.productCategory.update({
       where: {
         categoryId: categoryId
@@ -87,7 +86,7 @@ class ProductService {
     });
   }
 
-  static async deleteProductCategory(categoryId: number) {
+  static async deleteCategory(categoryId: number) {
     await prisma.productCategory.delete({
       where: {
         categoryId: categoryId
@@ -95,7 +94,7 @@ class ProductService {
     });
   }
 
-  static async createProduct({ shopId, name, description, quantity, price, brand, categories, images }: NewProductData) {
+  static async createProduct(shopId: number, { name, description, quantity, price, brand, categories, images }: NewProductData) {
     return await prisma.product.create({
       data: {
         productName: name,
@@ -246,6 +245,5 @@ class ProductService {
   }
 }
 
-
-
+export { ProductQueryParams };
 export default ProductService;
