@@ -7,7 +7,7 @@ BEGIN
     calculated_age := DATE_PART('year', AGE(NEW."dateOfBirth"));
 
     IF calculated_age < 16 THEN
-        RAISE EXCEPTION 'Tuổi không hợp lệ. Phải lớn hơn hoặc bằng 16';
+        RAISE EXCEPTION 'Invalid age. Must less than 16.';
     END IF;
 
     RETURN NEW;
@@ -24,7 +24,7 @@ CREATE OR REPLACE FUNCTION check_gender()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW."gender" NOT IN ('Male','Female','Other') THEN
-        RAISE EXCEPTION 'Giới tính không hợp lệ';
+        RAISE EXCEPTION 'Invalid gender.';
     END IF;
     RETURN NEW;
 END;
@@ -40,14 +40,14 @@ CREATE OR REPLACE FUNCTION check_fullname()
 RETURNS TRIGGER AS $$
 BEGIN 
     IF NEW."fullname" !~ '^[A-Za-zÀ-ỹ\s]+$' THEN
-        RAISE EXCEPTION 'Tên không hợp lệ';
+        RAISE EXCEPTION 'Invalid fullname';
     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE TRIGGER trigger_check_fullname
+CREATE OR REPLACE TRIGGER tg_check_fullname
 BEFORE INSERT OR UPDATE ON "UserProfile"
 FOR EACH ROW
 EXECUTE FUNCTION check_fullname();
@@ -58,11 +58,11 @@ CREATE OR REPLACE FUNCTION check_quatityofproduct()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW."quantity" = 0 THEN
-        RAISE NOTICE 'Mat hang da ban het';
+        RAISE NOTICE 'Product is sold out';
     END IF;
 
     IF NEW."quantity" < 0 THEN
-        RAISE EXCEPTION 'Số lượng sản phẩm không được âm';
+        RAISE EXCEPTION 'Product quantity is not negative.';
     END IF;
 
     RETURN NEW;
@@ -80,7 +80,7 @@ CREATE OR REPLACE FUNCTION check_price()
 RETURNS TRIGGER AS $$
 BEGIN
         IF NEW."currentPrice" <= NEW."originalPrice" THEN
-            RAISE EXCEPTION 'Gia san pham nhap vao khong hop le';
+            RAISE EXCEPTION 'Invalid price.';
         END IF;
 
         RETURN NEW;
