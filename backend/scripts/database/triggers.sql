@@ -1,5 +1,5 @@
 ------------------------Age < 16------------------------
-CREATE OR REPLACE FUNCTION check_age()
+CREATE OR REPLACE FUNCTION fn_check_age()
 RETURNS TRIGGER AS $$
 DECLARE
     calculated_age INT;
@@ -7,20 +7,20 @@ BEGIN
     calculated_age := DATE_PART('year', AGE(NEW."dateOfBirth"));
 
     IF calculated_age < 16 THEN
-        RAISE EXCEPTION 'Invalid age. Must less than 16.';
+        RAISE EXCEPTION 'Invalid age. Must more than 16 years old.';
     END IF;
 
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER limit_age
+CREATE OR REPLACE TRIGGER tg_limit_age
 BEFORE INSERT OR UPDATE ON "UserProfile"
 FOR EACH ROW
-EXECUTE FUNCTION check_age();
+EXECUTE FUNCTION fn_check_age();
 
 --------------------Gender is 'Male' or 'Female'-----------------------
-CREATE OR REPLACE FUNCTION check_gender()
+CREATE OR REPLACE FUNCTION fn_check_gender()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW."gender" NOT IN ('Male','Female','Other') THEN
@@ -30,13 +30,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER trigger_check_gender
+CREATE OR REPLACE TRIGGER tg_check_gender
 BEFORE INSERT OR UPDATE ON "UserProfile"
 FOR EACH ROW
-EXECUTE FUNCTION check_gender();
+EXECUTE FUNCTION fn_check_gender();
 
 -----------------------fullname is not contain special character except space------
-CREATE OR REPLACE FUNCTION check_fullname()
+CREATE OR REPLACE FUNCTION fn_check_fullname()
 RETURNS TRIGGER AS $$
 BEGIN 
     IF NEW."fullname" !~ '^[A-Za-zÀ-ỹ\s]+$' THEN
@@ -50,17 +50,14 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE TRIGGER tg_check_fullname
 BEFORE INSERT OR UPDATE ON "UserProfile"
 FOR EACH ROW
-EXECUTE FUNCTION check_fullname();
+EXECUTE FUNCTION fn_check_fullname();
 
 
 --------------------------check_quatity of product in store-------------
-CREATE OR REPLACE FUNCTION check_quatityofproduct()
+CREATE OR REPLACE FUNCTION fn_check_quatityofproduct()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW."quantity" = 0 THEN
-        RAISE NOTICE 'Product is sold out';
-    END IF;
-
+ 
     IF NEW."quantity" < 0 THEN
         RAISE EXCEPTION 'Product quantity is not negative.';
     END IF;
@@ -69,18 +66,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER trigger_check_stock
+CREATE OR REPLACE TRIGGER tg_check_stock
 BEFORE INSERT OR UPDATE ON "Product"
 FOR EACH ROW
-EXECUTE FUNCTION check_quatityofproduct();
+EXECUTE FUNCTION fn_check_quatityofproduct();
 
 
 -----------------trigger-OriginalPrice>= CurrentPrice-------------
-CREATE OR REPLACE FUNCTION check_price()
+CREATE OR REPLACE FUNCTION fn_check_price()
 RETURNS TRIGGER AS $$
 BEGIN
-        IF NEW."currentPrice" <= NEW."originalPrice" THEN
-            RAISE EXCEPTION 'Invalid price.';
+        IF NEW."currentPrice" > NEW."originalPrice" THEN
+            RAISE EXCEPTION 'Invalid price. CurrentPrice must be less than or equal originalPrice';
         END IF;
 
         RETURN NEW;
@@ -89,9 +86,9 @@ $$ LANGUAGE plpgsql;
 
 
 
-CREATE OR REPLACE TRIGGER trigger_checkprice
+CREATE OR REPLACE TRIGGER tg_checkprice
 BEFORE INSERT OR UPDATE ON "Product"
 FOR EACH ROW
-EXECUTE FUNCTION check_price();
+EXECUTE FUNCTION fn_check_price();
 
 
