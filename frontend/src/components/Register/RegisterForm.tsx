@@ -61,11 +61,22 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
           className="large-font "
         >
           <Form.Item
-            label="Your Name"
+            label="Username"
             name="name"
-            rules={[{ required: true, message: 'Please input your name!' }]}
+            rules={[
+              { required: true, message: 'Please input your name!' },
+              {
+                pattern: /^[A-Za-z][A-Za-z0-9]*$/,
+                message:
+                  'Username must start with a letter and contain no spaces!',
+              },
+              {
+                min: 5,
+                message: 'Username must be at least 5 characters long!',
+              },
+            ]}
           >
-            <Input placeholder="Enter your name" />
+            <Input placeholder="Enter your username" />
           </Form.Item>
 
           <Form.Item

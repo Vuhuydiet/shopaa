@@ -1,6 +1,15 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Layout, Menu, Input, Badge, Dropdown, Avatar, Row, Col } from 'antd';
+import {
+  Layout,
+  Input,
+  Badge,
+  Dropdown,
+  Avatar,
+  Row,
+  Col,
+  MenuProps,
+} from 'antd';
 import {
   BellOutlined,
   UserOutlined,
@@ -15,7 +24,7 @@ const { Header } = Layout;
 const { Search } = Input;
 
 const HeaderComponent: React.FC = () => {
-  const isLoginedIn = true;
+  const isLoginedIn = false;
   const userName = 'Thanh Trúc';
   const unreadNotifications = 5;
   const cartItemCount = 3;
@@ -25,6 +34,30 @@ const HeaderComponent: React.FC = () => {
   };
 
   const location = useLocation();
+
+  const menu: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <NavLink
+          to="/profile"
+          className={location.pathname === '/profile' ? 'active-link' : ''}
+        >
+          <UserOutlined style={{ marginRight: '10px' }} />
+          Profile
+        </NavLink>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <div onClick={handleLogout}>
+          <LogoutOutlined style={{ marginRight: '10px', color: '#9999FF' }} />{' '}
+          Logout
+        </div>
+      ),
+    },
+  ];
 
   return (
     <Header className="header">
@@ -64,46 +97,31 @@ const HeaderComponent: React.FC = () => {
                   >
                     <Badge count={unreadNotifications}>
                       <BellOutlined
-                        style={{ fontSize: '30px' }}
+                        style={{ fontSize: '28px' }}
                         className="header__icon"
                       />
                     </Badge>
                   </NavLink>
                 </Col>
 
-                <Col style={{ display: 'flex', alignItems: 'center' }}>
-                  <Dropdown
-                    overlay={
-                      <Menu>
-                        <Menu.Item>
-                          <NavLink
-                            to="/profile"
-                            className={
-                              location.pathname === '/profile'
-                                ? 'active-link'
-                                : ''
-                            }
-                          >
-                            <UserOutlined style={{ marginRight: '10px' }} />
-                            Profile
-                          </NavLink>
-                        </Menu.Item>
-                        <Menu.Item onClick={handleLogout}>
-                          <LogoutOutlined
-                            style={{ marginRight: '10px', color: '#9999FF' }}
-                          />{' '}
-                          Logout
-                        </Menu.Item>
-                      </Menu>
-                    }
-                  >
+                <Col
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: 'auto',
+                  }}
+                >
+                  <Dropdown menu={{ items: menu }} trigger={['click']}>
                     <div
                       style={{ display: 'flex', alignItems: 'center' }}
                       className="header__icon"
                     >
                       <Avatar
                         icon={<UserOutlined />}
-                        style={{ marginRight: '10px', fontSize: '25px' }}
+                        style={{
+                          marginRight: '10px',
+                          fontSize: '25px',
+                        }}
                       />
                       <div>{userName}</div>
                     </div>
@@ -116,7 +134,9 @@ const HeaderComponent: React.FC = () => {
                   <NavLink
                     to="/login"
                     className={
-                      location.pathname === '/login' ? 'active-link' : ''
+                      location.pathname === '/login'
+                        ? 'header__link active-link'
+                        : 'header__link'
                     }
                   >
                     Login
@@ -124,7 +144,9 @@ const HeaderComponent: React.FC = () => {
                   <NavLink
                     to="/register"
                     className={
-                      location.pathname === '/register' ? 'active-link' : ''
+                      location.pathname === '/register'
+                        ? 'header__link active-link'
+                        : 'header__link'
                     }
                   >
                     Signup

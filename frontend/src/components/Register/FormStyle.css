@@ -1,7 +1,6 @@
 /* styles.css */
 .large-font {
   font-size: clamp(14px, 1vw, 20px);
-
 }
 
 .large-font input,
@@ -37,8 +36,4 @@
 .ant-form-item-explain-error {
   white-space: normal;
   max-width: 19vw;
-}
-
-  font-size: 18px;
-  height: auto;
 }

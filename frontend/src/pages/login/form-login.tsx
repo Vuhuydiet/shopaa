@@ -16,7 +16,11 @@ export const FormLogin = () => {
 
   const login = async (values: any) => {
     try {
-      const res = await axios.post('http://localhost:3000/sign-in', values);
+      console.log(values);
+      const res = await axios.post(
+        'http://localhost:3000/api/v1/access/sign-in',
+        values,
+      );
       console.log(res.data);
       localStorage.setItem('token', res.data.metadata.token);
       navigate('/');
