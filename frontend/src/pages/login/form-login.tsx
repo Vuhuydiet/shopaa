@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { KeyOutlined, UserOutlined } from '@ant-design/icons';
+import {jwtDecode} from 'jwt-decode'
+import { AUTH_API_ENDPOINTS } from '../../config/API_config';
+import { decode } from 'punycode';
 
 export const FormLogin = () => {
   useEffect(() => {
@@ -16,9 +19,14 @@ export const FormLogin = () => {
 
   const login = async (values: any) => {
     try {
-      const res = await axios.post('http://localhost:3000/sign-in', values);
-      console.log(res.data);
+      const res = await axios.post(AUTH_API_ENDPOINTS.SIGN_IN, values);
       localStorage.setItem('token', res.data.metadata.token);
+      const decoded = jwtDecode(res.data.metadata.token);
+      if (!decoded.sub) {
+        throw Error("token.sub is undefined")
+      }
+      const { userId } = decoded.sub as any;
+      localStorage.setItem('userId', userId);
       navigate('/');
     } catch (error: any) {
       console.log(error?.response?.data);

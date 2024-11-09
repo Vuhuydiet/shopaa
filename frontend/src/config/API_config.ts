@@ -1,6 +1,7 @@
-const API_DOMAIN = 'http://localhost:3000/api/v1/access/';
+const API_DOMAIN = 'http://localhost:3000/';
 
 export const AUTH_API_ENDPOINTS = {
-  SEND_OTP: `${API_DOMAIN}send-otp`,
-  SIGN_UP: `${API_DOMAIN}sign-up`,
+  SEND_OTP: `${API_DOMAIN}api/v1/access/send-otp`,
+  SIGN_UP: `${API_DOMAIN}api/v1/access/sign-up`,
+  SIGN_IN: `${API_DOMAIN}api/v1/access/sign-in`
 };
