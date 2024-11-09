@@ -74,7 +74,7 @@ export const FormLogin = () => {
           // },
         ]}
       >
-        <Input prefix={<UserOutlined />} placeholder="Email/Phone number" />
+        <Input prefix={<UserOutlined />} placeholder="Username" />
       </Form.Item>
       <Form.Item
         name="password"
