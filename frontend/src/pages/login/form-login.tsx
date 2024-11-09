@@ -54,24 +54,24 @@ export const FormLogin = () => {
         rules={[
           {
             required: true,
-            message: 'Please enter your email/phone number',
+            message: 'Please enter your username',
           },
-          {
-            validator: async (_, value) => {
-              const emailPattern =
-                /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-              const phonePattern = /^(0|84)(3|5|7|8|9)[0-9]{8}$/;
+          // {
+          //   validator: async (_, value) => {
+          //     const emailPattern =
+          //       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+          //     const phonePattern = /^(0|84)(3|5|7|8|9)[0-9]{8}$/;
 
-              if (!value) return Promise.resolve();
+          //     if (!value) return Promise.resolve();
 
-              if (emailPattern.test(value) || phonePattern.test(value)) {
-                return Promise.resolve();
-              }
-              return Promise.reject(
-                'Please enter a valid email or phone number',
-              );
-            },
-          },
+          //     if (emailPattern.test(value) || phonePattern.test(value)) {
+          //       return Promise.resolve();
+          //     }
+          //     return Promise.reject(
+          //       'Please enter a valid email or phone number',
+          //     );
+          //   },
+          // },
         ]}
       >
         <Input prefix={<UserOutlined />} placeholder="Email/Phone number" />
