@@ -36,6 +36,11 @@ router.post('/sign-in',
   accessController.signIn
 );
 
+router.get('/account',
+  passport.authenticate('jwt', { session: false }),
+  accessController.getAccount
+);
+
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 router.get(
   '/auth/google/callback',

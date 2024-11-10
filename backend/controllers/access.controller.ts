@@ -40,6 +40,15 @@ export default {
     }).send(res);
   },
 
+  getAccount: async (req: Request, res: Response) => {
+    const { userId } = req.user as any;
+    const user = await AccessService.getAccount(userId);
+    new OKResponse({
+      message: 'User details fetched successfully',
+      metadata: { user }
+    }).send(res);
+  },
+
   changePassword: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
     const { oldPassword, newPassword } = matchedData(req);
