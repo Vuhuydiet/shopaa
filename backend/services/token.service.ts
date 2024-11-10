@@ -19,7 +19,7 @@ class TokenService {
   }
 
   static verifyToken(token: string) {
-    return jwt.verify(token, keyConfig.JWT_PUBLIC_KEY, { algorithms: ['RS256'] });
+    return jwt.verify(token, keyConfig.JWT_PUBLIC_KEY, { algorithms: ['RS256'] }) as jwt.JwtPayload;
   }
 }
 
