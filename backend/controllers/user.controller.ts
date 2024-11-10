@@ -7,7 +7,7 @@ export default {
 
   getUserProfile: async (req: Request, res: Response) => {
     const { userId } = matchedData(req);
-    const profile = await UserService.getUserProfile(+userId);
+    const profile = await UserService.getUserProfile(+userId, req.user && +userId == (req.user as any).userId);
     new OKResponse({ message: 'Get profile successfully', metadata: { profile } }).send(res);
   },
 
