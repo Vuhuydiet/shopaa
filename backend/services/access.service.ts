@@ -53,6 +53,22 @@ class AccessService {
     return token;
   }
 
+  static async getAccount(userId: number) {
+    const user = await prisma.userAccount.findUnique({
+      where: { userId },
+      select: {
+        username: true,
+        email: true,
+      }
+    });
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    return user;
+  }
+
   static async changePassword(userId: number, oldPassword: string, newPassword: string) {
   const user = await prisma.userAccount.findUnique({
       where: { userId: userId }
