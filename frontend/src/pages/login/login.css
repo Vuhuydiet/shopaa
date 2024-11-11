@@ -4,17 +4,11 @@
     }
 
     .login__content {
-        min-width: 70vw;
+        min-width: 95vw;
     }
 
     .login__content-container {
         margin: 0 auto 40px auto !important;
-    }
-
-    .reset-password {
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 0px !important;
     }
 
     .login__content__button-container {
@@ -26,6 +20,49 @@
         min-width: 50vw;
         margin: 10px auto;
     }
+}
+
+@media screen and (max-width: 767px) {
+    .reset-password {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 0 !important;
+    }
+
+    .reset-password .ant-otp {
+        justify-self: center;
+        max-width: 90%;
+    }
+
+    .reset-password .ant-otp-input {
+        height: 35px;
+        font-size: 0.9rem;
+    }
+}
+
+.login__content-form__item.reset-password {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.reset-password .ant-otp {
+    width: 100% !important;
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.reset-password .ant-otp-input {
+    width: calc((100% - 40px) / 6) !important;
+    min-width: 30px;
+    max-width: 45px;
+    height: 40px;
+    padding: 4px;
+    text-align: center;
 }
 
 .login-page {

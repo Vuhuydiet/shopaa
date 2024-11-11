@@ -135,7 +135,10 @@ export const FormResetPassword = () => {
                   },
                 ]}
               >
-                <Input.OTP length={6} autoFocus />
+                <Input.OTP
+                  length={6}
+                  autoFocus
+                />
               </Form.Item>
               <Form.Item style={{ margin: '0' }}>
                 <Button
