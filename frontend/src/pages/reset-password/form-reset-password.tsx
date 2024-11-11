@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { KeyOutlined, RollbackOutlined, UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { AUTH_API_ENDPOINTS } from '../../config/API_config';
 
 export const FormResetPassword = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export const FormResetPassword = () => {
   const onFinishEmail = async (values: any) => {
     try {
       setEmail(values.email);
-      const res = await axios.post('http://localhost:3000/send-otp', values, {
+      const res = await axios.post(AUTH_API_ENDPOINTS.SEND_OTP, values, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -27,7 +28,7 @@ export const FormResetPassword = () => {
     console.log(data);
     try {
       const res = await axios.post(
-        'http://localhost:3000/forgot-password',
+        AUTH_API_ENDPOINTS.FORGOT_PASSWORD,
         data,
         {
           headers: {
@@ -53,7 +54,7 @@ export const FormResetPassword = () => {
       const values = {
         email: email,
       };
-      const res = await axios.post('http://localhost:3000/send-otp', values, {
+      const res = await axios.post(AUTH_API_ENDPOINTS.SEND_OTP, values, {
         headers: {
           'Content-type': 'application/json',
         },
