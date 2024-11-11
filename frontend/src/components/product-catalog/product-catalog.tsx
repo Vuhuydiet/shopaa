@@ -1,19 +1,29 @@
-import { Breadcrumb, Layout, Space } from 'antd';
+import { Breadcrumb, Layout, Menu, Space } from 'antd';
 import { CategoryFilter } from '../category-filter/category-filter';
 import { SortOptions } from '../sort-options/sort-options';
 import { ProductGrid } from '../product-grid/product-grid';
-import Sider from 'antd/es/layout/Sider';
-import { Content } from 'antd/es/layout/layout';
+import './product-catalog.css';
+
+const { Header, Content, Footer, Sider } = Layout;
 
 export const ProductCatalog = () => {
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible>
+    <Layout>
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="0"
+        onBreakpoint={(broken) => {
+          console.log(broken);
+        }}
+        onCollapse={(collapsed, type) => {
+          console.log(collapsed, type);
+        }}
+      >
+        <div className="demo-logo-vertical" />
         <CategoryFilter />
-        {/* <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} /> */}
       </Sider>
       <Layout>
-        <Content style={{ margin: '0 16px' }}>
+        <Content style={{ margin: '24px 16px 0' }}>
             <SortOptions />
             <ProductGrid />
         </Content>

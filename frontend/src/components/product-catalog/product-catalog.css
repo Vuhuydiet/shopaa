@@ -1,0 +1,21 @@
+.ant-layout-sider {
+    position: relative !important;
+    background: #fff !important;
+}
+
+.ant-layout-sider-zero-width-trigger {
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    z-index: 1 !important;
+    color: white;
+    padding: 10px !important;
+    background-color: black;
+    border-radius: 50%;
+}   
+
+/* Optional: Style the layout container */
+.catalog-layout {
+    min-height: 100vh;
+    background: #f0f2f5;
+}
