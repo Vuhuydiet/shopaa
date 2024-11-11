@@ -1,32 +1,30 @@
 /* styles.css */
 .large-font {
-  font-size: clamp(14px, 1vw, 20px);
-
+  font-size: clamp(12px, 1vw, 16px);
 }
 
 .large-font input,
 .large-font .ant-input-password,
 .large-font .ant-btn {
-  font-size: clamp(14px, 1vw, 20px);
-  font-size: 18px;
+  font-size: clamp(12px, 1vw, 16px);
 }
 
 .large-font input,
 .large-font .ant-input-password {
-  height: 5vh;
+  height: 4.5vh;
   display: flex;
   align-items: center;
 }
 
 .large-button {
-  padding: 13px 0;
-  font-size: 1vw;
+  padding: 10px 0;
+  font-size: clamp(12px, 1vw, 16px);
   height: auto;
   background-color: rgb(100, 22, 218);
 }
 .large-button-white {
-  padding: 13px 0;
-  font-size: clamp(14px, 1vw, 20px);
+  padding: 10px 0;
+  font-size: clamp(12px, 1vw, 16px);
   height: auto;
 }
 
@@ -37,8 +35,4 @@
 .ant-form-item-explain-error {
   white-space: normal;
   max-width: 19vw;
-}
-
-  font-size: 18px;
-  height: auto;
 }
