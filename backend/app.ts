@@ -9,9 +9,9 @@ import 'express-async-errors';
 import { NODE_ENV } from './configs/serve.config';
 
 // import middlewares and routes
-import router from './routes';
-import notFoundHandler from './middlewares/notFoundHandler';
-import errorHandler from './middlewares/errorHandler';
+import router from './components';
+import notFoundHandler from './libraries/errorHandler/notFoundHandler';
+import errorHandler from './libraries/errorHandler/errorHandler';
 
 // middlewares
 app.use(cors());

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import prisma from '../prisma';
+import prisma from '../models';
 
 // Generate RSA key pair
 async function genKey() {
