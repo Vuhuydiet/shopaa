@@ -159,8 +159,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
         </Form>
         <div style={{ marginBottom: '20px' }}>
           <Space>
-            <h3 style={{ color: 'black' }}>Do you have an account?</h3>
-            <Link to="/login" style={{ fontSize: '18px' }}>
+            <h4 style={{ color: 'black' }}>Do you have an account?</h4>
+            <Link to="/login" style={{ fontSize: '16px' }}>
               Log in
             </Link>
           </Space>

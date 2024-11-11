@@ -5,3 +5,7 @@ export const AUTH_API_ENDPOINTS = {
   SIGN_UP: `${API_DOMAIN}api/v1/access/sign-up`,
   SIGN_IN: `${API_DOMAIN}api/v1/access/sign-in`,
 };
+
+export const USER_API_ENDPOINTS = {
+  USER_PROFILE: `${API_DOMAIN}api/v1/user/`,
+};

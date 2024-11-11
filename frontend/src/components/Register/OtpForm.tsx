@@ -5,6 +5,7 @@ import { sendOtp, signUp } from '../../service/authService';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import './FormStyle.css';
+import { maskEmail } from '../../utils/emailUtils';
 
 const { Title, Text } = Typography;
 
@@ -102,12 +103,14 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
           }}
         />
       </div>
-      <Title level={2}>OTP Verification</Title>
+      <Title level={3} style={{ marginBottom: '20px' }}>
+        OTP Verification
+      </Title>
       <Text className="large-font">
         Please enter the OTP sent to your email:
       </Text>
       <br />
-      <Text className="large-font">{email}</Text>
+      <Text className="large-font">{maskEmail(email)}</Text>
       <Form
         form={form}
         onFinish={onFinish}

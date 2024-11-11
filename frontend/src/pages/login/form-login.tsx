@@ -6,8 +6,11 @@ import { KeyOutlined, UserOutlined } from '@ant-design/icons';
 import { jwtDecode } from 'jwt-decode';
 import { AUTH_API_ENDPOINTS } from '../../config/API_config';
 import { decode } from 'punycode';
+import { useAuthContext } from '../../context/AuthContext';
 
 export const FormLogin = () => {
+  const { setStateAuthenticated } = useAuthContext();
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -27,6 +30,7 @@ export const FormLogin = () => {
       }
       const { userId } = decoded.sub as any;
       localStorage.setItem('userId', userId);
+      setStateAuthenticated();
       navigate('/');
     } catch (error: any) {
       console.log(error?.response?.data);
