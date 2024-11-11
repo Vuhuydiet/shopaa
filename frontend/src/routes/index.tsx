@@ -2,6 +2,7 @@ import LayoutBasic from '../layout/LayoutBasic';
 import { LogIn } from '../pages/login/login';
 import RegisterPage from '../pages/RegisterPage';
 import { ResetPassword } from '../pages/reset-password/reset-password';
+import { ProductGrid } from '../components/product-grid/product-grid';
 
 export const routes = [
   {
@@ -30,5 +31,9 @@ export const routes = [
   {
     path: '/reset-password',
     element: <ResetPassword />,
+  },
+  {
+    path: '/products',
+    element: <ProductGrid />,
   },
 ];

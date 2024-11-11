@@ -1,5 +1,5 @@
 
-export interface IProductCard {
+export interface IProduct {
     image: string;
     title: string;
     originPrice: number;

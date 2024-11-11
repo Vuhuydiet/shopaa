@@ -1,39 +1,36 @@
-import { Button, Space, Typography } from 'antd';
-import { IProductCard } from '../../interfaces/IProductCard';
+import { Button, Card, Space, Typography } from 'antd';
+import { IProduct } from '../../interfaces/IProduct';
 import { ShoppingCartOutlined, StarFilled } from '@ant-design/icons';
 import numberAbbreviation from '../../utils/number-abbreviation';
 
-export const ProductCard = (product: IProductCard) => {
+export const ProductCard = (product: IProduct) => {
   return (
-    <Space
-      direction="vertical"
-      size={2}
-      style={{ backgroundColor: 'white', margin: '30px' }}
-    >
-      <img
-        src={product.image}
-        alt={product.title}
-        style={{ margin: '20px 20px 0 20px' }}
+    <Card>
+      <Card.Meta
+        title={
+          <img
+            src={product.image}
+            alt={product.title}
+            style={{ width: '100%' }}
+          />
+        }
       />
-      <Typography.Title level={4} style={{ margin: '0 0 20px 20px' }}>
+
+      <Typography.Title level={4}>
         {product.title}
       </Typography.Title>
       <Typography.Text
         delete
-        style={{ margin: '0 0 0 20px', fontSize: '0.8rem' }}
+        style={{ fontSize: '0.8rem', margin: '0 20px 0 0' }}
       >
         $ {product.originPrice}
       </Typography.Text>
-      <Typography.Text
-        style={{ margin: '0 0 0 20px', color: 'red', fontSize: '1.2rem' }}
-        italic
-      >
+      <Typography.Text style={{ color: 'red', fontSize: '1.2rem' }} italic>
         $ {product.salePrice}
       </Typography.Text>
       <Space
         direction="horizontal"
         style={{
-          margin: '0 20px 20px 20px',
           display: 'flex',
           justifyContent: 'space-between',
         }}
@@ -55,6 +52,6 @@ export const ProductCard = (product: IProductCard) => {
           icon={<ShoppingCartOutlined style={{ fontSize: '1.3rem' }} />}
         />
       </Space>
-    </Space>
+    </Card>
   );
 };
