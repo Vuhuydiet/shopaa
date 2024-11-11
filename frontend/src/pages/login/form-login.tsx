@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { KeyOutlined, UserOutlined } from '@ant-design/icons';
 import {jwtDecode} from 'jwt-decode'
 import { AUTH_API_ENDPOINTS } from '../../config/API_config';
-import { decode } from 'punycode';
 
 export const FormLogin = () => {
   useEffect(() => {

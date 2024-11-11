@@ -5,5 +5,6 @@ export const AUTH_API_ENDPOINTS = {
   SIGN_UP: `${API_DOMAIN}api/v1/access/sign-up`,
   SIGN_IN: `${API_DOMAIN}api/v1/access/sign-in`,
   FORGOT_PASSWORD: `${API_DOMAIN}api/v1/access/forgot-password`,
-  GET_ALL_PRODUCTS: `${API_DOMAIN}api/v1/product`,
+  PRODUCTS: `${API_DOMAIN}api/v1/product`,
+  CATEGORY: `${API_DOMAIN}api/v1/category`
 };

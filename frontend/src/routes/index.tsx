@@ -3,6 +3,7 @@ import { LogIn } from '../pages/login/login';
 import RegisterPage from '../pages/RegisterPage';
 import { ResetPassword } from '../pages/reset-password/reset-password';
 import { ProductGrid } from '../components/product-grid/product-grid';
+import { CategoryFilter } from '../components/category-filter/category-filter';
 
 export const routes = [
   {
@@ -36,4 +37,8 @@ export const routes = [
     path: '/products',
     element: <ProductGrid />,
   },
+  {
+    path: 'categories',
+    element: <CategoryFilter />,
+  }
 ];
