@@ -1,12 +1,13 @@
 import { BadRequestError, NotFoundError } from '../../core/ErrorResponse';
 import prisma from '../../models'
+import ImageService from '../image/image.service';
 
 type ProfileData = {
   fullname?: string;
   dateOfBirth?: Date;
   gender?: string;
   phoneNumber?: string;
-  avatar?: string;
+  avatar?: Express.Multer.File;
 }
 
 class UserService {
@@ -18,6 +19,7 @@ class UserService {
 
     if (!user)
       throw new NotFoundError(`User with userId: '${userId}' does not exist`);
+    return user;
   }
 
   static async createOAuthProviderIfNotExists(providerName: string, providerUID: string, userFullname: string) {
@@ -76,16 +78,6 @@ class UserService {
     })
   }
 
-  static async getUserAccount(userId: number) {
-    const account = await prisma.userAccount.findUnique({
-      where: { userId: userId }
-    });
-    if (!account)
-      throw new NotFoundError(`User account for userId: '${userId}' does not exist`);
-    
-    return account;
-  }
-
   static async checkUserAccountExists({ userId, username, email }: { userId?: number, username?: string, email?: string }) {
     return !!await prisma.userAccount.findFirst({
       where: {
@@ -109,7 +101,7 @@ class UserService {
       return {
         userId: profile.userId,
         fullname: profile.fullname,
-        avatar: profile.avatar,
+        avatar: profile.avatarImageId,
         gender: profile.gender
       }
     }
@@ -117,24 +109,29 @@ class UserService {
     return profile;
   }
 
-  static async updateUserProfile(userId: number, newProfile: ProfileData) {
-    await this.checkUserExists(userId);
-
-    try {
-      await prisma.userProfile.update({
+  static async updateUserProfile(userId: number, newProfileData: ProfileData) {
+    const oldProfile = await this.checkUserExists(userId);
+    
+    await prisma.$transaction(async (tx) => {
+      let newImage = undefined;
+      if (newProfileData.avatar && oldProfile.avatarImageId) {
+        await ImageService.deleteImage(oldProfile.avatarImageId, tx);
+      }
+      if (newProfileData.avatar) {
+        newImage = await ImageService.createImage(newProfileData.avatar, tx);
+      }
+      await tx.userProfile.update({
         where: { userId: userId },
         data: {
-          fullname: newProfile.fullname,
-          dateOfBirth: newProfile.dateOfBirth,
-          phoneNumber: newProfile.phoneNumber,
-          avatar: newProfile.avatar,
-          gender: newProfile.gender
+          fullname: newProfileData.fullname,
+          dateOfBirth: newProfileData.dateOfBirth,
+          phoneNumber: newProfileData.phoneNumber,
+          avatarImageId: newImage?.publicId,
+          gender: newProfileData.gender
         },
+        select: { avatarImageId: true }
       });
-    }
-    catch (err) {
-      throw new BadRequestError(`Failed to update user profile for userId: '${userId}'`);
-    }
+    });
   }
 
   static async deleteUser(userId: number) {

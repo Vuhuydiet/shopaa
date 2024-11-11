@@ -3,6 +3,7 @@ import userController from './user.controller';
 import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../core/Validator';
 import passport, { verifyTokenIfExists } from '../../libraries/auth/authentication.middleware';
+import upload from '../../libraries/memory/multer';
 const router = express.Router();
 
 router.get(
@@ -18,8 +19,13 @@ router.get(
 router.patch(
   '/',
   passport.authenticate('jwt', { session: false }),
-  body('profile').notEmpty().withMessage('Profile data is required'),
+  body('*.profile').isObject(),
+  body('*.profile.fullname').optional().isString(),
+  body('*.profile.dateOfBirth').optional().isDate(),
+  body('*.profile.gender').optional().isString(),
+  body('*.profile.phoneNumber').optional().isMobilePhone('any'),
   handleValidationErrors,
+  upload.single('avatar'),
   userController.updateUserProfile
 );
 
