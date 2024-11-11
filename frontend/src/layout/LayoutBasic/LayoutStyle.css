@@ -1,0 +1,11 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ddd;
+}
+
+.layout__content {
+  margin: 10px auto;
+  flex-grow: 1;
+}
