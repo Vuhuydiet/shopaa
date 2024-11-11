@@ -6,7 +6,6 @@ import RegisterShopForm from './RegisterShopForm';
 
 const RegisterShop: React.FC = () => {
   const [isStarted, setIsStarted] = useState(false);
-
   return (
     <>
       {isStarted ? (

@@ -1,10 +1,32 @@
-import { Button, Card, Col, Form, Input, Row, Typography } from 'antd';
+import { Button, Card, Col, Form, Input, message, Row, Typography } from 'antd';
 import logo from '../../images/logo.png';
+import { registerShop } from '../../service/shopService';
 
 const { Title } = Typography;
 
 const RegisterShopForm: React.FC = () => {
   const [form] = Form.useForm();
+
+  const handleRegister = async () => {
+    try {
+      const values = await form.validateFields();
+      const token = localStorage.getItem('token') || '';
+      if (token) {
+        const data = {
+          shopName: values.shopName,
+          shopDescription: values.description,
+          address: values.address,
+        };
+        const res = await registerShop(token, data);
+        if (res) {
+          message.success('Shop registered successfully!');
+          // link den trang quan ly shop
+        }
+      }
+    } catch (error) {
+      message.error('Failed to register shop. Please try again.');
+    }
+  };
   return (
     <>
       <Card style={{ padding: '20px' }}>
@@ -132,6 +154,7 @@ const RegisterShopForm: React.FC = () => {
                 padding: '20px',
                 fontSize: '14px',
               }}
+              onClick={handleRegister}
             >
               Register
             </Button>

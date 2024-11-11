@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Input, Badge, Dropdown, Avatar, Row, Col, MenuProps } from 'antd';
 import {
@@ -11,35 +11,24 @@ import {
 import './HeaderStyle.css';
 import logo from '../../images/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
-import { getUserProfile } from '../../service/userService';
+import { useUser } from '../../context/UserContext';
 
 const { Search } = Input;
 
 const HeaderComponent: React.FC = () => {
-  const { isAuthenticated, userID, logout } = useAuthContext();
-  const [fullname, setFullname] = useState<string>('User');
+  const { isAuthenticated, logout } = useAuthContext();
+  const { user, refreshUser } = useUser();
   useEffect(() => {
-    if (isAuthenticated && userID) {
-      const fetchUserProfile = async () => {
-        try {
-          const profile = await getUserProfile(parseInt(userID, 10));
-          setFullname(profile.metadata.profile.fullname || 'User');
-        } catch (error) {
-          console.error('Error fetching user profile:', error);
-        }
-      };
-
-      fetchUserProfile();
+    if (isAuthenticated) {
+      refreshUser();
     }
-  }, [isAuthenticated, userID]);
+  }, [isAuthenticated]);
   const unreadNotifications = 5;
   const cartItemCount = 3;
 
   const handleLogout = () => {
     logout();
-    setFullname('User');
   };
-
   const location = useLocation();
 
   const menuItems: MenuProps['items'] = [
@@ -131,7 +120,9 @@ const HeaderComponent: React.FC = () => {
                           fontSize: '25px',
                         }}
                       />
-                      <div style={{ color: 'black' }}>{fullname}</div>
+                      <div style={{ color: 'black' }}>
+                        {user?.fullname || 'User'}
+                      </div>
                     </div>
                   </Dropdown>
                 </Col>

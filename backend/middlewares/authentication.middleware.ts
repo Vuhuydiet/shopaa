@@ -10,6 +10,8 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import UserService from '../services/user.service';
+import TokenService from '../services/token.service';
+import { NextFunction, Request, Response } from 'express';
 
 passport.use(
   new JwtStrategy({
@@ -68,5 +70,21 @@ passport.use(
       }
     })
 );
+
+export async function verifyTokenIfExists(req: Request, _res: Response, next: NextFunction) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    next();
+    return;
+  }
+
+  const { sub } = TokenService.verifyToken(token);
+  const user = await UserService.getUserProfile((sub as any).userId, true) as any;
+  req.user =  {
+    userId: user.userId,
+    role: user.role
+  };
+  next();
+}
 
 export default passport;

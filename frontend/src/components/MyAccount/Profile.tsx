@@ -10,23 +10,41 @@ import {
   Typography,
   Upload,
   DatePicker,
+  message,
 } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import './ProfileStyle.css';
 import { UploadChangeParam } from 'antd/es/upload';
 import dayjs from 'dayjs';
+import { useUser } from '../../context/UserContext';
+import { updateUserProfile } from '../../service/userService';
+
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const { Title } = Typography;
 
 const Profile: React.FC = () => {
   const [form] = Form.useForm();
   const [image, setImage] = useState<string | null>(null);
-  const fullname = 'Nguyen Le Thanh Truc';
-  const birthday = '12/12/2005';
-  const phone = '09323948508';
-  const gender = 'female';
-  const formattedBirthday = dayjs(birthday, 'DD/MM/YYYY');
+
+  const { user, refreshUser } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      form.setFieldsValue({
+        fullname: user.fullname || '',
+        birthday: user.dateOfBirth ? dayjs.utc(user.dateOfBirth) : null,
+        phone: user.phoneNumber || '',
+        gender: user.gender || '',
+      });
+      if (user.avatar) {
+        setImage(user.avatar);
+      }
+    }
+  }, [user, form]);
 
   const handleImageChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
@@ -48,9 +66,48 @@ const Profile: React.FC = () => {
     setImage(url);
     return false;
   };
-  const handleSave = () => {
-    console.log('click button save information');
+
+  const uploadImage = async () => {
+    console.log('update image');
+    return 'url moi';
   };
+  const handleSave = async () => {
+    console.log('click button save information');
+    const values = await form.validateFields();
+    const { fullname, birthday, phone, gender } = values;
+
+    let imageUrl = image;
+
+    if (image && image !== user?.avatar) {
+      try {
+        imageUrl = await uploadImage(); // Gọi API upload ảnh và lấy URL
+      } catch (error) {
+        console.error('Error uploading image', error);
+        return;
+      }
+    }
+
+    const updatedProfileData = {
+      fullname: fullname,
+      dateOfBirth: birthday ? dayjs(birthday).utc().toISOString() : null,
+      phoneNumber: phone,
+      gender: gender,
+      avatar: null, // URL ảnh mới
+    };
+    const token = localStorage.getItem('token') || '';
+    console.log('Token:', token);
+    console.log(updatedProfileData);
+
+    try {
+      await updateUserProfile(token, updatedProfileData);
+      message.success('Update profile successfully!');
+      refreshUser();
+    } catch (error) {
+      console.error('', error);
+    }
+  };
+
+  console.log(user);
   return (
     <>
       <div>
@@ -59,18 +116,7 @@ const Profile: React.FC = () => {
             My Profile
           </Title>
 
-          <Form
-            form={form}
-            layout="inline"
-            style={{ width: '100%' }}
-            initialValues={{
-              fullname: fullname,
-              birthday: formattedBirthday,
-              phone: phone,
-              gender: gender,
-              image: image,
-            }}
-          >
+          <Form form={form} layout="inline" style={{ width: '100%' }}>
             <Row gutter={16} style={{ width: '100%' }}>
               <Col span={16}>
                 <Form.Item
@@ -80,6 +126,12 @@ const Profile: React.FC = () => {
                   wrapperCol={{ flex: 'auto' }}
                   style={{ margin: '30px' }}
                   className="custom-label"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter your full name',
+                    },
+                  ]}
                 >
                   <Input />
                 </Form.Item>
@@ -90,11 +142,37 @@ const Profile: React.FC = () => {
                   wrapperCol={{ flex: 'auto' }}
                   style={{ margin: '30px' }}
                   className="custom-label"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please select your birthday',
+                    },
+                    {
+                      validator: (_, value) => {
+                        if (value && dayjs().diff(value, 'years') < 18) {
+                          return Promise.reject('You must be over 18.');
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
                 >
                   <DatePicker
                     style={{ width: '100%' }}
                     placeholder="Select Birthday"
                     format="DD/MM/YYYY"
+                    showTime={false}
+                    picker="date"
+                    disabledDate={(current) =>
+                      current && current > dayjs().endOf('day')
+                    }
+                    onOpenChange={(open) => {
+                      if (open) {
+                        document
+                          .querySelector('.ant-picker-year-panel')
+                          ?.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
                   />
                 </Form.Item>
                 <Form.Item
@@ -107,7 +185,7 @@ const Profile: React.FC = () => {
                   rules={[
                     {
                       required: true,
-                      message: 'Please enter the bank account number',
+                      message: 'Please enter the phone number',
                     },
                     {
                       pattern: /^[0-9]{10}$/,

@@ -1,12 +1,16 @@
 import { USER_API_ENDPOINTS } from '../config/API_config';
 
 // GET USER INFORMATION
-export const getUserProfile = async (usedId: number) => {
+export const getUserProfile = async (usedId: number, token: string) => {
   try {
     const response = await fetch(
       `${USER_API_ENDPOINTS.USER_PROFILE}${usedId}`,
       {
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       },
     );
 
@@ -27,13 +31,17 @@ export const updateUserProfile = async (token: string, profileData: Object) => {
     const response = await fetch(`${USER_API_ENDPOINTS.USER_PROFILE}`, {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ profile: profileData }),
     });
 
     if (!response.ok) {
+      console.error(
+        `Error updating user profile Trong service: ${response.statusText}`,
+      );
+      console.log(JSON.stringify({ profile: profileData }));
       throw new Error(`Error updating user profile: ${response.statusText}`);
     }
 

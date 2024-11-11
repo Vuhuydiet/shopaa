@@ -9,3 +9,8 @@ export const AUTH_API_ENDPOINTS = {
 export const USER_API_ENDPOINTS = {
   USER_PROFILE: `${API_DOMAIN}api/v1/user/`,
 };
+
+export const SHOP_API_ENDPOINTS = {
+  SHOP: `${API_DOMAIN}api/v1/shop/`,
+  REGISTER_SHOP: `${API_DOMAIN}api/v1/shop/register`,
+};
