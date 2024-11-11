@@ -1,4 +1,4 @@
-import KeyService from "../services/key.service";
+import KeyService from "../components/key/key.service";
 
 // JWT KEYS
 const jwtPublicKey = await KeyService.getKey('JWT_PUBLIC_KEY');

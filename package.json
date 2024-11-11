@@ -10,10 +10,10 @@
     "preview": "cd frontend && preview",
     "client": "cd frontend && npm run dev",
     "start": "tsx ./backend/app.ts NODE_ENV=production",
-    "server": "tsx watch ./backend/app.ts NODE_ENV=development",
+    "server": "tsx watch --clear-screen=false ./backend/app.ts NODE_ENV=development",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "jest",
-    "seed": "tsx ./backend/prisma/seed.ts",
+    "seed": "tsx ./backend/scripts/seed.ts",
     "prisma:generate": "prisma generate --sql",
     "prisma:migrate:dev": "prisma migrate dev --name init && npm run seed",
     "prisma:migrate:prod": "prisma migrate deploy && npm run seed",
@@ -24,7 +24,7 @@
     "format": "prettier --write ."
   },
   "prisma": {
-    "schema": "backend/prisma/schema"
+    "schema": "backend/models/schema"
   },
   "jest": {
     "transform": {
