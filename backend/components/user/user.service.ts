@@ -92,7 +92,10 @@ class UserService {
 
   static async getUserProfile(userId: number, includeSensitiveData = false) {
     const profile = await prisma.userProfile.findUnique({
-      where: { userId: userId }
+      where: { userId: userId },
+      include: {
+        avatarImage: true
+      }
     });
     if (!profile)
       throw new NotFoundError(`User profile for userId: '${userId}' does not exist`)
@@ -101,7 +104,7 @@ class UserService {
       return {
         userId: profile.userId,
         fullname: profile.fullname,
-        avatar: profile.avatarImageId,
+        avatarImage: profile.avatarImage,
         gender: profile.gender
       }
     }
@@ -113,10 +116,10 @@ class UserService {
     const oldProfile = await this.checkUserExists(userId);
     
     await prisma.$transaction(async (tx) => {
-      let newImage = undefined;
       if (newProfileData.avatar && oldProfile.avatarImageId) {
         await ImageService.deleteImage(oldProfile.avatarImageId, tx);
       }
+      let newImage = undefined;
       if (newProfileData.avatar) {
         newImage = await ImageService.createImage(newProfileData.avatar, tx);
       }
