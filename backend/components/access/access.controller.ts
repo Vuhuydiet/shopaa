@@ -42,7 +42,7 @@ export default {
 
   getAccount: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
-    const user = await AccessService.getAccount(userId);
+    const user = await AccessService.getUserAccount(userId);
     new OKResponse({
       message: 'User details fetched successfully',
       metadata: { user }

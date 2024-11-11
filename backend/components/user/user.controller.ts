@@ -13,7 +13,8 @@ export default {
 
   updateUserProfile: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
-    const { profile } = matchedData(req);
+    const profile = JSON.parse(req.body.profile);
+    profile.avatar = req.file;
     await UserService.updateUserProfile(userId, profile);
     new OKResponse({ message: 'User profile update successfully' }).send(res);
   },
