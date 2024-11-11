@@ -4,7 +4,7 @@
     }
 
     .login__content {
-        min-width: 95vw;
+        min-width: 70vw;
     }
 
     .login__content-container {
@@ -22,7 +22,11 @@
     }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 766px) {
+    .login__content {
+        min-width: 95vw;
+    }
+
     .reset-password {
         display: flex;
         flex-direction: column;
