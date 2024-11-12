@@ -29,7 +29,7 @@ router.patch(
   BodyParser.parseObject('profile'),
   body('profile').isObject(),
   body('profile.fullname').optional().isString(),
-  body('profile.dateOfBirth').optional().isDate(),
+  body('profile.dateOfBirth').optional(),
   body('profile.gender').optional().isString(),
   body('profile.phoneNumber').optional().isMobilePhone('any'),
   handleValidationErrors,

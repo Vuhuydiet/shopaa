@@ -9,6 +9,7 @@ import Profile from '../components/MyAccount/Profile';
 import MyShop from '../pages/MyShop';
 import Account from '../components/MyAccount/Account';
 import ShopPage from '../pages/Shop';
+import Category from '../pages/Category';
 
 export const routes = [
   {
@@ -59,6 +60,10 @@ export const routes = [
       {
         path: '/shop/:shopId',
         element: <ShopPage />,
+      },
+      {
+        path: '/category',
+        element: <Category />,
       },
     ],
   },

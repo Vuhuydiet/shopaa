@@ -13,6 +13,7 @@ interface UserProfile {
   phoneNumber: string | null;
   gender: string | null;
   avatar: string | null;
+  role: string | null;
 }
 
 interface UserContextType {
@@ -34,12 +35,14 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
       const userID = localStorage.getItem('userId');
       if (token && userID) {
         const profile = await getUserProfile(parseInt(userID, 10), token);
+        console.log(profile);
         setUser({
           fullname: profile.metadata.profile.fullname || null,
           dateOfBirth: profile.metadata.profile.dateOfBirth || null,
           phoneNumber: profile.metadata.profile.phoneNumber || null,
           gender: profile.metadata.profile.gender || null,
-          avatar: profile.metadata.profile.avatar || null,
+          avatar: profile.metadata.profile.avatarImageId || null,
+          role: profile.metadata.profile.role || null,
         });
       }
     } catch (error) {
