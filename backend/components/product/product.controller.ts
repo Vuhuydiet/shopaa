@@ -90,8 +90,8 @@ export default {
 
   incrementProductQuantity: async (req: Request, res: Response) => {
     const { productId, quantity } = matchedData(req);
-    await ProductService.incrementProductQuantity(+productId, quantity);
-    new OKResponse({ message: 'Product quantity incremented successfully' }).send(res);
+    const newQuanity = await ProductService.incrementProductQuantity(+productId, quantity);
+    new OKResponse({ message: 'Product quantity incremented successfully', metadata: { newQuanity } }).send(res);
 
   },
 

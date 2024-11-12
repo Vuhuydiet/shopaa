@@ -54,6 +54,15 @@ const defaultProductQueryParams: ProductQueryParams = {
   limit: 100,
 };
 
+const returnProductInclude: any = {
+  categories: true,
+  productImages: {
+    select: {
+      image: true
+    }
+  }
+}
+
 class ProductService {
 
   static async createCategory({ name, description }: ProductCategoryData) {
@@ -119,8 +128,10 @@ class ProductService {
           }
         });
       });
+
       return await tx.product.findUnique({
-        where: { productId }
+        where: { productId },
+        include: returnProductInclude
       });
     })
   }
@@ -140,11 +151,9 @@ class ProductService {
       where: {
         productId: productId,
       },
-      include: {
-        categories: true,
-        productImages: true
-      }
+      include: returnProductInclude
     });
+
     if (!product)
       throw new NotFoundError('Product not found');
 
@@ -181,10 +190,7 @@ class ProductService {
         [queryParams.sortBy as string]: queryParams.order
       } : undefined,
 
-      include: {
-        categories: true,
-        productImages: true
-      }
+      include: returnProductInclude
     });
   }
 
@@ -200,19 +206,20 @@ class ProductService {
     );
   }
 
-  static async incrementProductQuantity(productId: number, quantity: number) {
+  static async incrementProductQuantity(productId: number, inc: number) {
     await this.checkProductExists(productId);
 
-    await prisma.product.update({
+    const { quantity } = await prisma.product.update({
       where: {
         productId: productId,
       },
       data: {
         quantity: {
-          increment: quantity
+          increment: inc
         }
       }
     });
+    return quantity;
   }
 
   static async updateProduct(productId: number, { name, description, quantity, price, brand, categories, images }: UpdateProductData) {
@@ -265,7 +272,8 @@ class ProductService {
         });
       });
       return await tx.product.findUnique({
-        where: { productId }
+        where: { productId },
+        include: returnProductInclude
       });
     });
   }
