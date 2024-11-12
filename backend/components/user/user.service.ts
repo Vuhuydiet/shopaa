@@ -4,7 +4,7 @@ import ImageService from '../image/image.service';
 
 type ProfileData = {
   fullname?: string;
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   gender?: string;
   phoneNumber?: string;
   avatar?: Express.Multer.File;
@@ -126,7 +126,7 @@ class UserService {
         where: { userId: userId },
         data: {
           fullname: newProfileData.fullname,
-          dateOfBirth: newProfileData.dateOfBirth,
+          dateOfBirth: new Date(newProfileData.dateOfBirth as any),
           phoneNumber: newProfileData.phoneNumber,
           avatarImageId: newImage?.publicId,
           gender: newProfileData.gender

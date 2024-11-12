@@ -15,7 +15,6 @@ import {
 import { useEffect, useState } from 'react';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import './ProfileStyle.css';
-//import { UploadChangeParam } from 'antd/es/upload';
 import dayjs from 'dayjs';
 import { useUser } from '../../context/UserContext';
 import { updateUserProfile } from '../../service/userService';
@@ -51,34 +50,23 @@ const Profile: React.FC = () => {
     if (!isImage) {
       alert('You can only upload image files!');
     }
-    // Nếu là ảnh, thì lưu URL của ảnh tạm thời vào state và return false để ngừng upload ngay lập tức
-    // const url = URL.createObjectURL(file);
     setImage(file);
     return false;
   };
 
   const handleSave = async () => {
-    console.log('click button save information');
     const values = await form.validateFields();
     const { fullname, birthday, phone, gender } = values;
 
     const updatedProfileData = {
       fullname: fullname,
-      // dateOfBirth: null,
       dateOfBirth: birthday ? dayjs(birthday).utc().toISOString() : null,
       phoneNumber: phone,
       gender: gender,
     };
     const token = localStorage.getItem('token') || '';
-    console.log('Token:', token);
-    console.log(updatedProfileData);
-
     try {
-      if (image) {
-        await updateUserProfile(token, updatedProfileData, image);
-      } else {
-        await updateUserProfile(token, updatedProfileData, null);
-      }
+      await updateUserProfile(token, updatedProfileData, image || null);
       message.success('Update profile successfully!');
       refreshUser();
     } catch (error) {
