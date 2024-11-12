@@ -3,5 +3,6 @@ model Image {
   url       String
   createdAt DateTime @default(now())
 
-  userProfile UserProfile?
+  userProfile  UserProfile?
+  productImage ProductImage?
 }

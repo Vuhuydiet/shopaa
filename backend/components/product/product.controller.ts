@@ -40,14 +40,31 @@ export default {
 
   createProduct: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
-    const { productData } = matchedData(req);
+    const { productData } = req.body;
+    (productData);
+    productData.images = req.files as Express.Multer.File[];
+    
     const product = await ProductService.createProduct(userId, productData);
     new CreatedResponse({ message: 'Product created successfully!', metadata: { product } }).send(res);
   },
 
   getAllProducts: async (req: Request, res: Response) => {
-    const params = matchedData(req) as ProductQueryParams;
-    const products = await ProductService.getAllProducts(params);
+    const { shopId, category, brand, postedAfter, postedBefore, minPrice, maxPrice, minQuantity, maxQuantity, sortBy, order, offset, limit } = req.query;
+    const products = await ProductService.getAllProducts({ 
+      shopId: shopId ? +shopId : undefined,
+      category: category ? +category : undefined,
+      brand: brand as any,
+      postedAfter: postedAfter ? new Date(postedAfter as string) : undefined, 
+      postedBefore: postedBefore ? new Date(postedBefore as string) : undefined, 
+      minPrice: minPrice ? +minPrice : undefined, 
+      maxPrice: maxPrice ? +maxPrice : undefined, 
+      minQuantity: minQuantity ? +minQuantity : undefined, 
+      maxQuantity: maxQuantity ? +maxQuantity : undefined, 
+      sortBy: sortBy as any, 
+      order: order as any, 
+      offset: offset ? +offset : undefined, 
+      limit: limit ? +limit : undefined
+    });
     new OKResponse({ message: 'Get products successfully', metadata: { products } }).send(res);
   },
 
@@ -64,7 +81,9 @@ export default {
   },
 
   updateProduct: async (req: Request, res: Response) => {
-    const { productId, productData } = matchedData(req);
+    const { productId } = matchedData(req);
+    const productData = req.body.productData;
+    productData.images.add = req.files as Express.Multer.File[];
     await ProductService.updateProduct(+productId, productData);
     new OKResponse({ message: 'Product updated successfully' }).send(res);
   },

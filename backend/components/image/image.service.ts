@@ -1,3 +1,4 @@
+import { Image } from '@prisma/client';
 import { uploadImage, deleteImage } from '../../libraries/cloudinary';
 import prisma from '../../models';
 
@@ -10,7 +11,7 @@ class ImageService {
         publicId: result.public_id,
         url: result.secure_url
       }
-    });
+    }) as Image;
   }
 
   static async getImageByPublicId(publicId: string, tx: any = prisma) {
@@ -18,7 +19,7 @@ class ImageService {
       where: {
         publicId
       }
-    });
+    }) as Image;
   }
 
   static async deleteImage(publicId: string, tx: any = prisma) {
