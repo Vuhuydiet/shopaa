@@ -115,15 +115,14 @@ class UserService {
   static async updateUserProfile(userId: number, newProfileData: ProfileData) {
     const oldProfile = await this.checkUserExists(userId);
     
-    await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx) => {
       if (newProfileData.avatar && oldProfile.avatarImageId) {
         await ImageService.deleteImage(oldProfile.avatarImageId, tx);
+
       }
-      let newImage = undefined;
-      if (newProfileData.avatar) {
-        newImage = await ImageService.createImage(newProfileData.avatar, tx);
-      }
-      await tx.userProfile.update({
+      const newImage = newProfileData.avatar ? await ImageService.createImage(newProfileData.avatar, tx) : undefined;
+
+      return await tx.userProfile.update({
         where: { userId: userId },
         data: {
           fullname: newProfileData.fullname,
@@ -132,7 +131,9 @@ class UserService {
           avatarImageId: newImage?.publicId,
           gender: newProfileData.gender
         },
-        select: { avatarImageId: true }
+        include: {
+          avatarImage: true
+        }
       });
     });
   }

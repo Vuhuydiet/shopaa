@@ -7,7 +7,7 @@ const errorHandler = (
   res: Response,
   _next: NextFunction,
 ) => {
-  console.error(`ERROR HANDLER:\n\tError:\n ${err}`);
+  console.error(`ERROR HANDLER:\n ${err}`);
 
   if (!(err instanceof RequestError)) {
     res.status(500).json({ message: 'Internal Server Error' });
