@@ -16,7 +16,7 @@ export const CategoryFilter = () => {
       })
       .then((response) => {
         console.log(response.data);
-        setCategories((prev) =>
+        setCategories(
           response.data.metadata.map((category: any) => ({
             key: category.categoryId,
             label: category.categoryName,
