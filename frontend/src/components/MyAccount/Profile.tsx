@@ -188,7 +188,11 @@ const Profile: React.FC = () => {
               >
                 <Avatar
                   size={150}
-                  src={image ? URL.createObjectURL(image) : user?.avatar}
+                  src={
+                    image
+                      ? URL.createObjectURL(image)
+                      : `https://res.cloudinary.com/dszu0fyxg/image/upload/v1731428504/${user?.avatar}`
+                  }
                   icon={image ? null : <UserOutlined />}
                   style={{ marginBottom: '10px' }}
                   className="avatar-custom"
