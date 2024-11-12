@@ -64,8 +64,8 @@ const Profile: React.FC = () => {
 
     const updatedProfileData = {
       fullname: fullname,
-      dateOfBirth: null,
-      // dateOfBirth: birthday ? dayjs(birthday).utc().toISOString() : null,
+      // dateOfBirth: null,
+      dateOfBirth: birthday ? dayjs(birthday).utc().toISOString() : null,
       phoneNumber: phone,
       gender: gender,
     };
