@@ -8,6 +8,7 @@ import UserAccountPage from '../pages/UserAccountPage';
 import Profile from '../components/MyAccount/Profile';
 import MyShop from '../pages/MyShop';
 import Account from '../components/MyAccount/Account';
+import ShopPage from '../pages/Shop';
 
 export const routes = [
   {
@@ -54,6 +55,10 @@ export const routes = [
             path: '/cart',
           },
         ],
+      },
+      {
+        path: '/shop/:shopId',
+        element: <ShopPage />,
       },
     ],
   },

@@ -36,7 +36,7 @@ const Profile: React.FC = () => {
     if (user) {
       form.setFieldsValue({
         fullname: user.fullname || '',
-        birthday: user.dateOfBirth ? dayjs.utc(user.dateOfBirth) : null,
+        birthday: user.dateOfBirth ? dayjs(user.dateOfBirth).utc() : null,
         phone: user.phoneNumber || '',
         gender: user.gender || '',
       });
