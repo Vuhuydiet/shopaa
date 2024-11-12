@@ -26,6 +26,10 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
   throw new Error('Email credentials are not defined in the environment variables');
 }
 
+// CLOUDINARY
+if (!process.env.CLOUDINARY_URL) {
+  throw new Error('Cloudinary URL is not defined in the environment variables');
+}
 
 export default {
   JWT_PUBLIC_KEY: jwtPublicKey.value,
@@ -40,4 +44,5 @@ export default {
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
 
+  CLOUDINARY_URL: process.env.CLOUDINARY_URL,
 }

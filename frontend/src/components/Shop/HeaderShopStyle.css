@@ -1,0 +1,36 @@
+.HeaderShop {
+  width: 100%;
+  background-color: white;
+  display: flex;
+  color: black;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  font-size: clamp(12px, 2vw, 16px);
+}
+
+.HeaderShop__info {
+  width: 25%;
+  background: linear-gradient(to right, #59237695, #0c19aba2);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  height: 70%;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.HeaderShop__infoDetail {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-left: 40px;
+}
+
+.HeaderShop__item {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}

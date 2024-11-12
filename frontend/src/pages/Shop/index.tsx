@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getShop } from '../../service/shopService';
+import HeaderShop from '../../components/Shop/HeaderShop';
 
 const ShopPage: React.FC = () => {
   const { shopId } = useParams<{ shopId: string }>();
@@ -21,9 +22,23 @@ const ShopPage: React.FC = () => {
     };
 
     fetchShopData();
-  }, []);
+  }, [shopId]);
   console.log(shopInfo);
-  return <>SHOP PAGE</>;
+  return (
+    <>
+      <HeaderShop shopInfo={shopInfo} />
+      <div
+        style={{
+          background: '#FDF5E6',
+          height: '70vh',
+          marginTop: '20px',
+          color: 'black',
+        }}
+      >
+        List Product of Shop
+      </div>
+    </>
+  );
 };
 
 export default ShopPage;

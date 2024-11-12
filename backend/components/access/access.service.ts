@@ -53,7 +53,7 @@ class AccessService {
     return token;
   }
 
-  static async getAccount(userId: number) {
+  static async getUserAccount(userId: number) {
     const user = await prisma.userAccount.findUnique({
       where: { userId },
       select: {
