@@ -26,22 +26,29 @@ export const getUserProfile = async (usedId: number, token: string) => {
 };
 
 // UPDATE PROFILE USER
-export const updateUserProfile = async (token: string, profileData: Object) => {
+export const updateUserProfile = async (
+  token: string,
+  profileData: any,
+  avatarFile: File | null,
+) => {
   try {
+    const formData = new FormData();
+    formData.append('profile', JSON.stringify(profileData));
+    if (avatarFile) {
+      formData.append('avatar', avatarFile);
+    }
+
     const response = await fetch(`${USER_API_ENDPOINTS.USER_PROFILE}`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ profile: profileData }),
+      body: formData,
     });
 
     if (!response.ok) {
-      console.error(
-        `Error updating user profile Trong service: ${response.statusText}`,
-      );
-      console.log(JSON.stringify({ profile: profileData }));
+      const errorMessage = await response.text();
+      console.log('Server error message:', errorMessage);
       throw new Error(`Error updating user profile: ${response.statusText}`);
     }
 
