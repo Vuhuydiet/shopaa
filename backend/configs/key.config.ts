@@ -1,14 +1,7 @@
-import KeyService from "../components/key/key.service";
 
 // JWT KEYS
-const jwtPublicKey = await KeyService.getKey('JWT_PUBLIC_KEY');
-if (!jwtPublicKey) {
-  throw new Error('JWT_PUBLIC_KEY is not defined');
-}
-
-const jwtPrivateKey = await KeyService.getKey('JWT_PRIVATE_KEY');
-if (!jwtPrivateKey) {
-  throw new Error('JWT_PRIVATE_KEY is not defined');
+if (!process.env.JWT_PUBLIC_KEY || !process.env.JWT_PRIVATE_KEY) {
+  throw new Error('JWT keys are not defined in the environment variables');
 }
 
 // GOOGLE OAUTH KEYS
@@ -32,8 +25,8 @@ if (!process.env.CLOUDINARY_URL) {
 }
 
 export default {
-  JWT_PUBLIC_KEY: jwtPublicKey.value,
-  JWT_PRIVATE_KEY: jwtPrivateKey.value,
+  JWT_PUBLIC_KEY: process.env.JWT_PUBLIC_KEY,
+  JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY,
   
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,

@@ -17,7 +17,7 @@ export default {
     const { userId } = req.user as any;
     const profile = req.body.profile;
     profile.avatar = req.file as Express.Multer.File;
-    
+    console.log(profile);
     const newProfile = await UserService.updateUserProfile(userId, profile);
     
     new OKResponse({ message: 'User profile update successfully', metadata: { profile: newProfile } }).send(res);

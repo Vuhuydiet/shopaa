@@ -1,13 +1,7 @@
-import genKey from './generateKeyPair.js';
-import prisma from '../models/index.js';
-
-// import { getHashedPassword } from '../utils/cryptoUtils.js';
+import prisma from '../models';
 
 async function main() {
   console.log('Start seeding ...');
-
-  await genKey();
-
 
 }
 
