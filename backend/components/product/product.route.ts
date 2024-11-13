@@ -6,108 +6,123 @@ import passport from '../../libraries/auth/authentication.middleware';
 import Auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import { body, param, query } from 'express-validator';
-import { handleValidationErrors } from '../../core/Validator';
-import upload from '../../libraries/memory/multer';
-import BodyParser from '../../libraries/parser/parser.middleware';
+import { handleValidationErrors } from '../../libraries/validator/Validator';
+import upload from '../../libraries/imageUploader/multer';
+
+
+const productIdValidator = () => {
+  return [
+    param('productId').isNumeric().toInt(),
+  ];
+}
+
+const productDataValidator = (post: boolean) => {
+  return [
+    body('productData')                                 .isJSON()   .customSanitizer(JSON.parse as any),
+    body('productData.name')                .if(() => post).isString(),
+    body('productData.price')               .if(() => post).isNumeric(),
+    body('productData.quantity')            .optional().isNumeric(),
+    body('productData.brand')               .optional() .isString(),
+    body('productData.description')         .optional() .isString(),
+    body('productData.categories')          .optional() .isObject(),
+    body('productData.categories.add')      .optional() .isArray(),
+    body('productData.categories.add.*')    .optional() .isNumeric(),
+    body('productData.categories.remove')   .optional() .isArray(),
+    body('productData.categories.remove.*') .optional() .isNumeric(),
+    body('productData.images')              .optional() .isObject(),
+    body('productData.images.remove')       .optional() .isArray(),
+    body('productData.images.remove.*')     .optional() .isString(),
+  ];
+}
+
+const queryValidator = () => {
+  return [
+    query('shopId')        .optional() .isNumeric().toInt(),
+    query('category')      .optional() .isNumeric().toInt(),
+    query('brand')         .optional() .isString(),
+    query('postedAfter')   .optional() .isISO8601().toDate(),
+    query('postedBefore')  .optional() .isISO8601().toDate(),
+    query('minPrice')      .optional() .isNumeric().toFloat(),
+    query('maxPrice')      .optional() .isNumeric().toFloat(),
+    query('minQuantity')   .optional() .isNumeric().toInt(),
+    query('maxQuantity')   .optional() .isNumeric().toInt(),
+    query('sortBy')        .optional() .isString(),
+    query('order')         .optional() .isString(),
+    query('offset')        .optional() .isNumeric().toInt(),
+    query('limit')         .optional() .isNumeric().toInt(),
+  ];
+}
+
+const keywordQueryValidator = () => {
+  return [
+    query('keyword').isString(),
+  ];
+}
+
 
 router.post('/',
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.SHOP_MANAGER]),
+
   upload.array('images'),
-  BodyParser.parseObject('productData'),
-  body('productData')                           .isObject(),
-  body('productData.name')                      .isString(),
-  body('productData.price')                     .isNumeric(),
-  body('productData.quantity')      .optional() .isNumeric(),
-  body('productData.description')   .optional() .isString(),
-  body('productData.brand')         .optional() .isString(),
-  body('productData.categories')    .optional() .isArray(),
-  body('productData.categories.*')  .optional() .isNumeric(),
+
+  productDataValidator(true),
   handleValidationErrors,
+
   productController.createProduct
 );
 
 router.get('/',
-  query('shopId').optional().isNumeric(),
-  query('category').optional().isNumeric(),
-  query('brand').optional().isString(),
-  query('postedAfter').optional().isDate(),
-  query('postedBefore').optional().isDate(),
-  query('minPrice').optional().isNumeric(),
-  query('maxPrice').optional().isNumeric(),
-  query('minQuantity').optional().isNumeric(),
-  query('maxQuantity').optional().isNumeric(),
-  query('sortBy').optional().isString(),
-  query('order').optional().isString(),
-  query('offset').optional().isNumeric(),
-  query('limit').optional().isNumeric(),  
+  queryValidator(),
   handleValidationErrors,
+
   productController.getAllProducts
 );
 
 router.get('/:productId',
-  param('productId').isNumeric(),
+  productIdValidator(),
   handleValidationErrors,
+
   productController.getProductById
 );
 
 router.get('/search',
-  query('keyword').isString(),
-  query('shopId').optional().isNumeric(),
-  query('category').optional().isNumeric(),
-  query('brand').optional().isString(),
-  query('postedAfter').optional().isDate(),
-  query('postedBefore').optional().isDate(),
-  query('minPrice').optional().isNumeric(),
-  query('maxPrice').optional().isNumeric(),
-  query('minQuantity').optional().isNumeric(),
-  query('maxQuantity').optional().isNumeric(),
-  query('sortBy').optional().isString(),
-  query('order').optional().isString(),
-  query('offset').optional().isNumeric(),
-  query('limit').optional().isNumeric(),  
+  keywordQueryValidator(),
+  queryValidator(), 
   handleValidationErrors,
+
   productController.searchProducts
 );
 
 router.patch('/:productId',
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.SHOP_MANAGER]),
-  param('productId')                          .isNumeric(),
-  body('*.productData')                         .isObject(),
-  body('*.productData.name')        .optional() .isString(),
-  body('*.productData.price')       .optional() .isNumeric(),
-  body('*.productData.quantity')    .optional() .isNumeric(),
-  body('*.productData.brand')       .optional() .isString(),
-  body('*.productData.quantity')    .optional() .isNumeric(),
-  body('*.productData.description') .optional() .isString(),
-  body('*.productData.categories')  .optional() .isObject(),
-  body('*.productData.categories.add').optional().isArray(),
-  body('*.productData.categories.add.*').optional().isNumeric(),
-  body('*.productData.categories.remove').optional().isArray(),
-  body('*.productData.categories.remove.*').optional().isNumeric(),
-  body('*.productData.images').optional().isObject(),
-  body('*.productData.images.remove').optional().isArray(),
-  body('*.productData.images.remove.*').optional().isString(),
-  handleValidationErrors,
+  
   upload.array('images'),
+  productIdValidator(),
+  productDataValidator(false),
+  handleValidationErrors,
+  
   productController.updateProduct
 );
 
 router.patch('/:productId/quantity',
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.SHOP_MANAGER]),
-  param('productId').isNumeric(),
-  body('quantity').isNumeric(),
+
+  productIdValidator(),
   handleValidationErrors,
+
   productController.incrementProductQuantity
 );
 
 router.delete('/:productId',
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.SHOP_MANAGER]),
-  param('productId').isNumeric(),
+
+  productIdValidator(),
   handleValidationErrors,
+  
   productController.deleteProduct
 );
 

@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { KeyOutlined, UserOutlined } from '@ant-design/icons';
 import { jwtDecode } from 'jwt-decode';
 import { AUTH_API_ENDPOINTS } from '../../config/API_config';
-import { decode } from 'punycode';
 import { useAuthContext } from '../../context/AuthContext';
 
 export const FormLogin = () => {
@@ -23,6 +22,8 @@ export const FormLogin = () => {
   const login = async (values: any) => {
     try {
       const res = await axios.post(AUTH_API_ENDPOINTS.SIGN_IN, values);
+      // In ra message từ phản hồi trả về
+      console.log(res.data.message);
       localStorage.setItem('token', res.data.metadata.token);
       const decoded = jwtDecode(res.data.metadata.token);
       if (!decoded.sub) {

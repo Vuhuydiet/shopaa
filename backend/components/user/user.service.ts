@@ -4,7 +4,7 @@ import ImageService from '../image/image.service';
 
 type ProfileData = {
   fullname?: string;
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   gender?: string;
   phoneNumber?: string;
   avatar?: Express.Multer.File;
@@ -116,19 +116,19 @@ class UserService {
     const oldProfile = await this.checkUserExists(userId);
     
     return await prisma.$transaction(async (tx) => {
-      if (newProfileData.avatar && oldProfile.avatarImageId) {
+      if (newProfileData.avatar !==undefined && oldProfile.avatarImageId) {
         await ImageService.deleteImage(oldProfile.avatarImageId, tx);
 
       }
-      const newImage = newProfileData.avatar ? await ImageService.createImage(newProfileData.avatar, tx) : undefined;
+      const newImage = newProfileData.avatar ? await ImageService.createImage(newProfileData.avatar, tx) : { publicId: newProfileData.avatar};
 
       return await tx.userProfile.update({
         where: { userId: userId },
         data: {
           fullname: newProfileData.fullname,
-          dateOfBirth: new Date(newProfileData.dateOfBirth as any),
+          dateOfBirth: newProfileData.dateOfBirth,
           phoneNumber: newProfileData.phoneNumber,
-          avatarImageId: newImage?.publicId,
+          avatarImageId: newImage.publicId,
           gender: newProfileData.gender
         },
         include: {

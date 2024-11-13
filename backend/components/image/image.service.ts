@@ -1,5 +1,5 @@
 import { Image } from '@prisma/client';
-import { uploadImage, deleteImage } from '../../libraries/cloudinary';
+import { uploadImage, deleteImage } from '../../libraries/imageUploader';
 import prisma from '../../models';
 
 class ImageService {
