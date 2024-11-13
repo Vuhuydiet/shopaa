@@ -14,6 +14,14 @@ export default {
     new OKResponse({ message: 'Product category created successfully', metadata: { category: newCat } }).send(res);
   },
 
+  getCategoryById: async (req: Request, res: Response) => {
+    const { categoryId } = matchedData(req);
+
+    const category = await ProductService.getCategoryById(categoryId);
+
+    new OKResponse({ message: 'Get category successfully', metadata: { category } }).send(res);
+  },
+
   getAllProductCategories: async (_req: Request, res: Response) => {
     const categories = await ProductService.getAllCategories();
 
@@ -23,7 +31,7 @@ export default {
   updateProductCategory: async (req: Request, res: Response) => {
     const { categoryId, name, description } = matchedData(req);
 
-    const cat = await ProductService.updateCategory(+categoryId, { name, description });
+    const cat = await ProductService.updateCategory(categoryId, { name, description });
 
     new OKResponse({ message: 'Product category updated successfully', metadata: { category: cat } }).send(res);
   },
@@ -31,7 +39,7 @@ export default {
   deleteProductCategory: async (req: Request, res: Response) => {
     const { categoryId } = matchedData(req);
 
-    await ProductService.deleteCategory(+categoryId);
+    await ProductService.deleteCategory(categoryId);
 
     new OKResponse({ message: 'Product category deleted successfully!' }).send(res);
   },
@@ -46,32 +54,17 @@ export default {
 
   createProduct: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
-    const { productData } = req.body;
+    const { productData } = matchedData(req);
     productData.images = req.files as Express.Multer.File[];
-
     const product = await ProductService.createProduct(userId, productData);
 
     new CreatedResponse({ message: 'Product created successfully!', metadata: { product } }).send(res);
   },
 
   getAllProducts: async (req: Request, res: Response) => {
-    const { shopId, category, brand, postedAfter, postedBefore, minPrice, maxPrice, minQuantity, maxQuantity, sortBy, order, offset, limit } = req.query;
+    const query = matchedData(req) as ProductQueryParams;
 
-    const products = await ProductService.getAllProducts({
-      shopId: shopId ? +shopId : undefined,
-      category: category ? +category : undefined,
-      brand: brand as any,
-      postedAfter: postedAfter ? new Date(postedAfter as string) : undefined,
-      postedBefore: postedBefore ? new Date(postedBefore as string) : undefined,
-      minPrice: minPrice ? +minPrice : undefined,
-      maxPrice: maxPrice ? +maxPrice : undefined,
-      minQuantity: minQuantity ? +minQuantity : undefined,
-      maxQuantity: maxQuantity ? +maxQuantity : undefined,
-      sortBy: sortBy as any,
-      order: order as any,
-      offset: offset ? +offset : undefined,
-      limit: limit ? +limit : undefined
-    });
+    const products = await ProductService.getAllProducts(query);
 
     new OKResponse({ message: 'Get products successfully', metadata: { products } }).send(res);
   },
@@ -79,7 +72,7 @@ export default {
   getProductById: async (req: Request, res: Response) => {
     const { productId } = matchedData(req);
 
-    const product = await ProductService.getProductById(+productId);
+    const product = await ProductService.getProductById(productId);
 
     new OKResponse({ message: 'Get product successflly', metadata: { product } }).send(res);
   },
@@ -93,28 +86,27 @@ export default {
   },
 
   updateProduct: async (req: Request, res: Response) => {
-    const { productId } = matchedData(req);
-    const productData = req.body.productData;
+    const { productId, productData } = matchedData(req);
     productData.images.add = req.files as Express.Multer.File[];
 
-    const product = await ProductService.updateProduct(+productId, productData);
+    const product = await ProductService.updateProduct(productId, productData);
 
     new OKResponse({ message: 'Product updated successfully', metadata: { product } }).send(res);
   },
 
   incrementProductQuantity: async (req: Request, res: Response) => {
     const { productId, quantity } = matchedData(req);
-    
-    const newQuanity = await ProductService.incrementProductQuantity(+productId, quantity);
-    
+
+    const newQuanity = await ProductService.incrementProductQuantity(productId, quantity);
+
     new OKResponse({ message: 'Product quantity incremented successfully', metadata: { newQuanity } }).send(res);
   },
 
   deleteProduct: async (req: Request, res: Response) => {
     const { productId } = matchedData(req);
-    
-    await ProductService.deleteProduct(+productId);
-    
+
+    await ProductService.deleteProduct(productId);
+
     new OKResponse({ message: 'Product deleted successfully' }).send(res);
   },
 

@@ -1,6 +1,6 @@
 import { BadRequestError, InternalServerError, NotFoundError } from "../../core/ErrorResponse";
 import prisma from "../../models";
-import { getHashedPassword, invalidatePassword } from "../../libraries/utils/cryptoUtils";
+import { getHashedPassword, comparePassword } from "../../libraries/utils/password";
 import JWT from "../../libraries/auth/JWT";
 import UserService from "../user/user.service";
 import EmailService from "../email/email.service";
@@ -45,7 +45,7 @@ class AccessService {
       throw new BadRequestError('User does not exist');
     }
 
-    if (!invalidatePassword(password, user.password)) {
+    if (!comparePassword(password, user.password)) {
       throw new BadRequestError('Invalid password');
     }
 
@@ -78,7 +78,7 @@ class AccessService {
       throw new BadRequestError('User does not exist');
     }
 
-    if (!oldPassword || !invalidatePassword(oldPassword, user.password)) {
+    if (!oldPassword || !comparePassword(oldPassword, user.password)) {
       throw new BadRequestError('Invalid old password');
     }
 

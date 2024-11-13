@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import config from '../configs/db.config';
 
 const prisma = new PrismaClient({
   transactionOptions: {
-    maxWait: 2000, // default: 2000
-    timeout: 10000, // default: 5000
+    maxWait: config.MAX_WAIT,
+    timeout: config.TIMEOUT,
   },
 });
 

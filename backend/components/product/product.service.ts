@@ -8,20 +8,12 @@ type ProductCategoryData = {
   description?: string;
 }
 
-type PrimaryProductData = {
+type ProductData = {
   name: string;
   description?: string;
   quantity?: number;
   price: number;
   brand?: string;
-}
-
-type NewProductData = PrimaryProductData & {
-  categories?: number[];
-  images?: Express.Multer.File[];
-}
-
-type UpdateProductData = PrimaryProductData & {
   images?: {
     add?: Express.Multer.File[],
     remove?: string[]
@@ -74,6 +66,14 @@ class ProductService {
     });
   }
 
+  static async getCategoryById(categoryId: number) {
+    return await prisma.productCategory.findUnique({
+      where: {
+        categoryId: categoryId
+      }
+    });
+  }
+
   static async getAllCategories() {
     return await prisma.productCategory.findMany();
   }
@@ -98,7 +98,7 @@ class ProductService {
     });
   }
 
-  static async createProduct(shopId: number, productData: NewProductData) {
+  static async createProduct(shopId: number, productData: ProductData) {
     await ShopService.checkShopExists(shopId);
 
     return await prisma.$transaction(async (tx) => {
@@ -114,14 +114,14 @@ class ProductService {
             connect: { shopOwnerId: shopId }
           },
           categories: {
-            connect: productData.categories?.map(category => ({ categoryId: category }))
+            connect: productData.categories?.add?.map(category => ({ categoryId: category }))
           },
         },
         select: { productId: true }
       });
 
-      const images = productData.images ?
-        await Promise.all(productData.images.map(image => ImageService.createImage(image, tx))) : [];
+      const images = productData.images?.add ?
+        await Promise.all(productData.images?.add?.map(image => ImageService.createImage(image, tx))) : [];
 
       await Promise.all(images.map(({ publicId }) => tx.productImage.create({
         data: {
@@ -213,7 +213,7 @@ class ProductService {
     return quantity;
   }
 
-  static async updateProduct(productId: number, { name, description, quantity, price, brand, categories, images }: UpdateProductData) {
+  static async updateProduct(productId: number, { name, description, quantity, price, brand, categories, images }: ProductData) {
     await this.getProductById(productId);
 
     return await prisma.$transaction(async (tx) => {
