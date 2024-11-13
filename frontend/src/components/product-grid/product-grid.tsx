@@ -19,7 +19,6 @@ interface ProductData {
 
 export const ProductGrid = () => {
   const products = useSelector((state: RootState) => state.products.items);
-  console.log('products: ', products);
 
   // const createProduct = async (productData: ProductData) => {
   //   const formData = new FormData();
@@ -82,9 +81,9 @@ export const ProductGrid = () => {
   //         name: 'Ao thun',
   //         price: price,
   //         quantity: quantity,
-  //         description: 'Best phone ever',
-  //         brand: 'IPhone',
-  //         categories: { add: [1] },
+  //         description: 'Ao thun dep',
+  //         brand: 'Adidas',
+  //         categories: { add: [2] },
   //         images: { add: [imageFile] }, // Add File objects here if needed
   //       };
 
@@ -94,7 +93,7 @@ export const ProductGrid = () => {
   //       console.error('Failed to create product:', error);
   //     }
   //   };
-  //   for (let i = 11; i <= 48; i++) {
+  //   for (let i = 1; i <= 48; i++) {
   //     createNewProduct(i * 1000, i);
   //   }
   // }, []);
