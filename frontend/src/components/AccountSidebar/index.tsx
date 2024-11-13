@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom';
 
 const { Sider } = Layout;
 
-const AccountSidebar = () => {
+const AccountSidebar: React.FC = () => {
   const location = useLocation();
 
   const defaultOpenKeys = ['account'];

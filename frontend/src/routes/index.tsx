@@ -59,6 +59,20 @@ export const routes = [
           {
             path: '/manager-shop',
             element: <ManagerShop />,
+            children: [
+              {
+                index: true,
+                element: <Navigate to="/manager-shop/list-product" replace />,
+              },
+              {
+                path: 'shop-info',
+                // element: <Profile />, information of shop
+              },
+              {
+                path: 'list-product',
+                // element: <Profile />, list product of shop
+              },
+            ],
           },
         ],
       },
