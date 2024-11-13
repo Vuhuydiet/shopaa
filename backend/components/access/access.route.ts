@@ -1,7 +1,7 @@
 import express from 'express';
 import accessController from './access.controller';
 import passport from '../../libraries/auth/authentication.middleware';
-import { handleValidationErrors } from '../../libraries/validator/Validator';
+import { handleValidationErrors } from '../../libraries/validator/validator';
 import { body } from 'express-validator';
 const router = express.Router();
 

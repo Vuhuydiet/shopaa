@@ -11,6 +11,7 @@ import {
   Upload,
   DatePicker,
   message,
+  Spin,
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
@@ -26,6 +27,7 @@ dayjs.extend(utc);
 const { Title } = Typography;
 
 const Profile: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [image, setImage] = useState<File | null>(null);
 
@@ -55,6 +57,7 @@ const Profile: React.FC = () => {
   };
 
   const handleSave = async () => {
+    setLoading(true);
     const values = await form.validateFields();
     const { fullname, birthday, phone, gender } = values;
 
@@ -69,12 +72,12 @@ const Profile: React.FC = () => {
       await updateUserProfile(token, updatedProfileData, image || null);
       message.success('Update profile successfully!');
       refreshUser();
+      setLoading(false);
     } catch (error) {
       console.error('', error);
     }
   };
 
-  console.log(user);
   return (
     <>
       <div>
@@ -125,7 +128,9 @@ const Profile: React.FC = () => {
                   ]}
                 >
                   <DatePicker
-                    style={{ width: '100%' }}
+                    style={{
+                      width: '100%',
+                    }}
                     placeholder="Select Birthday"
                     format="DD/MM/YYYY"
                     showTime={false}
@@ -188,11 +193,7 @@ const Profile: React.FC = () => {
               >
                 <Avatar
                   size={150}
-                  src={
-                    image
-                      ? URL.createObjectURL(image)
-                      : `https://res.cloudinary.com/dszu0fyxg/image/upload/v1731428504/${user?.avatar}`
-                  }
+                  src={image ? URL.createObjectURL(image) : `${user?.avatar}`}
                   icon={image ? null : <UserOutlined />}
                   style={{ marginBottom: '10px' }}
                   className="avatar-custom"
@@ -221,17 +222,22 @@ const Profile: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <Button
-              type="primary"
-              onClick={handleSave}
-              style={{
-                marginTop: '30px',
-                padding: '20px',
-                fontSize: '14px',
-              }}
-            >
-              Save changes
-            </Button>
+            <div style={{ marginTop: '30px' }}>
+              {loading ? (
+                <Spin />
+              ) : (
+                <Button
+                  type="primary"
+                  onClick={handleSave}
+                  style={{
+                    padding: '20px',
+                    fontSize: '14px',
+                  }}
+                >
+                  Save changes
+                </Button>
+              )}
+            </div>
           </Col>
         </Card>
       </div>
