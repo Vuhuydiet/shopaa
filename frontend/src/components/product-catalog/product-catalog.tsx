@@ -13,6 +13,7 @@ import { serializeDate } from '../../utils/date-convert';
 import { IImage } from '../../interfaces/IImage';
 import { useCategories } from '../../service/api/useCategories';
 import { setCategories } from '../../service/state/slices/category-slice';
+import { setPagination } from '../../service/state/slices/pagination-slice';
 
 const { Content, Sider } = Layout;
 
@@ -24,8 +25,8 @@ export const ProductCatalog = () => {
   const { data: categories } = useCategories();
 
   useEffect(() => {
-    if (products) {
-      const serializedProducts = products.map((product: any) => ({
+    if (products && products.items) {
+      const serializedProducts = products.items.map((product: any) => ({
         ...product,
         images: product.images.map((image: IImage) => ({
           ...image,
@@ -41,6 +42,16 @@ export const ProductCatalog = () => {
       }));
 
       dispatch(setProducts(serializedProducts));
+      console.log('products: ', serializedProducts);
+    }
+
+    if (products && products.count) {
+      dispatch(
+        setPagination({
+          totalItems: products.count,
+        }),
+      );
+      console.log('products count: ', products.count);
     }
   }, [products, dispatch]);
 

@@ -9,8 +9,8 @@ export const paginationSlice = createSlice({
     totalItems: 0,
   } as IPagination,
   reducers: {
-    setPagination: (state, action: PayloadAction<IPagination>) => {
-      state = action.payload;
+    setPagination: (state, action) => {
+      return { ...state, ...action.payload };
     },
   },
 });
