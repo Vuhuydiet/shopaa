@@ -1,7 +1,7 @@
 import express from 'express';
 import userController from './user.controller';
 import { body, param } from 'express-validator';
-import { handleValidationErrors } from '../../libraries/validator/Validator';
+import { handleValidationErrors } from '../../libraries/validator/validator';
 import passport, {
   verifyTokenIfExists,
 } from '../../libraries/auth/authentication.middleware';
