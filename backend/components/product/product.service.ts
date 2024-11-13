@@ -54,10 +54,19 @@ const defaultProductQueryParams: ProductQueryParams = {
   limit: 100,
 };
 
+const returnProductInclude: any = {
+  categories: true,
+  productImages: {
+    select: {
+      image: true
+    }
+  }
+}
+
 class ProductService {
 
   static async createCategory({ name, description }: ProductCategoryData) {
-    await prisma.productCategory.create({
+    return await prisma.productCategory.create({
       data: {
         categoryName: name,
         description: description
@@ -70,7 +79,7 @@ class ProductService {
   }
 
   static async updateCategory(categoryId: number, { name, description }: ProductCategoryData) {
-    await prisma.productCategory.update({
+    return await prisma.productCategory.update({
       where: {
         categoryId: categoryId
       },
@@ -110,29 +119,22 @@ class ProductService {
         },
         select: { productId: true }
       });
-      const images = productData.images ? await Promise.all(productData.images.map(image => ImageService.createImage(image, tx))) : [];
-      images.forEach(async ({ publicId }) => {
-        await tx.productImage.create({
-          data: {
-            image: { connect: { publicId: publicId } },
-            product: { connect: { productId: productId } }
-          }
-        });
-      });
+
+      const images = productData.images ?
+        await Promise.all(productData.images.map(image => ImageService.createImage(image, tx))) : [];
+
+      await Promise.all(images.map(({ publicId }) => tx.productImage.create({
+        data: {
+          image: { connect: { publicId: publicId } },
+          product: { connect: { productId: productId } }
+        }
+      })));
+
       return await tx.product.findUnique({
-        where: { productId }
+        where: { productId },
+        include: returnProductInclude
       });
     })
-  }
-
-  static async checkProductExists(productId: number) {
-    const product = await prisma.product.findUnique({
-      where: {
-        productId: productId,
-      }
-    });
-    if (!product)
-      throw new NotFoundError('Product not found');
   }
 
   static async getProductById(productId: number) {
@@ -140,11 +142,9 @@ class ProductService {
       where: {
         productId: productId,
       },
-      include: {
-        categories: true,
-        productImages: true
-      }
+      include: returnProductInclude
     });
+
     if (!product)
       throw new NotFoundError('Product not found');
 
@@ -181,10 +181,7 @@ class ProductService {
         [queryParams.sortBy as string]: queryParams.order
       } : undefined,
 
-      include: {
-        categories: true,
-        productImages: true
-      }
+      include: returnProductInclude
     });
   }
 
@@ -200,36 +197,36 @@ class ProductService {
     );
   }
 
-  static async incrementProductQuantity(productId: number, quantity: number) {
-    await this.checkProductExists(productId);
+  static async incrementProductQuantity(productId: number, inc: number) {
+    await this.getProductById(productId);
 
-    await prisma.product.update({
+    const { quantity } = await prisma.product.update({
       where: {
         productId: productId,
       },
       data: {
         quantity: {
-          increment: quantity
+          increment: inc
         }
       }
     });
+    return quantity;
   }
 
   static async updateProduct(productId: number, { name, description, quantity, price, brand, categories, images }: UpdateProductData) {
-    await this.checkProductExists(productId);
+    await this.getProductById(productId);
 
     return await prisma.$transaction(async (tx) => {
-      const deletingImages = (await tx.productImage.findMany({
+      const deletingImages = await tx.productImage.findMany({
         where: {
           productId: productId,
           imageId: { in: images?.remove }
         }
-      })).map(image => image.imageId);
+      });
 
-      if (images && images.remove)
-        await Promise.all(images.remove.filter(image => deletingImages.includes(image)).map(image => { ImageService.deleteImage(image, tx) }));
+      await Promise.all(deletingImages.map(({ imageId }) => ImageService.deleteImage(imageId, tx)));
 
-      const newImages = images && images.add ? await Promise.all(images.add.map(image => ImageService.createImage(image, tx))) : [];
+      const newImages = await Promise.all((images?.add || []).map(image => ImageService.createImage(image, tx)));
 
       await tx.product.update({
         where: {
@@ -249,28 +246,27 @@ class ProductService {
 
           productImages: {
             create: newImages.map(publicId => ({
-              image: {
-                connect: publicId
-              }
+              image: { connect: publicId }
             }))
           }
         }
       });
-      newImages.forEach(async ({ publicId }) => {
-        await tx.productImage.create({
-          data: {
-            image: { connect: { publicId: publicId } },
-            product: { connect: { productId: productId } }
-          }
-        });
-      });
+
+      await Promise.all(newImages.map(({ publicId }) => tx.productImage.create({
+        data: {
+          image: { connect: { publicId: publicId } },
+          product: { connect: { productId: productId } }
+        }
+      })));
+
       return await tx.product.findUnique({
-        where: { productId }
+        where: { productId },
+        include: returnProductInclude
       });
     });
   }
   static async deleteProduct(productId: number) {
-    await this.checkProductExists(productId);
+    await this.getProductById(productId);
 
     await prisma.$transaction(async (tx) => {
       const images = await tx.productImage.findMany({
@@ -278,7 +274,7 @@ class ProductService {
       });
 
       await Promise.all(images.map(image => ImageService.deleteImage(image.imageId, tx)));
-      
+
       await tx.product.delete({
         where: {
           productId: productId
