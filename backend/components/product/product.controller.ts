@@ -64,9 +64,9 @@ export default {
   getAllProducts: async (req: Request, res: Response) => {
     const query = matchedData(req) as ProductQueryParams;
 
-    const products = await ProductService.getAllProducts(query);
+    const { count, products } = await ProductService.getAllProducts(query);
 
-    new OKResponse({ message: 'Get products successfully', metadata: { products } }).send(res);
+    new OKResponse({ message: 'Get products successfully', metadata: { count, products } }).send(res);
   },
 
   getProductById: async (req: Request, res: Response) => {
@@ -80,9 +80,9 @@ export default {
   searchProducts: async (req: Request, res: Response) => {
     const params = matchedData(req) as ProductQueryParams & { keyword: string };
 
-    const products = await ProductService.searchProducts(params.keyword, params);
+    const { count, products } = await ProductService.searchProducts(params.keyword, params);
 
-    new OKResponse({ message: 'Search products successfully', metadata: { products } }).send(res);
+    new OKResponse({ message: 'Search products successfully', metadata: { count, products } }).send(res);
   },
 
   updateProduct: async (req: Request, res: Response) => {

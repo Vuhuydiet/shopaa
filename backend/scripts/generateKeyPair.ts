@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import fs from 'fs';
 import path from 'path';
 
@@ -27,7 +29,11 @@ function genKey() {
       if (!process.env.JWT_PUBLIC_KEY || !process.env.JWT_PRIVATE_KEY) {
         fs.appendFileSync(
           path.join(import.meta.dirname, '../../.env'), 
-          `JWT_PUBLIC_KEY=${publicKey}\n\nJWT_PRIVATE_KEY=${privateKey}\n`
+          `\nJWT_PUBLIC_KEY="${publicKey}"\n`
+        );
+        fs.appendFileSync(
+          path.join(import.meta.dirname, '../../.env'), 
+          `JWT_PRIVATE_KEY="${privateKey}"\n`
         );
       }
 
