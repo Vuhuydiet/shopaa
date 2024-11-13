@@ -10,6 +10,7 @@ import MyShop from '../pages/MyShop';
 import Account from '../components/MyAccount/Account';
 import ShopPage from '../pages/Shop';
 import Category from '../pages/Category';
+import ManagerShop from '../pages/ManagerShop';
 
 export const routes = [
   {
@@ -54,6 +55,10 @@ export const routes = [
           },
           {
             path: '/cart',
+          },
+          {
+            path: '/manager-shop',
+            element: <ManagerShop />,
           },
         ],
       },
