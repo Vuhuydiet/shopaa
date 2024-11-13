@@ -1,14 +1,14 @@
-import cloudinary from 'cloudinary';
+import {v2 as cloudinary } from 'cloudinary';
 
 import keyConfig from '../../configs/key.config';
 
-cloudinary.v2.config({
+cloudinary.config({
   cloudinary_url: keyConfig.CLOUDINARY_URL
 });
 
 const uploadImage = async (file: Express.Multer.File) => {
   return new Promise((resolve, reject) => {
-    cloudinary.v2.uploader.upload_stream({ resource_type: 'image' }, (error, result) => {
+    cloudinary.uploader.upload_stream({ resource_type: 'image' }, (error, result) => {
       if (error) {
         reject(error);
       } else {
@@ -19,7 +19,7 @@ const uploadImage = async (file: Express.Multer.File) => {
 };
 
 const deleteImage = async (publicId: string) => {
-  const result = await cloudinary.v2.uploader.destroy(publicId);
+  const result = await cloudinary.uploader.destroy(publicId);
   if (result.result !== 'ok') {
     throw new Error('Failed to delete image');
   }

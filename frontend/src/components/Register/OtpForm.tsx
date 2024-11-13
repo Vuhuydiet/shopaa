@@ -27,8 +27,6 @@ const OtpForm: React.FC<OtpFormProps> = ({ onBack }) => {
       message.error('No registeration dât available.');
       return;
     }
-    console.log(registerData);
-
     try {
       const response = await signUp(
         username,
