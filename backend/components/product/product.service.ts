@@ -41,11 +41,6 @@ type ProductQueryParams = {
   limit?: number;
 }
 
-const defaultProductQueryParams: ProductQueryParams = {
-  offset: 0,
-  limit: 100,
-};
-
 const returnProductInclude: any = {
   categories: true,
   productImages: {
@@ -53,6 +48,32 @@ const returnProductInclude: any = {
       image: true
     }
   }
+}
+
+function getCondition(queryParams: ProductQueryParams) {
+  const condition = {
+    sellerId: queryParams.shopId,
+    categories: queryParams.category ? {
+      some: {
+        categoryId: queryParams.category
+      }
+    } : undefined,
+    brand: queryParams.brand,
+    quantity: {
+      gte: queryParams.minQuantity,
+      lte: queryParams.maxQuantity
+    },
+    currentPrice: {
+      gte: queryParams.minPrice,
+      lte: queryParams.maxPrice
+    },
+    publishedAt: {
+      gte: queryParams.postedAfter,
+      lte: queryParams.postedBefore,
+    },
+  } as any;
+
+  return condition;
 }
 
 class ProductService {
@@ -151,50 +172,58 @@ class ProductService {
     return product;
   }
 
-  static async getAllProducts(queryParams: ProductQueryParams = defaultProductQueryParams) {
-    return await prisma.product.findMany({
-      skip: queryParams.offset,
-      take: queryParams.limit,
+  static async getAllProducts(queryParams: ProductQueryParams) {
+    const [count, products] = await Promise.all([
+      prisma.product.count({
+        where: getCondition(queryParams)
+      }),
 
-      where: {
-        sellerId: queryParams.shopId,
-        categories: queryParams.category ? {
-          some: {
-            categoryId: queryParams.category
-          }
+      prisma.product.findMany({
+        skip: queryParams.offset,
+        take: queryParams.limit,
+
+        where: getCondition(queryParams),
+        orderBy: queryParams.sortBy ? {
+          [queryParams.sortBy as string]: queryParams.order
         } : undefined,
-        brand: queryParams.brand,
-        quantity: {
-          gte: queryParams.minQuantity,
-          lte: queryParams.maxQuantity
-        },
-        currentPrice: {
-          gte: queryParams.minPrice,
-          lte: queryParams.maxPrice
-        },
-        publishedAt: {
-          gte: queryParams.postedAfter,
-          lte: queryParams.postedBefore,
-        },
-      },
-      orderBy: queryParams.sortBy ? {
-        [queryParams.sortBy as string]: queryParams.order
-      } : undefined,
 
-      include: returnProductInclude
-    });
+        include: returnProductInclude
+      })
+    ]);
+    
+    return { count, products };
   }
 
   // temporary implementation
-  static async searchProducts(keyword: string, queryParams: ProductQueryParams = defaultProductQueryParams) {
-    const queryProducts = await this.getAllProducts(queryParams);
+  static async searchProducts(keyword: string, queryParams: ProductQueryParams) {
+    const [count, products] = await Promise.all([
+      prisma.product.count({
+        where: {
+          ...getCondition(queryParams),
+          productName: { contains: keyword },
+          productDescription: { contains: keyword }
+        }
+      }),
 
-    return queryProducts.filter(
-      product =>
-        (product.productName.includes(keyword)) ||
-        product.brand?.includes(keyword) ||
-        product.productDescription?.includes(keyword)
-    );
+      prisma.product.findMany({
+        skip: queryParams.offset,
+        take: queryParams.limit,
+
+        where: {
+          ...getCondition(queryParams),
+          productName: { contains: keyword },
+          productDescription: { contains: keyword }
+        },
+
+        orderBy: queryParams.sortBy ? {
+          [queryParams.sortBy as string]: queryParams.order
+        } : undefined,
+
+        include: returnProductInclude
+      })
+    ]);
+
+    return { count, products };
   }
 
   static async incrementProductQuantity(productId: number, inc: number) {
@@ -205,9 +234,7 @@ class ProductService {
         productId: productId,
       },
       data: {
-        quantity: {
-          increment: inc
-        }
+        quantity: { increment: inc }
       }
     });
     return quantity;
