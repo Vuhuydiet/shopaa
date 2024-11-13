@@ -5,7 +5,7 @@ import { Role } from '@prisma/client';
 import shopController from './shop.controller';
 import passport from '../../libraries/auth/authentication.middleware';
 import { body, param } from 'express-validator';
-import { handleValidationErrors } from '../../core/Validator';
+import { handleValidationErrors } from '../../libraries/validator/Validator';
 
 const router = express.Router();
 
