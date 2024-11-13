@@ -27,17 +27,12 @@ const userProfileValidator = () => {
 router.get(
   '/:userId',
   verifyTokenIfExists,
-<<<<<<< HEAD
-  verifyTokenIfExists,
   param('userId')
     .notEmpty()
     .withMessage('User ID is required')
     .isInt()
     .withMessage('User ID must be a number'),
-=======
 
-  userIdValidator(),
->>>>>>> SHOP-52-profile-registershop
   handleValidationErrors,
 
   userController.getUserProfile,
