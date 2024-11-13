@@ -1,9 +1,17 @@
+import { ICategory } from './ICategory';
+import { IImage } from './IImage';
 
 export interface IProduct {
-    image: string;
-    title: string;
-    originPrice: number;
-    salePrice: number;
-    star: number;
-    bought: number;
-};
+  id: number;
+  sellerId: number;
+  name: string;
+  brand: string;
+  currentPrice: number;
+  originalPrice: number;
+  description: string;
+  soldCount: number;
+  quantity: number;
+  publishedAt: Date | string;
+  categories: ICategory[];
+  images: IImage[];
+}

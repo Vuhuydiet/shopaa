@@ -1,43 +1,42 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { AUTH_API_ENDPOINTS } from '../../config/API_config';
 import { Menu } from 'antd';
 import { UnorderedListOutlined } from '@ant-design/icons';
+import { RootState } from '../../service/state/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { ICategory } from '../../interfaces/ICategory';
+import { setFilter } from '../../service/state/slices/filter-slice';
 
 export const CategoryFilter = () => {
-  const [categories, setCategories] = useState([]);
+  const dispatch = useDispatch();
+  const filters = useSelector((state: RootState) => state.filters);
+  const categories = useSelector((state: RootState) => state.categories.items);
 
-  useEffect(() => {
-    axios
-      .get(AUTH_API_ENDPOINTS.CATEGORY, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setCategories(
-          response.data.metadata.map((category: any) => ({
-            key: category.categoryId,
-            label: category.categoryName,
-          })),
-        );
-        console.log(categories);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const handleCategoryChange = useCallback(
+    (key: number) => {
+      dispatch(
+        setFilter({
+          ...filters,
+          category: key,
+          limit: 24,
+        }),
+      );
+    },
+    [filters, dispatch],
+  );
 
   return (
     <Menu
       mode="inline"
+      onClick={({ key }) => handleCategoryChange(parseInt(key))}
       items={[
         {
           key: 'all',
           label: 'All Categories',
           icon: <UnorderedListOutlined />,
-          children: categories,
+          children: categories.map((category: ICategory) => ({
+            key: category.id,
+            label: category.name,
+          })),
         },
       ]}
     />

@@ -9,7 +9,7 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import './HeaderStyle.css';
-import logo from '../../images/logo.png';
+import logo from '../../assets/images/logo.png';
 
 const { Header } = Layout;
 const { Search } = Input;

@@ -1,9 +1,9 @@
 import { Button, Card, Space, Typography } from 'antd';
-import { IProduct } from '../../interfaces/IProduct';
+import { IProductCard } from '../../interfaces/IProductCard';
 import { ShoppingCartOutlined, StarFilled } from '@ant-design/icons';
 import numberAbbreviation from '../../utils/number-abbreviation';
 
-export const ProductCard = (product: IProduct) => {
+export const ProductCard = (product: IProductCard) => {
   return (
     <Card>
       <Card.Meta
@@ -16,17 +16,15 @@ export const ProductCard = (product: IProduct) => {
         }
       />
 
-      <Typography.Title level={4}>
-        {product.title}
-      </Typography.Title>
+      <Typography.Title level={4}>{product.title}</Typography.Title>
       <Typography.Text
         delete
         style={{ fontSize: '0.8rem', margin: '0 20px 0 0' }}
       >
-        $ {product.originPrice}
+        $ {product.originalPrice}
       </Typography.Text>
       <Typography.Text style={{ color: 'red', fontSize: '1.2rem' }} italic>
-        $ {product.salePrice}
+        $ {product.currentPrice}
       </Typography.Text>
       <Space
         direction="horizontal"
@@ -40,7 +38,7 @@ export const ProductCard = (product: IProduct) => {
           {product.star}
         </Typography.Text>
         <Typography.Text italic strong>
-          {numberAbbreviation(product.bought)} sales
+          {numberAbbreviation(product.soldCount)} sales
         </Typography.Text>
         <Button
           style={{
