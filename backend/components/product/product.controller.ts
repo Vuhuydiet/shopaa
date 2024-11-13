@@ -55,7 +55,7 @@ export default {
   createProduct: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
     const { productData } = matchedData(req);
-    productData.images = req.files as Express.Multer.File[];
+    productData.images = { add: req.files as Express.Multer.File[] };
     const product = await ProductService.createProduct(userId, productData);
 
     new CreatedResponse({ message: 'Product created successfully!', metadata: { product } }).send(res);
@@ -87,7 +87,7 @@ export default {
 
   updateProduct: async (req: Request, res: Response) => {
     const { productId, productData } = matchedData(req);
-    productData.images.add = req.files as Express.Multer.File[];
+    productData.images = { ...productData.images, add: req.files as Express.Multer.File[] };
 
     const product = await ProductService.updateProduct(productId, productData);
 
