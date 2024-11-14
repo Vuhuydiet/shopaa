@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getShop } from '../../service/shopService';
 import HeaderShop from '../../components/Shop/HeaderShop';
+import { ProductCatalog } from '../../components/product-catalog/product-catalog';
 
 const ShopPage: React.FC = () => {
   const { shopId } = useParams<{ shopId: string }>();
@@ -35,7 +36,7 @@ const ShopPage: React.FC = () => {
           color: 'black',
         }}
       >
-        List Product of Shop
+        <ProductCatalog />
       </div>
     </>
   );

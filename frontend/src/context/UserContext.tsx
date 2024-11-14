@@ -36,12 +36,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
       if (token && userID) {
         const profile = await getUserProfile(parseInt(userID, 10), token);
         setUser({
-          fullname: profile.metadata.profile.fullname || null,
-          dateOfBirth: profile.metadata.profile.dateOfBirth || null,
-          phoneNumber: profile.metadata.profile.phoneNumber || null,
-          gender: profile.metadata.profile.gender || null,
-          avatar: profile.metadata.profile.avatarImage.url || null,
-          role: profile.metadata.profile.role || null,
+          fullname: profile.metadata.profile?.fullname || null,
+          dateOfBirth: profile.metadata.profile?.dateOfBirth || null,
+          phoneNumber: profile.metadata.profile?.phoneNumber || null,
+          gender: profile.metadata.profile?.gender || null,
+          avatar: profile.metadata.profile.avatarImage?.url || null,
+          role: profile.metadata.profile?.role || null,
         });
       }
     } catch (error) {

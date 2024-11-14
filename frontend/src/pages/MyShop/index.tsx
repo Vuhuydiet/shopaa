@@ -4,7 +4,7 @@ import { useUser } from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 const MyShop: React.FC = () => {
-  const { user } = useUser();
+  const { user, refreshUser } = useUser();
   const navigate = useNavigate();
 
   const [isSeller, setIsSeller] = useState<boolean>(false);

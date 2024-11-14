@@ -1,9 +1,7 @@
+import { ProductCatalog } from '../../components/product-catalog/product-catalog';
+
 const Category: React.FC = () => {
-  return (
-    <>
-      <h1 style={{ color: 'red' }}>CATEGORY</h1>
-    </>
-  );
+  return <ProductCatalog />;
 };
 
 export default Category;
