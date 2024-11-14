@@ -14,5 +14,5 @@ model Product {
     categories    ProductCategory[]
     productImages ProductImage[]
 
-    cartproduct Cart[]
+    cartproduct CartDetail[]
 }

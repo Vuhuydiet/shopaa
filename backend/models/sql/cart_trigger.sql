@@ -17,7 +17,7 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE TRIGGER tg_prevent_seller_from_buying
-BEFORE INSERT OR UPDATE ON "Cart"
+BEFORE INSERT OR UPDATE ON "CartDetail"
 FOR EACH ROW
 EXECUTE FUNCTION fn_prevent_seller_from_buying();
 
@@ -28,7 +28,7 @@ CREATE OR REPLACE FUNCTION fn_check_cart_quantity()
 RETURNS TRIGGER AS $$
 BEGIN
         IF(
-            SELECT COUNT(*) FROM "Cart" WHERE "userId"=new."userId"
+            SELECT COUNT(*) FROM "CartDetail" WHERE "userId"=new."userId"
         ) >200
         THEN 
             RAISE EXCEPTION 'The maximum number of products in the shopping cart is 200';
@@ -38,7 +38,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER tg_cart_quantity_limit
-BEFORE INSERT OR UPDATE ON "Cart"
+BEFORE INSERT OR UPDATE ON "CartDetail"
 FOR EACH ROW
 EXECUTE FUNCTION fn_check_cart_quantity();
 
