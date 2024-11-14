@@ -1,7 +1,7 @@
 import express from 'express';
 import userController from './user.controller';
 import { body, param } from 'express-validator';
-import { handleValidationErrors } from '../../libraries/validator/Validator';
+import { handleValidationErrors } from '../../libraries/validator/validator';
 import passport, {
   verifyTokenIfExists,
 } from '../../libraries/auth/authentication.middleware';
@@ -27,12 +27,7 @@ const userProfileValidator = () => {
 router.get(
   '/:userId',
   verifyTokenIfExists,
-  param('userId')
-    .notEmpty()
-    .withMessage('User ID is required')
-    .isInt()
-    .withMessage('User ID must be a number'),
-
+  userIdValidator(),
   handleValidationErrors,
 
   userController.getUserProfile,

@@ -6,7 +6,7 @@ import GlobalProvider from './context/GlobalProvider';
 function App() {
   return (
     <>
-      <BrowserRouter>
+      <BrowserRouter basename="/">
         <GlobalProvider>
           <AllRoute />
         </GlobalProvider>

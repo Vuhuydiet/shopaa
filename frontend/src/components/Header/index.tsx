@@ -114,7 +114,8 @@ const HeaderComponent: React.FC = () => {
                       className="header__icon"
                     >
                       <Avatar
-                        icon={<UserOutlined />}
+                        src={user?.avatar || undefined}
+                        icon={user?.avatar ? null : <UserOutlined />}
                         style={{
                           marginRight: '10px',
                           fontSize: '25px',
