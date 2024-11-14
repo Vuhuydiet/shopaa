@@ -31,7 +31,7 @@
   text-decoration: none;
 }
 .header__logo img {
-  width: 140px;
+  width: 120px;
   height: auto;
 }
 
@@ -43,6 +43,7 @@
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  gap: 10px;
 }
 
 .header__component-top {
@@ -52,7 +53,7 @@
   align-items: center;
 }
 .header__component-top .ant-badge .anticon {
-  font-size: clamp(14px, 2vw, 20px);
+  font-size: clamp(12px, 2vw, 16px);
 }
 
 .header__component-bottom {
@@ -70,13 +71,13 @@
 
 .header__component-bottom .ant-input {
   font-size: 18px;
-  height: 42px;
+  height: 40px;
   padding: 0 16px;
   border-radius: 8px;
 }
 
 .header__component-bottom .ant-input-search-button {
-  height: 42px;
+  height: 40px;
   width: 56px;
   border: 2px solid white;
   background-color: #9900ff;
@@ -93,7 +94,7 @@
   transition:
     color 0.3s ease,
     transform 0.3s ease;
-  font-size: clamp(14px, 2vw, 20px);
+  font-size: clamp(12px, 2vw, 16px);
   margin-left: 20px;
 }
 

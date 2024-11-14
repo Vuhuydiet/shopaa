@@ -2,34 +2,35 @@ import express from 'express';
 import userController from './user.controller';
 import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
-import passport, { verifyTokenIfExists } from '../../libraries/auth/authentication.middleware';
+import passport, {
+  verifyTokenIfExists,
+} from '../../libraries/auth/authentication.middleware';
 import upload from '../../libraries/imageUploader/multer';
 const router = express.Router();
 
 const userIdValidator = () => {
-  return [
-    param('userId').isNumeric().toInt(),
-  ];
-}
+  return [param('userId').isNumeric().toInt()];
+};
 
 const userProfileValidator = () => {
   return [
-    body('profile')                             .isJSON()     .customSanitizer(JSON.parse as any),
-    body('profile.fullname')        .optional() .isString(),
-    body('profile.dateOfBirth')     .optional() .isISO8601()  .toDate(),
-    body('profile.gender')          .optional() .isString(),
-    body('profile.phoneNumber')     .optional() .isMobilePhone('any'),
+    body('profile')
+      .isJSON()
+      .customSanitizer(JSON.parse as any),
+    body('profile.fullname').optional().isString(),
+    body('profile.dateOfBirth').optional().isISO8601().toDate(),
+    body('profile.gender').optional().isString(),
+    body('profile.phoneNumber').optional().isMobilePhone('any'),
   ];
-}
+};
 
 router.get(
   '/:userId',
   verifyTokenIfExists,
- 
   userIdValidator(),
   handleValidationErrors,
 
-  userController.getUserProfile
+  userController.getUserProfile,
 );
 
 router.patch(
@@ -39,15 +40,15 @@ router.patch(
   upload.single('avatar'),
   userProfileValidator(),
   handleValidationErrors,
-  
-  userController.updateUserProfile
+
+  userController.updateUserProfile,
 );
 
 router.delete(
   '/',
   passport.authenticate('jwt', { session: false }),
-  
-  userController.deleteUser
+
+  userController.deleteUser,
 );
 
 export default router;
