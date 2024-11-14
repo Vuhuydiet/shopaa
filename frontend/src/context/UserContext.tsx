@@ -20,6 +20,7 @@ interface UserContextType {
   user: UserProfile | null;
   setUser: (user: UserProfile) => void;
   refreshUser: () => Promise<void>;
+  resetUser: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -35,13 +36,14 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
       const userID = localStorage.getItem('userId');
       if (token && userID) {
         const profile = await getUserProfile(parseInt(userID, 10), token);
+        console.log(profile.metadata.profile);
         setUser({
-          fullname: profile.metadata.profile.fullname || null,
-          dateOfBirth: profile.metadata.profile.dateOfBirth || null,
-          phoneNumber: profile.metadata.profile.phoneNumber || null,
-          gender: profile.metadata.profile.gender || null,
-          avatar: profile.metadata.profile.avatarImage.url || null,
-          role: profile.metadata.profile.role || null,
+          fullname: profile.metadata.profile?.fullname || null,
+          dateOfBirth: profile.metadata.profile?.dateOfBirth || null,
+          phoneNumber: profile.metadata.profile?.phoneNumber || null,
+          gender: profile.metadata.profile?.gender || null,
+          avatar: profile.metadata.profile.avatarImage?.url || null,
+          role: profile.metadata.profile?.role || null,
         });
       }
     } catch (error) {
@@ -53,12 +55,16 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     await fetchUserData();
   };
 
+  const resetUser = () => {
+    setUser(null);
+  };
+
   useEffect(() => {
     fetchUserData();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, refreshUser }}>
+    <UserContext.Provider value={{ user, setUser, refreshUser, resetUser }}>
       {children}
     </UserContext.Provider>
   );
