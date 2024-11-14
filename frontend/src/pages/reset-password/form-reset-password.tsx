@@ -25,17 +25,13 @@ export const FormResetPassword = () => {
 
   const onFinishResetPassword = async (values: any) => {
     const data = { ...values, email: email };
-    console.log(data);
+    console.log('email: ', data);
     try {
-      const res = await axios.post(
-        AUTH_API_ENDPOINTS.FORGOT_PASSWORD,
-        data,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const res = await axios.post(AUTH_API_ENDPOINTS.FORGOT_PASSWORD, data, {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      });
       console.log(res.data);
       navigate('/login');
     } catch (error: any) {
@@ -136,10 +132,7 @@ export const FormResetPassword = () => {
                   },
                 ]}
               >
-                <Input.OTP
-                  length={6}
-                  autoFocus
-                />
+                <Input.OTP length={6} autoFocus />
               </Form.Item>
               <Form.Item style={{ margin: '0' }}>
                 <Button
