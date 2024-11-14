@@ -83,7 +83,7 @@ export const ProductGrid = () => {
   //         quantity: quantity,
   //         description: 'Ao thun dep',
   //         brand: 'Adidas',
-  //         categories: { add: [2] },
+  //         categories: { add: [34] },
   //         images: { add: [imageFile] }, // Add File objects here if needed
   //       };
 
@@ -93,7 +93,7 @@ export const ProductGrid = () => {
   //       console.error('Failed to create product:', error);
   //     }
   //   };
-  //   for (let i = 1; i <= 48; i++) {
+  //   for (let i = 1; i <= 96; i++) {
   //     createNewProduct(i * 1000, i);
   //   }
   // }, []);
