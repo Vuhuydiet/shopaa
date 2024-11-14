@@ -46,7 +46,6 @@ export const FormLogin = () => {
 
   const onFinish = (values: any) => {
     login(values);
-    navigate('/');
   };
 
   const onFinishFailed = (errorInfo: any) => {
