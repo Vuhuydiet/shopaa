@@ -5,4 +5,5 @@ model UserAccount {
     email    String @unique
 
     profile UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    
 }

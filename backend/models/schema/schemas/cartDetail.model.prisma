@@ -1,0 +1,10 @@
+model CartDetail{
+    userId Int
+    productId Int
+    createdAt DateTime @default(now())
+
+    @@id([userId,productId])
+
+    user UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
+}

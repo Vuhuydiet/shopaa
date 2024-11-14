@@ -1,0 +1,11 @@
+model Voucher {
+    voucherId         Int      @id @default(autoincrement())
+    voucherCode       String   @unique
+    description       String?
+    discountValue     Int
+    minimumOrderValue Int
+    startDate         DateTime
+    expiryDate        DateTime
+
+    voucher UsableVoucher []
+}

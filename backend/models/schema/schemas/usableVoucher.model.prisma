@@ -1,0 +1,10 @@
+model UsableVoucher{
+    userId Int
+    voucherId Int
+    isUsed Boolean
+
+    @@id([userId,voucherId])
+
+    voucher Voucher @relation(fields: [voucherId], references: [voucherId], onDelete: Cascade)
+    user UserProfile @relation(fields: [userId],references: [userId])
+}

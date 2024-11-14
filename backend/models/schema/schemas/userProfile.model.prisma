@@ -9,7 +9,8 @@ model UserProfile {
   userAccount   UserAccount?
 
   shop Shop?
-  cart Cart[]
+  cart CartDetail[]
+  voucher UsableVoucher[]
 
   avatarImageId String? @unique
   avatarImage   Image?  @relation(fields: [avatarImageId], references: [publicId], onDelete: SetNull)
