@@ -17,7 +17,7 @@ const { Search } = Input;
 
 const HeaderComponent: React.FC = () => {
   const { isAuthenticated, logout } = useAuthContext();
-  const { user, refreshUser } = useUser();
+  const { user, refreshUser, resetUser } = useUser();
   useEffect(() => {
     if (isAuthenticated) {
       refreshUser();
@@ -27,6 +27,7 @@ const HeaderComponent: React.FC = () => {
   const cartItemCount = 3;
 
   const handleLogout = () => {
+    resetUser();
     logout();
   };
   const location = useLocation();
