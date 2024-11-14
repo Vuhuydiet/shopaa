@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 
 // JWT KEYS
 if (!process.env.JWT_PUBLIC_KEY || !process.env.JWT_PRIVATE_KEY) {

@@ -13,4 +13,6 @@ model Product {
     shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Cascade)
     categories    ProductCategory[]
     productImages ProductImage[]
+
+    cartproduct Cart[]
 }
