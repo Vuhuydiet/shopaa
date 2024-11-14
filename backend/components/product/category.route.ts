@@ -6,7 +6,7 @@ import passport from '../../libraries/auth/authentication.middleware';
 import Auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import { body, param } from 'express-validator';
-import { handleValidationErrors } from '../../libraries/validator/Validator';
+import { handleValidationErrors } from '../../libraries/validator/validator';
 
 const IdValidator = () => {
   return [

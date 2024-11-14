@@ -61,6 +61,10 @@ const Profile: React.FC = () => {
       return false;
     }
 
+    if (!isImage) {
+      alert('You can only upload image files!');
+    }
+
     setImage(file);
     return false;
   };
