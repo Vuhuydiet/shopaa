@@ -1,4 +1,4 @@
-import { Layout, Pagination } from 'antd';
+import { Layout } from 'antd';
 import { CategoryFilter } from '../category-filter/category-filter';
 import { SortOptions } from '../sort-options/sort-options';
 import { ProductGrid } from '../product-grid/product-grid';
@@ -63,16 +63,7 @@ export const ProductCatalog = () => {
 
   return (
     <Layout>
-      <Sider
-        breakpoint="lg"
-        collapsedWidth="0"
-        onBreakpoint={(broken) => {
-          //console.log(broken);
-        }}
-        onCollapse={(collapsed, type) => {
-          //console.log(collapsed, type);
-        }}
-      >
+      <Sider breakpoint="lg" collapsedWidth="0">
         <div className="demo-logo-vertical" />
         <CategoryFilter />
       </Sider>

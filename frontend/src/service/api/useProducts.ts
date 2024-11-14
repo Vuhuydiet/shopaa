@@ -3,9 +3,6 @@ import { IFilterProduct } from '../../interfaces/IFilterProduct';
 import { useQuery } from 'react-query';
 import { AUTH_API_ENDPOINTS } from '../../config/API_config';
 import { IProduct } from '../../interfaces/IProduct';
-import { useDispatch } from 'react-redux';
-import { setPagination } from '../state/slices/pagination-slice';
-import { IProductResponse } from '../../interfaces/IProductResponse';
 
 export const useProducts = (params: IFilterProduct) => {
   return useQuery(['products', params], () => getProducts(params));
