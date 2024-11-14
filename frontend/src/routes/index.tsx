@@ -21,7 +21,7 @@ export const routes = [
         element: <PrivateRoutes />,
         children: [
           {
-            path: '/user',
+            path: 'user',
             element: <UserAccountPage />,
             children: [
               {
@@ -51,10 +51,10 @@ export const routes = [
             ],
           },
           {
-            path: '/notifications',
+            path: 'notifications',
           },
           {
-            path: '/cart',
+            path: 'cart',
           },
           {
             path: '/manager-shop',
