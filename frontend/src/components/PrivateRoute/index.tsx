@@ -8,7 +8,15 @@ const PrivateRoutes: React.FC = () => {
   if (loading) {
     return (
       <>
-        <Spin />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Spin />
+        </div>
       </>
     );
   }

@@ -9,7 +9,7 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import './HeaderStyle.css';
-import logo from '../../images/logo.png';
+import logo from '../../assets/images/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
 
