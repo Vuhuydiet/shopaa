@@ -11,6 +11,7 @@ import Account from '../components/MyAccount/Account';
 import ShopPage from '../pages/Shop';
 import Category from '../pages/Category';
 import ManagerShop from '../pages/ManagerShop';
+import { Home } from '../pages/Home/Home';
 
 export const routes = [
   {
@@ -49,6 +50,14 @@ export const routes = [
                 element: <MyShop />,
               },
             ],
+          },
+          {
+            index: true,
+            element: <Navigate to="/home" replace />,
+          },
+          {
+            path: 'home',
+            element: <Home />,
           },
           {
             path: 'notifications',
