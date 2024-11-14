@@ -4,6 +4,7 @@ import logo from '../../assets/images/logo.png';
 import { useState } from 'react';
 import { RegisterProvider } from '../../context/RegisterContext';
 import OtpForm from '../../components/Register/OtpForm';
+import { NavLink } from 'react-router-dom';
 
 const RegisterPage: React.FC = () => {
   const [showOtpForm, setShowOtpForm] = useState(false);
@@ -20,11 +21,13 @@ const RegisterPage: React.FC = () => {
       <RegisterProvider>
         <div className="Register__container">
           <div className="Register__image">
-            <img
-              src={logo}
-              alt="Description"
-              className="Register__image-logo"
-            />
+            <NavLink to="/">
+              <img
+                src={logo}
+                alt="Description"
+                className="Register__image-logo"
+              />
+            </NavLink>
           </div>
           <div className="Register__form">
             {showOtpForm ? (

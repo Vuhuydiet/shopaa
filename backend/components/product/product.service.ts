@@ -140,7 +140,6 @@ class ProductService {
         },
         select: { productId: true }
       });
-      console.log(productData.images?.add);
       const images = productData.images?.add ?
         await Promise.all(productData.images?.add?.map(image => ImageService.createImage(image, tx))) : [];
 

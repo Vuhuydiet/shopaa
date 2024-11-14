@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Layout, Menu, Input, Badge, Dropdown, Avatar, Row, Col } from 'antd';
+import { Input, Badge, Dropdown, Avatar, Row, Col, MenuProps } from 'antd';
 import {
   BellOutlined,
   UserOutlined,
@@ -10,24 +10,50 @@ import {
 } from '@ant-design/icons';
 import './HeaderStyle.css';
 import logo from '../../assets/images/logo.png';
+import { useAuthContext } from '../../context/AuthContext';
+import { useUser } from '../../context/UserContext';
 
-const { Header } = Layout;
 const { Search } = Input;
 
 const HeaderComponent: React.FC = () => {
-  const isLoginedIn = true;
-  const userName = 'Thanh Trúc';
+  const { isAuthenticated, logout } = useAuthContext();
+  const { user, refreshUser } = useUser();
+  useEffect(() => {
+    if (isAuthenticated) {
+      refreshUser();
+    }
+  }, [isAuthenticated]);
   const unreadNotifications = 5;
   const cartItemCount = 3;
 
   const handleLogout = () => {
-    console.log('Logged out');
+    logout();
   };
-
   const location = useLocation();
 
+  const menuItems: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <NavLink to="/user">
+          <UserOutlined style={{ marginRight: '10px', color: '#0000CD' }} />
+          My account
+        </NavLink>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <div onClick={handleLogout}>
+          <LogoutOutlined style={{ marginRight: '10px', color: '#B8860B' }} />{' '}
+          Logout
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <Header className="header">
+    <div className="header">
       <div className="header__container">
         <div className="header__logo">
           <NavLink to="/" className="header__icon">
@@ -41,7 +67,7 @@ const HeaderComponent: React.FC = () => {
             gutter={[16, 16]}
             className="header__component-top"
           >
-            {isLoginedIn ? (
+            {isAuthenticated ? (
               <>
                 <Col
                   style={{
@@ -64,48 +90,40 @@ const HeaderComponent: React.FC = () => {
                   >
                     <Badge count={unreadNotifications}>
                       <BellOutlined
-                        style={{ fontSize: '30px' }}
+                        style={{ fontSize: '28px' }}
                         className="header__icon"
                       />
                     </Badge>
                   </NavLink>
                 </Col>
 
-                <Col style={{ display: 'flex', alignItems: 'center' }}>
-                  <Dropdown
-                    overlay={
-                      <Menu>
-                        <Menu.Item>
-                          <NavLink
-                            to="/profile"
-                            className={
-                              location.pathname === '/profile'
-                                ? 'active-link'
-                                : ''
-                            }
-                          >
-                            <UserOutlined style={{ marginRight: '10px' }} />
-                            Profile
-                          </NavLink>
-                        </Menu.Item>
-                        <Menu.Item onClick={handleLogout}>
-                          <LogoutOutlined
-                            style={{ marginRight: '10px', color: '#9999FF' }}
-                          />{' '}
-                          Logout
-                        </Menu.Item>
-                      </Menu>
-                    }
-                  >
+                <Col
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: 'auto',
+                  }}
+                >
+                  <Dropdown menu={{ items: menuItems }}>
                     <div
-                      style={{ display: 'flex', alignItems: 'center' }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        height: 'auto',
+                      }}
                       className="header__icon"
                     >
                       <Avatar
-                        icon={<UserOutlined />}
-                        style={{ marginRight: '10px', fontSize: '25px' }}
+                        src={user?.avatar || undefined}
+                        icon={user?.avatar ? null : <UserOutlined />}
+                        style={{
+                          marginRight: '10px',
+                          fontSize: '25px',
+                        }}
                       />
-                      <div>{userName}</div>
+                      <div style={{ color: 'black' }}>
+                        {user?.fullname || 'User'}
+                      </div>
                     </div>
                   </Dropdown>
                 </Col>
@@ -116,7 +134,9 @@ const HeaderComponent: React.FC = () => {
                   <NavLink
                     to="/login"
                     className={
-                      location.pathname === '/login' ? 'active-link' : ''
+                      location.pathname === '/login'
+                        ? 'header__link active-link'
+                        : 'header__link'
                     }
                   >
                     Login
@@ -124,7 +144,9 @@ const HeaderComponent: React.FC = () => {
                   <NavLink
                     to="/register"
                     className={
-                      location.pathname === '/register' ? 'active-link' : ''
+                      location.pathname === '/register'
+                        ? 'header__link active-link'
+                        : 'header__link'
                     }
                   >
                     Signup
@@ -143,7 +165,7 @@ const HeaderComponent: React.FC = () => {
               <Search
                 placeholder="Search"
                 style={{ width: '100%' }}
-                enterButton={<SearchOutlined style={{ fontSize: '30px' }} />}
+                enterButton={<SearchOutlined style={{ fontSize: '28px' }} />}
               />
             </Col>
 
@@ -154,7 +176,7 @@ const HeaderComponent: React.FC = () => {
                   className={location.pathname === '/cart' ? 'active-link' : ''}
                 >
                   <ShoppingCartOutlined
-                    style={{ fontSize: '42px', color: '#0033FF' }}
+                    style={{ fontSize: '40px', color: '#0033FF' }}
                     className="header__icon"
                   />
                 </NavLink>
@@ -163,7 +185,7 @@ const HeaderComponent: React.FC = () => {
           </Row>
         </div>
       </div>
-    </Header>
+    </div>
   );
 };
 
