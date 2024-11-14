@@ -1,11 +1,13 @@
 import { Button, Card, Col, Form, Input, message, Row, Typography } from 'antd';
 import logo from '../../assets/images/logo.png';
 import { registerShop } from '../../service/shopService';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
 const RegisterShopForm: React.FC = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
@@ -20,7 +22,7 @@ const RegisterShopForm: React.FC = () => {
         const res = await registerShop(token, data);
         if (res) {
           message.success('Shop registered successfully!');
-          // link den trang quan ly shop
+          navigate('/manager-shop');
         }
       }
     } catch (error) {

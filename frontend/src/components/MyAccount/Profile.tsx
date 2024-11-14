@@ -49,9 +49,22 @@ const Profile: React.FC = () => {
 
   const beforeUpload = (file: File) => {
     const isImage = file.type.startsWith('image/');
+    const isUnder1MB = file.size / 1024 / 1024 <= 1; // 1MB
+
+    if (!isImage) {
+      message.error('You can only upload image files!');
+      return false;
+    }
+
+    if (!isUnder1MB) {
+      message.error('Image must be smaller than 1MB!');
+      return false;
+    }
+
     if (!isImage) {
       alert('You can only upload image files!');
     }
+
     setImage(file);
     return false;
   };
@@ -203,6 +216,7 @@ const Profile: React.FC = () => {
                   showUploadList={false}
                   action="/uploadImage"
                   beforeUpload={beforeUpload}
+                  accept="image/*"
                 >
                   <Button
                     icon={<UploadOutlined style={{ color: '#8A2BE2' }} />}
@@ -210,6 +224,15 @@ const Profile: React.FC = () => {
                     Choose Image
                   </Button>
                 </Upload>
+                <div
+                  style={{
+                    marginTop: '10px',
+                    fontSize: '14px',
+                    color: '#8A2BE2',
+                  }}
+                >
+                  <small>Only images under 1MB are allowed.</small>
+                </div>
               </Col>
             </Row>
           </Form>
