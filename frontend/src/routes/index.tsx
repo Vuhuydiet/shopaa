@@ -18,7 +18,7 @@ export const routes = [
         element: <PrivateRoutes />,
         children: [
           {
-            path: '/user',
+            path: 'user',
             element: <UserAccountPage />,
             children: [
               {
@@ -48,13 +48,49 @@ export const routes = [
             ],
           },
           {
-            path: '/notifications',
+            path: 'notifications',
           },
           {
-            path: '/cart',
+            path: 'cart',
           },
         ],
       },
+
+      //   path: 'user',
+      //   element: <UserAccountPage />,
+      //   children: [
+      //     {
+      //       index: true,
+      //       element: <Navigate to="/user/account/profile" replace />,
+      //     },
+      //     {
+      //       path: 'account/profile',
+      //       element: <Profile />,
+      //     },
+      //     {
+      //       path: 'account/address',
+      //       // element: <Address />, // Component Address
+      //     },
+      //     {
+      //       path: 'account/setting',
+      //       element: <Account />,
+      //     },
+      //     {
+      //       path: 'orders',
+      //       // element: <Order />, // Component Order
+      //     },
+      //     {
+      //       path: 'myshop',
+      //       element: <MyShop />,
+      //     },
+      //   ],
+      // },
+      // {
+      //   path: 'notifications',
+      // },
+      // {
+      //   path: 'cart',
+      // },
     ],
   },
   {
