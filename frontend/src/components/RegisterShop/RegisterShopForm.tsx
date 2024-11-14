@@ -1,5 +1,5 @@
 import { Button, Card, Col, Form, Input, message, Row, Typography } from 'antd';
-import logo from '../../images/logo.png';
+import logo from '../../assets/images/logo.png';
 import { registerShop } from '../../service/shopService';
 
 const { Title } = Typography;
