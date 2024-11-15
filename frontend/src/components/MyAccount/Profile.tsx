@@ -28,6 +28,8 @@ const { Title } = Typography;
 
 const Profile: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
   const [form] = Form.useForm();
   const [image, setImage] = useState<File | null>(null);
 
@@ -47,9 +49,13 @@ const Profile: React.FC = () => {
     }
   }, [user, form]);
 
+  const toggleEditMode = () => {
+    setIsEditing(!isEditing);
+  };
+
   const beforeUpload = (file: File) => {
     const isImage = file.type.startsWith('image/');
-    const isUnder1MB = file.size / 1024 / 1024 <= 1; // 1MB
+    const isUnder1MB = file.size / 1024 / 1024 <= 1;
 
     if (!isImage) {
       message.error('You can only upload image files!');
@@ -81,10 +87,12 @@ const Profile: React.FC = () => {
       gender: gender,
     };
     const token = localStorage.getItem('token') || '';
+    console.log('data user update: ', updatedProfileData);
     try {
       await updateUserProfile(token, updatedProfileData, image || null);
       message.success('Update profile successfully!');
       refreshUser();
+      setIsEditing(false);
       setLoading(false);
     } catch (error) {
       console.error('', error);
@@ -108,7 +116,9 @@ const Profile: React.FC = () => {
                   labelCol={{ flex: '100px' }}
                   wrapperCol={{ flex: 'auto' }}
                   style={{ margin: '30px' }}
-                  className="custom-label"
+                  className={
+                    isEditing ? 'custom-label editable-input' : 'custom-label'
+                  }
                   rules={[
                     {
                       required: true,
@@ -116,7 +126,7 @@ const Profile: React.FC = () => {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input disabled={!isEditing} />
                 </Form.Item>
                 <Form.Item
                   label="Birthday"
@@ -124,7 +134,9 @@ const Profile: React.FC = () => {
                   labelCol={{ flex: '100px' }}
                   wrapperCol={{ flex: 'auto' }}
                   style={{ margin: '30px' }}
-                  className="custom-label"
+                  className={
+                    isEditing ? 'custom-label editable-input' : 'custom-label'
+                  }
                   rules={[
                     {
                       required: true,
@@ -144,6 +156,7 @@ const Profile: React.FC = () => {
                     style={{
                       width: '100%',
                     }}
+                    disabled={!isEditing}
                     placeholder="Select Birthday"
                     format="DD/MM/YYYY"
                     showTime={false}
@@ -166,7 +179,9 @@ const Profile: React.FC = () => {
                   labelCol={{ flex: '100px' }}
                   wrapperCol={{ flex: 'auto' }}
                   style={{ margin: '30px' }}
-                  className="custom-label"
+                  className={
+                    isEditing ? 'custom-label editable-input' : 'custom-label'
+                  }
                   rules={[
                     {
                       required: true,
@@ -178,7 +193,7 @@ const Profile: React.FC = () => {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input disabled={!isEditing} />
                 </Form.Item>
                 <Form.Item
                   label="Gender"
@@ -186,9 +201,11 @@ const Profile: React.FC = () => {
                   labelCol={{ flex: '100px' }}
                   wrapperCol={{ flex: 'auto' }}
                   style={{ margin: '30px' }}
-                  className="custom-label"
+                  className={
+                    isEditing ? 'custom-label editable-input' : 'custom-label'
+                  }
                 >
-                  <Radio.Group className="custom-radio">
+                  <Radio.Group className="custom-radio" disabled={!isEditing}>
                     <Radio value="male">Male</Radio>
                     <Radio value="female">Female</Radio>
                   </Radio.Group>
@@ -217,9 +234,15 @@ const Profile: React.FC = () => {
                   action="/uploadImage"
                   beforeUpload={beforeUpload}
                   accept="image/*"
+                  disabled={!isEditing}
                 >
                   <Button
-                    icon={<UploadOutlined style={{ color: '#8A2BE2' }} />}
+                    icon={
+                      <UploadOutlined
+                        style={{ color: '#8A2BE2' }}
+                        disabled={!isEditing}
+                      />
+                    }
                   >
                     Choose Image
                   </Button>
@@ -246,7 +269,11 @@ const Profile: React.FC = () => {
             }}
           >
             <div style={{ marginTop: '30px' }}>
-              {loading ? (
+              {!isEditing ? (
+                <Button type="primary" onClick={toggleEditMode}>
+                  Edit
+                </Button>
+              ) : loading ? (
                 <Spin />
               ) : (
                 <Button

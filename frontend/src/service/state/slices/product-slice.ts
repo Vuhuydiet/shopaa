@@ -33,7 +33,24 @@ export const productSlice = createSlice({
             : product.publishedAt,
       }));
     },
+
+    addProduct: (state, action: PayloadAction<IProduct>) => {
+      state.items.push({
+        ...action.payload,
+        images: action.payload.images.map((image: IImage) => ({
+          ...image,
+          createdAt:
+            image.createdAt instanceof Date
+              ? serializeDate(image.createdAt)
+              : image.createdAt,
+        })),
+        publishedAt:
+          action.payload.publishedAt instanceof Date
+            ? serializeDate(action.payload.publishedAt)
+            : action.payload.publishedAt,
+      });
+    },
   },
 });
 
-export const { setProducts } = productSlice.actions;
+export const { setProducts, addProduct } = productSlice.actions;

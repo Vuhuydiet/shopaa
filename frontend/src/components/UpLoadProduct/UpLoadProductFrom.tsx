@@ -31,7 +31,6 @@ const UploadProductForm: React.FC = () => {
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
 
   const handlePreviewUrl = (file: RcFile) => {
-    // Tạo URL xem trước và trả về tệp với thuộc tính preview
     return {
       ...file,
       preview: URL.createObjectURL(file),
@@ -187,36 +186,6 @@ const UploadProductForm: React.FC = () => {
           />
         </Form.Item>
 
-        {/* =================================================================== */}
-        {/* <Form.Item label="Product Images" required>
-          <Upload
-            name="images"
-            listType="picture-card"
-            fileList={imageFiles}
-            beforeUpload={(file) => {
-              setImageFiles((prevFiles) => [
-                ...prevFiles,
-                {
-                  ...file,
-                  preview: URL.createObjectURL(file),
-                },
-              ]);
-              return false; // Ngăn tự động tải lên
-            }}
-            onChange={handleImageChange}
-            multiple
-            showUploadList={{ showRemoveIcon: true }}
-          >
-            {imageFiles.length >= 5 ? null : (
-              <div>
-                <PlusOutlined /> Upload
-              </div>
-            )}
-          </Upload>
-        </Form.Item>
-        
-        */}
-
         <Form.Item label="Product Images" required>
           <Upload
             name="images"
@@ -225,7 +194,7 @@ const UploadProductForm: React.FC = () => {
             beforeUpload={(file: RcFile) => {
               const fileWithPreview = handlePreviewUrl(file);
               setImageFiles((prevFiles) => [...prevFiles, fileWithPreview]);
-              return false; // Ngăn tự động tải lên
+              return false;
             }}
             onChange={handleImageChange}
             multiple
@@ -238,7 +207,6 @@ const UploadProductForm: React.FC = () => {
             )}
           </Upload>
         </Form.Item>
-        {/* ================================== */}
 
         <Form.Item>
           <Space>
