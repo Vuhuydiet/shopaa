@@ -19,6 +19,14 @@ export const routes = [
     element: <LayoutBasic />,
     children: [
       {
+        index: true,
+        element: <Navigate to="/home" replace />,
+      },
+      {
+        path: 'home',
+        element: <Home />,
+      },
+      {
         element: <PrivateRoutes />,
         children: [
           {
@@ -50,14 +58,6 @@ export const routes = [
                 element: <MyShop />,
               },
             ],
-          },
-          {
-            index: true,
-            element: <Navigate to="/home" replace />,
-          },
-          {
-            path: 'home',
-            element: <Home />,
           },
           {
             path: 'notifications',
