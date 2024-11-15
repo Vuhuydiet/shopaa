@@ -50,6 +50,17 @@ const Profile: React.FC = () => {
   }, [user, form]);
 
   const toggleEditMode = () => {
+    if (isEditing) {
+      if (user) {
+        form.setFieldsValue({
+          fullname: user.fullname || '',
+          birthday: user.dateOfBirth ? dayjs(user.dateOfBirth).utc() : null,
+          phone: user.phoneNumber || '',
+          gender: user.gender || '',
+        });
+        setImage(null);
+      }
+    }
     setIsEditing(!isEditing);
   };
 
@@ -268,24 +279,43 @@ const Profile: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <div style={{ marginTop: '30px' }}>
+            <div style={{ marginTop: '20px' }}>
               {!isEditing ? (
-                <Button type="primary" onClick={toggleEditMode}>
-                  Edit
-                </Button>
-              ) : loading ? (
-                <Spin />
-              ) : (
                 <Button
                   type="primary"
-                  onClick={handleSave}
+                  onClick={toggleEditMode}
                   style={{
                     padding: '20px',
                     fontSize: '14px',
                   }}
                 >
-                  Save changes
+                  Edit Profile
                 </Button>
+              ) : loading ? (
+                <Spin />
+              ) : (
+                <>
+                  <Button
+                    onClick={toggleEditMode}
+                    style={{
+                      padding: '20px',
+                      fontSize: '14px',
+                      marginRight: '30px',
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={handleSave}
+                    style={{
+                      padding: '20px',
+                      fontSize: '14px',
+                    }}
+                  >
+                    Save changes
+                  </Button>
+                </>
               )}
             </div>
           </Col>
