@@ -12,6 +12,8 @@ import ShopPage from '../pages/Shop';
 import Category from '../pages/Category';
 import ManagerShop from '../pages/ManagerShop';
 import { Home } from '../pages/Home/Home';
+import UploadProductForm from '../components/UpLoadProduct/UpLoadProductFrom';
+import ListProductShop from '../components/ListProductShop';
 
 export const routes = [
   {
@@ -74,12 +76,16 @@ export const routes = [
                 element: <Navigate to="/manager-shop/list-product" replace />,
               },
               {
-                path: 'shop-info',
-                // element: <Profile />, information of shop
+                path: 'list-product',
+                element: <ListProductShop />,
               },
               {
-                path: 'list-product',
-                // element: <Profile />, list product of shop
+                path: 'add-product',
+                element: <UploadProductForm />,
+              },
+              {
+                path: 'shop-info',
+                // element: <Profile />, information of shop
               },
             ],
           },

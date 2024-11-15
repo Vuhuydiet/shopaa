@@ -15,6 +15,10 @@ import { PlusOutlined } from '@ant-design/icons';
 import { RcFile, UploadFile } from 'antd/es/upload/interface';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 import './UpLoadProductFromStyle.css';
+import { useCategories } from '../../service/api/useCategories';
+import { ICategory } from '../../interfaces/ICategory';
+import axios from 'axios';
+import { AUTH_API_ENDPOINTS } from '../../config/API_config';
 
 const { Option } = Select;
 
@@ -29,6 +33,16 @@ interface ProductData {
 
 const UploadProductForm: React.FC = () => {
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
+  const [productData, setProductData] = useState<ProductData>({
+    name: '',
+    price: 0,
+    quantity: 0,
+  });
+
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Use useNavigate hook
+
+  const { data: categories, isLoading } = useCategories();
 
   const handlePreviewUrl = (file: RcFile) => {
     return {
@@ -50,48 +64,30 @@ const UploadProductForm: React.FC = () => {
     );
   };
 
-  //============================================
-
-  const [productData, setProductData] = useState<ProductData>({
-    name: '',
-    price: 0,
-    quantity: 0,
-  });
-
-  // const [imageFiles, setImageFiles] = useState<RcFile[]>([]);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // Use useNavigate hook
-
-  // const handleImageChange = (info: UploadChangeParam) => {
-  //   if (info.file.status === 'done') {
-  //     message.success(`${info.file.name} file uploaded successfully`);
-  //   } else if (info.file.status === 'error') {
-  //     message.error(`${info.file.name} file upload failed.`);
-  //   }
-  // };
-
   const handleSubmit = async () => {
-    // const formData = new FormData();
-    // formData.append('productData', JSON.stringify(productData));
-    // imageFiles.forEach((file) => {
-    //   formData.append('images', file);
-    // });
-    // setLoading(true);
-    // try {
-    //   const response = await axios.post('YOUR_API_URL_HERE', formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //   });
-    //   if (response.status === 200) {
-    //     message.success('Product uploaded successfully!');
-    //     navigate('/your-success-page'); // Use navigate to redirect after success
-    //   }
-    // } catch (error) {
-    //   message.error('Error uploading product');
-    // } finally {
-    //   setLoading(false);
-    // }
+    const formData = new FormData();
+    formData.append('productData', JSON.stringify(productData));
+    imageFiles.forEach((file) => {
+      formData.append('images', file.originFileObj as Blob);
+    });
+    console.log('Form data: ', formData);
+    setLoading(true);
+    try {
+      const response = await axios.post(AUTH_API_ENDPOINTS.PRODUCTS, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (response.status === 200) {
+        message.success('Product uploaded successfully!');
+        navigate('/manager-shop/list-product'); // Use navigate to redirect after success
+      }
+    } catch (error) {
+      message.error('Error uploading product');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -167,9 +163,11 @@ const UploadProductForm: React.FC = () => {
                 }
                 placeholder="Select categories"
               >
-                <Option value={1}>Category 1</Option>
-                <Option value={2}>Category 2</Option>
-                <Option value={3}>Category 3</Option>
+                {categories?.map((category: ICategory) => {
+                  <Option key={category.id} value={category.id}>
+                    {category.name}
+                  </Option>;
+                })}
               </Select>
             </Form.Item>
           </Col>
@@ -199,6 +197,7 @@ const UploadProductForm: React.FC = () => {
             onChange={handleImageChange}
             multiple
             showUploadList={{ showRemoveIcon: true }}
+            accept="image/*"
           >
             {imageFiles.length >= 5 ? null : (
               <div>
@@ -210,10 +209,9 @@ const UploadProductForm: React.FC = () => {
 
         <Form.Item>
           <Space>
-            <Button onClick={() => navigate('/your-cancel-page')}>
+            <Button onClick={() => navigate('/manager-shop/list-product')}>
               Cancel
-            </Button>{' '}
-            {/* Use navigate for cancel */}
+            </Button>
             <Button type="primary" htmlType="submit" loading={loading}>
               {loading ? 'Uploading...' : 'Upload Product'}
             </Button>
