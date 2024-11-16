@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { CreatedResponse, OKResponse } from "../../core/SuccessResponse";
 import AccessService from "./access.service";
-import EmailService from "../email/email.service";
+import EmailService from "../../externalServices/email/email.service";
 import { BadRequestError } from "../../core/ErrorResponse";
 import { matchedData } from "express-validator";
 import JWT from "../../libraries/auth/JWT";

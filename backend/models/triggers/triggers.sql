@@ -19,21 +19,6 @@ BEFORE INSERT OR UPDATE ON "UserProfile"
 FOR EACH ROW
 EXECUTE FUNCTION fn_check_age();
 
---------------------Gender is 'Male' or 'Female'-----------------------
-CREATE OR REPLACE FUNCTION fn_check_gender()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW."gender" NOT IN ('Male','Female','Other') THEN
-        RAISE EXCEPTION 'Invalid gender.';
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER tg_check_gender
-BEFORE INSERT OR UPDATE ON "UserProfile"
-FOR EACH ROW
-EXECUTE FUNCTION fn_check_gender();
 
 -----------------------fullname is not contain special character except space------
 CREATE OR REPLACE FUNCTION fn_check_fullname()
@@ -92,3 +77,18 @@ FOR EACH ROW
 EXECUTE FUNCTION fn_check_price();
 
 
+CREATE OR REPLACE FUNCTION fn_rollback_productImage_deletion()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (SELECT * FROM "Image" WHERE "imageId" = OLD."imageId") THEN
+        RAISE EXCEPTION 'Cannot delete ProductImage with a publicId that exists in Image table.';
+    END IF;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER tg_rollback_productImage_deletion
+BEFORE DELETE ON "ProductImage"
+FOR EACH ROW
+EXECUTE FUNCTION fn_rollback_productImage_deletion();

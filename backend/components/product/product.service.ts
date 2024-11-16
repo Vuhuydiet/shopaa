@@ -16,7 +16,7 @@ type ProductData = {
   brand?: string;
   images?: {
     add?: Express.Multer.File[],
-    remove?: string[]
+    remove?: number[]
   },
   categories?: {
     add?: number[],
@@ -140,8 +140,8 @@ class ProductService {
         },
         select: { productId: true }
       });
-      const images = productData.images?.add ?
-        await Promise.all(productData.images?.add?.map(image => ImageService.createImage(image, tx))) : [];
+
+      const images = await Promise.all((productData.images?.add || []).map(image => ImageService.createImage(image, tx)));
 
       await Promise.all(images.map(({ publicId }) => tx.productImage.create({
         data: {
@@ -251,7 +251,6 @@ class ProductService {
       });
 
       await Promise.all(deletingImages.map(({ imageId }) => ImageService.deleteImage(imageId, tx)));
-
       const newImages = await Promise.all((images?.add || []).map(image => ImageService.createImage(image, tx)));
 
       await tx.product.update({

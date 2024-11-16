@@ -5,7 +5,7 @@ import { handleValidationErrors } from '../../libraries/validator/validator';
 import passport, {
   verifyTokenIfExists,
 } from '../../libraries/auth/authentication.middleware';
-import upload from '../../libraries/imageUploader/multer';
+import upload from '../../libraries/utils/multer';
 const router = express.Router();
 
 const userIdValidator = () => {
@@ -19,7 +19,9 @@ const userProfileValidator = () => {
       .customSanitizer(JSON.parse as any),
     body('profile.fullname').optional().isString(),
     body('profile.dateOfBirth').optional().isISO8601().toDate(),
-    body('profile.gender').optional().isString(),
+    body('profile.gender')
+      .optional()
+      .custom((value) => ['male', 'female', 'other'].includes(value)),
     body('profile.phoneNumber').optional().isMobilePhone('any'),
   ];
 };
