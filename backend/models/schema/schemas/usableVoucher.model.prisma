@@ -5,6 +5,6 @@ model UsableVoucher{
 
     @@id([userId,voucherId])
 
-    voucher Voucher @relation(fields: [voucherId], references: [voucherId], onDelete: Cascade)
+    voucher Voucher @relation(fields: [voucherId], references: [voucherId], onDelete: Restrict)
     user UserProfile @relation(fields: [userId],references: [userId])
 }

@@ -10,7 +10,7 @@ model Product {
     productDescription String?
     numSoldProduct     Int      @default(0)
 
-    shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Cascade)
+    shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Restrict)
     categories    ProductCategory[]
     productImages ProductImage[]
 

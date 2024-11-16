@@ -5,6 +5,6 @@ model CartDetail{
 
     @@id([userId,productId])
 
-    user UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
-    product Product @relation(fields: [productId], references: [productId], onDelete: Cascade)
+    user UserProfile @relation(fields: [userId], references: [userId], onDelete: Restrict)
+    product Product @relation(fields: [productId], references: [productId], onDelete: Restrict)
 }

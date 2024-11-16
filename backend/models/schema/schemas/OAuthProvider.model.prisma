@@ -6,7 +6,7 @@ model OAuthProvider {
   refreshToken String?
   createdAt    DateTime @default(now())
 
-  profile UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  profile UserProfile @relation(fields: [userId], references: [userId], onDelete: Restrict)
 
   @@unique([providerName, providerUID])
 }
