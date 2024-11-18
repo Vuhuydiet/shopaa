@@ -1,5 +1,6 @@
 model Image {
-  publicId  String   @id
+  imageId   Int      @id @default(autoincrement())
+  publicId  String   @unique
   url       String
   createdAt DateTime @default(now())
 

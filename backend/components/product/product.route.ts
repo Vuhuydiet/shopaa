@@ -7,7 +7,7 @@ import Auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
-import upload from '../../libraries/imageUploader/multer';
+import upload from '../../libraries/utils/multer';
 
 
 const productIdValidator = () => {
@@ -20,18 +20,18 @@ const productDataValidator = (post: boolean) => {
   return [
     body('productData')                                 .isJSON()   .customSanitizer(JSON.parse as any),
     body('productData.name')                .if(() => post).isString(),
-    body('productData.price')               .if(() => post).isNumeric(),
-    body('productData.quantity')            .optional().isNumeric(),
+    body('productData.price')               .if(() => post).isNumeric() .toFloat(),
+    body('productData.quantity')            .optional().isInt().toInt(),
     body('productData.brand')               .optional() .isString(),
     body('productData.description')         .optional() .isString(),
     body('productData.categories')          .optional() .isObject(),
     body('productData.categories.add')      .optional() .isArray(),
-    body('productData.categories.add.*')    .optional() .isNumeric(),
+    body('productData.categories.add.*')    .optional() .isInt(),
     body('productData.categories.remove')   .optional() .isArray(),
-    body('productData.categories.remove.*') .optional() .isNumeric(),
+    body('productData.categories.remove.*') .optional() .isInt(),
     body('productData.images')              .optional() .isObject(),
     body('productData.images.remove')       .optional() .isArray(),
-    body('productData.images.remove.*')     .optional() .isString(),
+    body('productData.images.remove.*')     .optional() .isInt(),
   ];
 }
 
