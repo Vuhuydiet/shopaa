@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IPagination } from '../../../interfaces/IPagination';
+import CompareObjects from 'lodash/isEqual';
 
 export const paginationSlice = createSlice({
   name: 'pagination',
@@ -10,7 +11,9 @@ export const paginationSlice = createSlice({
   } as IPagination,
   reducers: {
     setPagination: (state, action) => {
-      return { ...state, ...action.payload };
+      const res = { ...state, ...action.payload };
+      if (CompareObjects(state, res)) return;
+      return res;
     },
   },
 });
