@@ -7,7 +7,7 @@ import Auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
-import upload from '../../libraries/imageUploader/multer';
+import upload from '../../libraries/utils/multer';
 
 
 const productIdValidator = () => {

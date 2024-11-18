@@ -1,11 +1,12 @@
-import { BadRequestError, NotFoundError } from '../../core/ErrorResponse';
+import { Gender } from '@prisma/client';
+import { NotFoundError } from '../../core/ErrorResponse';
 import prisma from '../../models'
 import ImageService from '../image/image.service';
 
 type ProfileData = {
   fullname?: string;
   dateOfBirth?: Date;
-  gender?: string;
+  gender?: Gender;
   phoneNumber?: string;
   avatar?: Express.Multer.File;
 }
@@ -114,13 +115,12 @@ class UserService {
 
   static async updateUserProfile(userId: number, newProfileData: ProfileData) {
     const oldProfile = await this.checkUserExists(userId);
-    
-    return await prisma.$transaction(async (tx) => {
-      if (newProfileData.avatar !==undefined && oldProfile.avatarImageId) {
-        await ImageService.deleteImage(oldProfile.avatarImageId, tx);
 
+    return await prisma.$transaction(async (tx) => {
+      if (newProfileData.avatar !== undefined && oldProfile.avatarImageId) {
+        await ImageService.deleteImage(oldProfile.avatarImageId, tx);
       }
-      const newImage = newProfileData.avatar ? await ImageService.createImage(newProfileData.avatar, tx) : { publicId: newProfileData.avatar};
+      const newImage = newProfileData.avatar ? await ImageService.createImage(newProfileData.avatar, tx) : undefined;
 
       return await tx.userProfile.update({
         where: { userId: userId },
@@ -128,7 +128,7 @@ class UserService {
           fullname: newProfileData.fullname,
           dateOfBirth: newProfileData.dateOfBirth,
           phoneNumber: newProfileData.phoneNumber,
-          avatarImageId: newImage.publicId,
+          avatarImageId: newImage?.imageId,
           gender: newProfileData.gender
         },
         include: {
@@ -139,16 +139,26 @@ class UserService {
   }
 
   static async deleteUser(userId: number) {
-    try {
-      await prisma.userProfile.delete({
+    await this.checkUserExists(userId);
+
+    return await prisma.$transaction(async (tx) => {
+      const userProfile = await tx.userProfile.findUnique({
+        where: { userId: userId },
+        include: {
+          avatarImage: true
+        }
+      });
+
+      if (userProfile?.avatarImageId) {
+        await ImageService.deleteImage(userProfile.avatarImageId, tx);
+      }
+
+      await tx.userProfile.delete({
         where: { userId: userId }
       });
-    }
-    catch (err) {
-      throw new BadRequestError(`Failed to delete user profile for userId: '${userId}'`);
-    }
+    });
   }
-
 }
+
 
 export default UserService;

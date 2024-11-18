@@ -3,7 +3,7 @@ import prisma from "../../models";
 import { getHashedPassword, comparePassword } from "../../libraries/utils/password";
 import JWT from "../../libraries/auth/JWT";
 import UserService from "../user/user.service";
-import EmailService from "../email/email.service";
+import EmailService from "../../externalServices/email/email.service";
 
 class AccessService {
 
