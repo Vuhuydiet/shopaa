@@ -30,12 +30,11 @@ export const FormLogin = () => {
         throw Error('token.sub is undefined');
       }
       const { userId } = decoded.sub as any;
-      console.log(exp);
       localStorage.setItem('userId', userId);
       setStateAuthenticated();
       navigate('/');
     } catch (error: any) {
-      console.log(error?.response?.data);
+      console.log(error);
       Modal.confirm({
         title: error?.response?.data?.message,
         okText: 'Oke',

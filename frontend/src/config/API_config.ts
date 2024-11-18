@@ -5,8 +5,11 @@ export const AUTH_API_ENDPOINTS = {
   SIGN_UP: `${API_DOMAIN}api/v1/access/sign-up`,
   SIGN_IN: `${API_DOMAIN}api/v1/access/sign-in`,
   FORGOT_PASSWORD: `${API_DOMAIN}api/v1/access/forgot-password`,
+};
+
+export const PRODUCT_API_ENDPOINTS = {
   PRODUCTS: `${API_DOMAIN}api/v1/product`,
-  CATEGORY: `${API_DOMAIN}api/v1/category`
+  CATEGORY: `${API_DOMAIN}api/v1/category`,
 };
 
 export const USER_API_ENDPOINTS = {

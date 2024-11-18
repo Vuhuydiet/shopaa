@@ -1,20 +1,11 @@
-import { BrowserRouter } from 'react-router-dom';
 import AllRoute from './components/AllRoutes';
 import './App.css';
-import GlobalProvider from './context/GlobalProvider';
-import { AutoLogout } from './components/auto-logout';
+import { AutoLogout } from './utils/auto-logout';
 
 function App() {
-  return (
-    <>
-      <BrowserRouter basename="/">
-        <GlobalProvider>
-          <AutoLogout />
-          <AllRoute />
-        </GlobalProvider>
-      </BrowserRouter>
-    </>
-  );
+  AutoLogout();
+
+  return <AllRoute />;
 }
 
 export default App;
