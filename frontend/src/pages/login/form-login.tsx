@@ -30,6 +30,7 @@ export const FormLogin = () => {
         throw Error('token.sub is undefined');
       }
       const { userId } = decoded.sub as any;
+      console.log(exp);
       localStorage.setItem('userId', userId);
       setStateAuthenticated();
       navigate('/');
