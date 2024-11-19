@@ -1,13 +1,26 @@
-import { Button, InputNumber, Menu } from 'antd';
-import { MoneyCollectOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import './styles.css';
+import { Button, DatePicker, InputNumber, Menu, Space } from 'antd';
+import {
+  CalculatorOutlined,
+  CalendarOutlined,
+  MoneyCollectOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons';
 import { RootState } from '../../service/state/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useState } from 'react';
 import { ICategory } from '../../interfaces/ICategory';
 import { setFilter } from '../../service/state/slices/filter-slice';
 import { setPagination } from '../../service/state/slices/pagination-slice';
+import { serializeDate } from '../../utils/date-convert';
 
 export const CategoryFilter = () => {
+  const [minPrice, setMinPrice] = useState<number | null>(null);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [minQuantity, setMinQuantity] = useState<number | null>(null);
+  const [maxQuantity, setMaxQuantity] = useState<number | null>(null);
+  const [postedAfter, setPostedAfter] = useState<Date | null>(null);
+  const [postedBefore, setPostedBefore] = useState<Date | null>(null);
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.filters);
   const categories = useSelector((state: RootState) => state.categories.items);
@@ -16,35 +29,64 @@ export const CategoryFilter = () => {
     (key: number) => {
       dispatch(
         setFilter({
-          ...filters,
           category: key || undefined,
-          limit: 24,
         }),
       );
     },
-    [filters, dispatch],
+    [filters.category, dispatch],
   );
 
   const handleChangePriceRange = useCallback(
     (minPrice: number | null, maxPrice: number | null) => {
+      console.log('price change');
       if (minPrice != null && maxPrice != null && minPrice < maxPrice) {
-        console.log(minPrice, maxPrice);
         dispatch(
           setFilter({
-            ...filters,
             minPrice: minPrice,
             maxPrice: maxPrice,
-            limit: 24,
           }),
         );
         dispatch(setPagination({ currentPage: 1 }));
       }
     },
-    [filters, dispatch],
+    [minPrice, maxPrice, dispatch],
   );
 
-  const [minPrice, setMinPrice] = useState<number | null>(null);
-  const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const handleChangeQuantityRange = useCallback(
+    (minQuantity: number | null, maxQuantity: number | null) => {
+      console.log('quantity change');
+      if (
+        minQuantity != null &&
+        maxQuantity != null &&
+        minQuantity < maxQuantity
+      ) {
+        dispatch(
+          setFilter({
+            minQuantity: minQuantity,
+            maxQuantity: maxQuantity,
+          }),
+        );
+        dispatch(setPagination({ currentPage: 1 }));
+      }
+    },
+    [minQuantity, maxQuantity, dispatch],
+  );
+
+  const handleChangeDateRange = useCallback(
+    (postedAfter: Date | null, postedBefore: Date | null) => {
+      console.log('date change');
+      if (postedAfter != null && postedBefore != null) {
+        dispatch(
+          setFilter({
+            postedAfter: serializeDate(postedAfter),
+            postedBefore: serializeDate(postedBefore),
+          }),
+        );
+        dispatch(setPagination({ currentPage: 1 }));
+      }
+    },
+    [postedAfter, postedBefore, dispatch],
+  );
 
   return (
     <Menu
@@ -105,6 +147,97 @@ export const CategoryFilter = () => {
                     Apply
                   </Button>
                 </div>
+              ),
+            },
+          ],
+        },
+        {
+          key: 'quantity-range',
+          label: 'Quantity Range',
+          icon: <CalculatorOutlined />,
+          children: [
+            {
+              key: 'quantity',
+              style: { height: 'auto' },
+              label: (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                    padding: '8px 0',
+                    height: 'auto',
+                    minHeight: '150px',
+                  }}
+                >
+                  <InputNumber
+                    placeholder="From"
+                    min={0}
+                    step={1}
+                    size="large"
+                    value={minQuantity}
+                    onChange={(value) => setMinQuantity(value)}
+                    style={{ marginBottom: 8, width: '100%' }}
+                  />
+                  <InputNumber
+                    placeholder="To"
+                    min={0}
+                    step={1}
+                    size="large"
+                    value={maxQuantity}
+                    onChange={(value) => setMaxQuantity(value)}
+                    style={{ marginBottom: 8, width: '100%' }}
+                  />
+                  <Button
+                    type="primary"
+                    onClick={() =>
+                      handleChangeQuantityRange(minQuantity, maxQuantity)
+                    }
+                    style={{ width: '100%', marginTop: 8 }}
+                  >
+                    Apply
+                  </Button>
+                </div>
+              ),
+            },
+          ],
+        },
+        {
+          key: 'time-range',
+          label: 'Time Range',
+          icon: <CalendarOutlined />,
+          children: [
+            {
+              key: 'time',
+              style: { height: 'auto' },
+              label: (
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  <DatePicker
+                    placeholder="Start Date"
+                    onChange={(date: Date | null) => {
+                      console.log(date);
+                      setPostedAfter(date);
+                    }}
+                    style={{ width: '100%' }}
+                  />
+                  <DatePicker
+                    placeholder="End Date"
+                    onChange={(date: Date | null) => {
+                      console.log(date);
+                      setPostedBefore(date);
+                    }}
+                    style={{ width: '100%' }}
+                  />
+                  <Button
+                    type="primary"
+                    style={{ width: '100%' }}
+                    onClick={() =>
+                      handleChangeDateRange(postedAfter, postedBefore)
+                    }
+                  >
+                    Apply
+                  </Button>
+                </Space>
               ),
             },
           ],
