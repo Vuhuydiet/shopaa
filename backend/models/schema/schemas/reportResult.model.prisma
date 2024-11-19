@@ -4,6 +4,6 @@ model ReportResult{
     createdAt DateTime @default(now())
     handlerId Int
 
-    reportresult Report @relation(fields: [reportId],references: [reportId])
+    report Report @relation(fields: [reportId],references: [reportId])
     handler Admin @relation(fields: [handlerId],references: [adminId])
 }

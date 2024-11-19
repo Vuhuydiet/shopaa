@@ -4,12 +4,16 @@ model Report {
     createdAt   DateTime @default(now())
     description String?
     type        String
-    category    String
+    shopCategory    String? 
+    productCategory String? 
     shopId      Int?     
     productId   Int?     
 
     reporter      UserProfile @relation(fields: [reporterId], references: [userId])
-    shopreport    Shop?       @relation(fields: [shopId], references: [shopOwnerId]) // Quan hệ có thể NULL
-    productreport Product?    @relation(fields: [productId], references: [productId]) // Quan hệ có thể NULL
+    reportedShop    Shop?       @relation(fields: [shopId], references: [shopOwnerId]) 
+    reportedProduct Product?    @relation(fields: [productId], references: [productId]) 
     reportResult  ReportResult?
+
+    shopCategoryReport ShopCategoryReport? @relation(fields: [shopCategory], references: [categoryName], onDelete: Restrict, map: "fk_shop_category") 
+    productCategoryReport ProductCategoryReport? @relation(fields: [productCategory], references: [categoryName], onDelete: Restrict, map: "fk_product_category") 
 }

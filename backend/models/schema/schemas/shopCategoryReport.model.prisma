@@ -1,0 +1,4 @@
+model ShopCategoryReport {
+  categoryName  String   @id
+  reports       Report[] 
+}
