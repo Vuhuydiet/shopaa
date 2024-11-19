@@ -1,0 +1,15 @@
+model Report {
+    reportId    Int      @id @default(autoincrement())
+    reporterId  Int
+    createdAt   DateTime @default(now())
+    description String?
+    type        String
+    category    String
+    shopId      Int?     
+    productId   Int?     
+
+    reporter      UserProfile @relation(fields: [reporterId], references: [userId])
+    shopreport    Shop?       @relation(fields: [shopId], references: [shopOwnerId]) // Quan hệ có thể NULL
+    productreport Product?    @relation(fields: [productId], references: [productId]) // Quan hệ có thể NULL
+    reportResult  ReportResult?
+}

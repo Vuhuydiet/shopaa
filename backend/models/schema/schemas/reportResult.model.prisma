@@ -1,0 +1,9 @@
+model ReportResult{
+    reportId Int  @id @default(autoincrement())
+    result String
+    createdAt DateTime @default(now())
+    handlerId Int
+
+    reportresult Report @relation(fields: [reportId],references: [reportId])
+    handler Admin @relation(fields: [handlerId],references: [adminId])
+}
