@@ -11,7 +11,7 @@ export interface IProduct {
   description: string;
   soldCount: number;
   quantity: number;
-  publishedAt: Date | string;
+  publishedAt: string;
   categories: ICategory[];
   images: IImage[];
 }

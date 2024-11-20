@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { IFilterProduct } from '../../interfaces/IFilterProduct';
 import { useQuery } from 'react-query';
-import { AUTH_API_ENDPOINTS } from '../../config/API_config';
+import { PRODUCT_API_ENDPOINTS } from '../../config/API_config';
 import { IProduct } from '../../interfaces/IProduct';
 
 export const useProducts = (params: IFilterProduct) => {
@@ -10,7 +10,7 @@ export const useProducts = (params: IFilterProduct) => {
 
 async function getProducts(params: IFilterProduct = { limit: 24 }) {
   try {
-    const response = await axios.get(AUTH_API_ENDPOINTS.PRODUCTS, {
+    const response = await axios.get(PRODUCT_API_ENDPOINTS.PRODUCTS, {
       params: params,
       headers: {
         'Content-Type': 'application/json',

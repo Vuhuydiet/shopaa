@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IProduct } from '../../../interfaces/IProduct';
 import { serializeDate } from '../../../utils/date-convert';
 import { IImage } from '../../../interfaces/IImage';
+import CompareObjects from 'lodash/isEqual';
 
 interface IProductState {
   items: IProduct[];
@@ -18,7 +19,7 @@ export const productSlice = createSlice({
   } as IProductState,
   reducers: {
     setProducts: (state, action: PayloadAction<IProduct[]>) => {
-      state.items = action.payload.map((product) => ({
+      const res = action.payload.map((product) => ({
         ...product,
         images: product.images.map((image: IImage) => ({
           ...image,
@@ -32,6 +33,9 @@ export const productSlice = createSlice({
             ? serializeDate(product.publishedAt)
             : product.publishedAt,
       }));
+
+      if (CompareObjects(state.items, res)) return;
+      state.items = res;
     },
   },
 });

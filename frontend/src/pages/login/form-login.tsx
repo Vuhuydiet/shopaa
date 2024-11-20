@@ -34,7 +34,7 @@ export const FormLogin = () => {
       setStateAuthenticated();
       navigate('/');
     } catch (error: any) {
-      console.log(error?.response?.data);
+      console.log(error);
       Modal.confirm({
         title: error?.response?.data?.message,
         okText: 'Oke',

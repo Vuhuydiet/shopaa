@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { AUTH_API_ENDPOINTS } from '../../config/API_config';
+import { PRODUCT_API_ENDPOINTS } from '../../config/API_config';
 import { ICategory } from '../../interfaces/ICategory';
 
 export const useCategories = () => {
@@ -9,7 +9,7 @@ export const useCategories = () => {
 
 const getCategories = async () => {
   try {
-    const response = await axios.get(AUTH_API_ENDPOINTS.CATEGORY, {
+    const response = await axios.get(PRODUCT_API_ENDPOINTS.CATEGORY, {
       headers: {
         'Content-Type': 'application/json',
       },

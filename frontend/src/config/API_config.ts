@@ -7,6 +7,9 @@ export const AUTH_API_ENDPOINTS = {
   ACCOUNT: `${API_DOMAIN}api/v1/access/account`,
   CHANGE_PASSWORD: `${API_DOMAIN}api/v1/access/change-password`,
   FORGOT_PASSWORD: `${API_DOMAIN}api/v1/access/forgot-password`,
+};
+
+export const PRODUCT_API_ENDPOINTS = {
   PRODUCTS: `${API_DOMAIN}api/v1/product`,
   CATEGORY: `${API_DOMAIN}api/v1/category`,
 };

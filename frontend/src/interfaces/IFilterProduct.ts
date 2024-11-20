@@ -3,8 +3,8 @@ export interface IFilterProduct {
   shopId?: number;
   category?: number;
   brand?: string;
-  postedAfter?: Date;
-  postedBefore?: Date;
+  postedAfter?: string;
+  postedBefore?: string;
   minPrice?: number;
   maxPrice?: number;
   minQuantity?: number;
