@@ -10,10 +10,14 @@ type ProductCategoryData = {
 
 type ProductData = {
   name: string;
-  description?: string;
   quantity?: number;
   price: number;
   brand?: string;
+  description?: string;
+  material?: string;
+  origin?: string;
+  colors?: string[];
+  sizes?: string[];
   images?: {
     add?: Express.Multer.File[],
     remove?: number[]
@@ -126,11 +130,15 @@ class ProductService {
       const { productId } = await tx.product.create({
         data: {
           productName: productData.name,
-          productDescription: productData.description,
           quantity: productData.quantity,
           currentPrice: productData.price,
           originalPrice: productData.price,
           brand: productData.brand,
+          productDescription: productData.description,
+          material: productData.material,
+          origin: productData.origin,
+          colors: productData.colors,
+          sizes: productData.sizes,
           shop: {
             connect: { shopOwnerId: shopId }
           },
@@ -239,34 +247,37 @@ class ProductService {
     return quantity;
   }
 
-  static async updateProduct(productId: number, { name, description, quantity, price, brand, categories, images }: ProductData) {
+  static async updateProduct(productId: number, productData: ProductData) {
     await this.getProductById(productId);
 
     return await prisma.$transaction(async (tx) => {
       const deletingImages = await tx.productImage.findMany({
         where: {
           productId: productId,
-          imageId: { in: images?.remove }
+          imageId: { in: productData.images?.remove }
         }
       });
 
       await Promise.all(deletingImages.map(({ imageId }) => ImageService.deleteImage(imageId, tx)));
-      const newImages = await Promise.all((images?.add || []).map(image => ImageService.createImage(image, tx)));
+      const newImages = await Promise.all((productData.images?.add || []).map(image => ImageService.createImage(image, tx)));
 
       await tx.product.update({
         where: {
           productId: productId,
         },
         data: {
-          productName: name,
-          productDescription: description,
-          quantity: quantity,
-          currentPrice: price,
-          brand: brand,
-
+          productName: productData.name,
+          productDescription: productData.description,
+          quantity: productData.quantity,
+          currentPrice: productData.price,
+          brand: productData.brand,
+          material: productData.material,
+          origin: productData.origin,
+          colors: productData.colors,
+          sizes: productData.sizes,
           categories: {
-            connect: categories?.add?.map(category => ({ categoryId: category })),
-            disconnect: categories?.remove?.map(category => ({ categoryId: category }))
+            connect: productData.categories?.add?.map(category => ({ categoryId: category })),
+            disconnect: productData.categories?.remove?.map(category => ({ categoryId: category }))
           },
 
           productImages: {
