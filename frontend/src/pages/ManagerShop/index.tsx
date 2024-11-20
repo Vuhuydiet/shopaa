@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom';
 import ManagerShopSidebar from '../../components/ManagerShopSidebar';
-import UploadProductForm from '../../components/UpLoadProduct/UpLoadProductFrom';
 
 const ManagerShop: React.FC = () => {
   return (
@@ -12,7 +11,6 @@ const ManagerShop: React.FC = () => {
         </div>
         <div className="Content">
           <Outlet />
-          <UploadProductForm />
         </div>
       </div>
     </>

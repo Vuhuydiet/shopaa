@@ -5,10 +5,13 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { getAccount } from '../service/authService';
 
 interface AuthContextProps {
   isAuthenticated: boolean;
   userID: string | null;
+  username: string | null;
+  email: string | null;
   setStateAuthenticated: () => void;
   logout: () => void;
   loading: boolean;
@@ -21,6 +24,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userID, setUserID] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -30,15 +35,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       if (token) {
         setIsAuthenticated(true);
         setUserID(localStorage.getItem('userId'));
+        loadAccount();
       }
       setLoading(false);
     };
     checkAuthentication();
   }, []);
 
-  const setStateAuthenticated = () => {
+  const loadAccount = async () => {
+    const token = localStorage.getItem('token') || '';
+    const accountData = await getAccount(token);
+    if ('metadata' in accountData && accountData.metadata.user) {
+      console.log('User data:', accountData.metadata.user);
+      setUsername(accountData.metadata.user.username);
+      setEmail(accountData.metadata.user.email);
+    }
+  };
+
+  const setStateAuthenticated = async () => {
     setIsAuthenticated(true);
     setUserID(localStorage.getItem('userId'));
+    loadAccount();
   };
 
   const logout = () => {
@@ -56,6 +73,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setStateAuthenticated,
         logout,
         loading,
+        email,
+        username,
       }}
     >
       {children}

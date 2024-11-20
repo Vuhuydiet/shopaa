@@ -24,3 +24,22 @@
   object-fit: cover;
   border-radius: 50%;
 }
+
+.editable-input input,
+.editable-input .ant-picker {
+  border: 2px solid #8a2be2;
+  background-color: #f5f5ff; /* Màu nền nhạt */
+  transition:
+    background-color 0.3s,
+    border 0.3s;
+}
+
+.editable-input input:focus,
+.editable-input .ant-picker:focus {
+  border-color: #6a0dad; /* Đổi màu khi focus */
+  box-shadow: 0 0 8px rgba(138, 43, 226, 0.6);
+}
+
+.editable-input .avatar-custom {
+  border: 2px solid #8a2be2;
+}

@@ -1,5 +1,6 @@
 import { ProfileOutlined, ProfileFilled } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
+import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
 const { Sider } = Layout;
@@ -14,13 +15,13 @@ const ManagerShopSidebar: React.FC = () => {
       key: '/manager-shop/info',
       icon: <ProfileOutlined style={{ color: '#FFD700' }} />,
       title: 'Information',
-      label: 'Information',
+      label: <NavLink to="/manager-shop/shop-info">Information</NavLink>,
     },
     {
       key: '/manager-shop/list-product',
       icon: <ProfileFilled style={{ color: '#EE4000' }} />,
       title: 'List product',
-      label: 'List product',
+      label: <NavLink to="/manager-shop/list-product">List product</NavLink>,
     },
   ];
 
