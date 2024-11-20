@@ -44,6 +44,8 @@ const UploadProductForm: React.FC = () => {
   const navigate = useNavigate(); // Use useNavigate hook
 
   const { data: categories } = useCategories();
+  const curCategories = categories;
+
 
   const handlePreviewUrl = (file: RcFile) => {
     return {
@@ -235,7 +237,8 @@ const UploadProductForm: React.FC = () => {
                   return false;
                 }}
               >
-                {categories?.map((category: ICategory) => {
+                {curCategories?.map((category: ICategory) => {
+
                   return (
                     <Option
                       key={category.id}
