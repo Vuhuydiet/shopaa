@@ -30,6 +30,10 @@ interface ProductData {
   description?: string;
   brand?: string;
   categories?: number[];
+  colors?: string;
+  sizes?: string;
+  material?: string;
+  origin?: string;
 }
 
 const UploadProductForm: React.FC = () => {
@@ -74,6 +78,10 @@ const UploadProductForm: React.FC = () => {
       categories: {
         add: productData.categories,
       },
+      colors: (productData.colors || '')
+        .split(',')
+        .map((color) => color.trim()),
+      sizes: (productData.sizes || '').split(',').map((size) => size.trim()),
     };
     console.log('Updated productData with categories:', updatedProductData);
 
@@ -206,6 +214,56 @@ const UploadProductForm: React.FC = () => {
                   setProductData({ ...productData, brand: e.target.value })
                 }
                 placeholder="Enter brand"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Col span={9}>
+            {' '}
+            <Form.Item label="Size" name="size">
+              <Input
+                value={productData.sizes}
+                onChange={(e) =>
+                  setProductData({ ...productData, sizes: e.target.value })
+                }
+                placeholder="Enter product size (ex: X, M, L, ..)"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={13}>
+            <Form.Item label="Color" name="color">
+              <Input
+                value={productData.colors}
+                onChange={(e) =>
+                  setProductData({ ...productData, colors: e.target.value })
+                }
+                placeholder="Enter product color  (ex: red, blue, ...)"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Col span={11}>
+            {' '}
+            <Form.Item label="Material" name="material">
+              <Input
+                value={productData.material}
+                onChange={(e) =>
+                  setProductData({ ...productData, material: e.target.value })
+                }
+                placeholder="Enter product material"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={11}>
+            <Form.Item label="Origin" name="origin">
+              <Input
+                value={productData.origin}
+                onChange={(e) =>
+                  setProductData({ ...productData, origin: e.target.value })
+                }
+                placeholder="Enter product origin"
               />
             </Form.Item>
           </Col>
