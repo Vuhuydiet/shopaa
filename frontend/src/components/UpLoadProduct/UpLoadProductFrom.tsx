@@ -46,6 +46,7 @@ const UploadProductForm: React.FC = () => {
   const { data: categories } = useCategories();
   const curCategories = categories;
 
+
   const handlePreviewUrl = (file: RcFile) => {
     return {
       ...file,
@@ -237,6 +238,7 @@ const UploadProductForm: React.FC = () => {
                 }}
               >
                 {curCategories?.map((category: ICategory) => {
+
                   return (
                     <Option
                       key={category.id}
