@@ -210,6 +210,118 @@ const UploadProductForm: React.FC = () => {
             </Form.Item>
           </Col>
         </Row>
+        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Col span={6}>
+            {' '}
+            <Form.Item
+              label="Size"
+              name="size"
+              required
+              rules={[
+                { required: true, message: 'Price is required!' },
+                {
+                  validator: (_, value) =>
+                    typeof value === 'number'
+                      ? Promise.resolve()
+                      : Promise.reject(new Error('Price must be a number!')),
+                },
+              ]}
+            >
+              <InputNumber
+                value={productData.price}
+                onChange={(value) =>
+                  setProductData({ ...productData, price: value! })
+                }
+                placeholder="0.1"
+                min={0.1}
+                step={0.1}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item
+              label="Color"
+              name="color"
+              required
+              rules={[
+                { required: true, message: 'Quantity is required!' },
+                {
+                  validator: (_, value) =>
+                    typeof value === 'number'
+                      ? Promise.resolve()
+                      : Promise.reject(new Error('Quantity must be a number!')),
+                },
+              ]}
+            >
+              <InputNumber
+                value={productData.quantity}
+                onChange={(value) =>
+                  setProductData({ ...productData, quantity: value! })
+                }
+                placeholder="0"
+                min={1}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Col span={6}>
+            {' '}
+            <Form.Item
+              label="Material"
+              name="material"
+              required
+              rules={[
+                { required: true, message: 'Price is required!' },
+                {
+                  validator: (_, value) =>
+                    typeof value === 'number'
+                      ? Promise.resolve()
+                      : Promise.reject(new Error('Price must be a number!')),
+                },
+              ]}
+            >
+              <InputNumber
+                value={productData.price}
+                onChange={(value) =>
+                  setProductData({ ...productData, price: value! })
+                }
+                placeholder="0.1"
+                min={0.1}
+                step={0.1}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item
+              label="Orgin"
+              name="color"
+              required
+              rules={[
+                { required: true, message: 'Quantity is required!' },
+                {
+                  validator: (_, value) =>
+                    typeof value === 'number'
+                      ? Promise.resolve()
+                      : Promise.reject(new Error('Quantity must be a number!')),
+                },
+              ]}
+            >
+              <InputNumber
+                value={productData.quantity}
+                onChange={(value) =>
+                  setProductData({ ...productData, quantity: value! })
+                }
+                placeholder="0"
+                min={1}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
         <Row>
           <Col span={24}>
             {' '}
