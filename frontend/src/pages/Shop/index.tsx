@@ -5,21 +5,33 @@ import HeaderShop from '../../components/Shop/HeaderShop';
 import { ProductCatalog } from '../../components/product-catalog/product-catalog';
 import { useDispatch } from 'react-redux';
 import { setFilter } from '../../service/state/slices/filter-slice';
+import { getUserProfile } from '../../service/userService';
 
 const ShopPage: React.FC = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const [shopInfo, setShopInfo] = useState({});
+  const [shopManagerInfo, setShopManagerInfo] = useState({});
   const dispatch = useDispatch();
-  console.log(shopId);
 
   useEffect(() => {
+    const fetchShopManagerData = async () => {
+      if (shopId) {
+        try {
+          const result = await getUserProfile(parseInt(shopId ?? '0', 10), '');
+          console.log('Result Manager: ', result.metadata.profile);
+          setShopManagerInfo(result.metadata.profile);
+        } catch (error) {
+          console.error('Error fetching shop data', error);
+        }
+      }
+    };
     const fetchShopData = async () => {
       if (shopId) {
         try {
           const result = await getShop(parseInt(shopId ?? '0', 10));
-          console.log(result);
           setShopInfo(result.metadata.shop);
           dispatch(setFilter({ shopId: parseInt(shopId) }));
+          fetchShopManagerData();
         } catch (error) {
           console.error('Error fetching shop data', error);
         }
@@ -28,14 +40,12 @@ const ShopPage: React.FC = () => {
 
     fetchShopData();
   }, [shopId]);
-  console.log(shopInfo);
+
   return (
     <>
-      <HeaderShop shopInfo={shopInfo} />
+      <HeaderShop shopInfo={shopInfo} shopManagerInfo={shopManagerInfo} />
       <div
         style={{
-          background: '#FDF5E6',
-          height: '70vh',
           marginTop: '20px',
           color: 'black',
         }}
