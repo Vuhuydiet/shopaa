@@ -10,6 +10,7 @@ import {
   Space,
   Row,
   Col,
+  Spin,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { RcFile, UploadFile } from 'antd/es/upload/interface';
@@ -39,7 +40,7 @@ const UploadProductForm: React.FC = () => {
     quantity: 0,
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate(); // Use useNavigate hook
 
   const { data: categories } = useCategories();
@@ -292,14 +293,20 @@ const UploadProductForm: React.FC = () => {
         </Form.Item>
 
         <Form.Item name="button">
-          <Space>
-            <Button onClick={() => navigate('/manager-shop/list-product')}>
-              Cancel
-            </Button>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              {loading ? 'Uploading...' : 'Upload Product'}
-            </Button>
-          </Space>
+          {loading ? (
+            <Spin />
+          ) : (
+            <>
+              <Space>
+                <Button onClick={() => navigate('/manager-shop/list-product')}>
+                  Cancel
+                </Button>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  Upload Product
+                </Button>
+              </Space>
+            </>
+          )}
         </Form.Item>
       </Form>
     </div>

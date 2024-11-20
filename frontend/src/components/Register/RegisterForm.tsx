@@ -48,6 +48,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
           justifyContent: 'center',
           margin: '0',
         }}
+        className="Register"
       >
         <div style={{ margin: '20px' }}>
           <h1 style={{ color: 'black' }}>Create account</h1>

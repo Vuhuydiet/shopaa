@@ -104,10 +104,10 @@ const Profile: React.FC = () => {
       message.success('Update profile successfully!');
       refreshUser();
       setIsEditing(false);
-      setLoading(false);
-    } catch (error) {
-      console.error('', error);
+    } catch (error: any) {
+      message.error(error.message);
     }
+    setLoading(false);
   };
 
   return (
@@ -292,7 +292,10 @@ const Profile: React.FC = () => {
                   Edit Profile
                 </Button>
               ) : loading ? (
-                <Spin />
+                <>
+                  <Spin />
+                  <div>Updating profile ...</div>
+                </>
               ) : (
                 <>
                   <Button
