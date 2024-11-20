@@ -19,7 +19,7 @@ import './UpLoadProductFromStyle.css';
 import { useCategories } from '../../service/api/useCategories';
 import { ICategory } from '../../interfaces/ICategory';
 import axios from 'axios';
-import { AUTH_API_ENDPOINTS } from '../../config/API_config';
+import { PRODUCT_API_ENDPOINTS } from '../../config/API_config';
 
 const { Option } = Select;
 
@@ -45,7 +45,6 @@ const UploadProductForm: React.FC = () => {
 
   const { data: categories } = useCategories();
   const curCategories = categories;
-
 
   const handlePreviewUrl = (file: RcFile) => {
     return {
@@ -87,12 +86,16 @@ const UploadProductForm: React.FC = () => {
     console.log('Categories in formData:', productData.categories);
     setLoading(true);
     try {
-      const response = await axios.post(AUTH_API_ENDPOINTS.PRODUCTS, formData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        PRODUCT_API_ENDPOINTS.PRODUCTS,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
+      );
       if (response.status === 201) {
         message.success('Product uploaded successfully!');
         navigate('/manager-shop/list-product'); // Use navigate to redirect after success
@@ -238,7 +241,6 @@ const UploadProductForm: React.FC = () => {
                 }}
               >
                 {curCategories?.map((category: ICategory) => {
-
                   return (
                     <Option
                       key={category.id}
