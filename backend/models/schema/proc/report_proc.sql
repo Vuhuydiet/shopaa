@@ -79,7 +79,7 @@ END;
 $$;
 
 
---CALL sp_delete_report(1); 
+--CALL sp_delete_report(17); 
 
 
 ---------------------update report
