@@ -15,8 +15,8 @@ export const ProductGrid = () => {
         sm: 2,
         md: 4,
         lg: 4,
-        xl: 6,
-        xxl: 3,
+        xl: 4,
+        xxl: 4,
       }}
       dataSource={products}
       renderItem={(item: IProduct) => (

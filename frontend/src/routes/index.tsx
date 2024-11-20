@@ -12,6 +12,12 @@ import ShopPage from '../pages/Shop';
 import Category from '../pages/Category';
 import ManagerShop from '../pages/ManagerShop';
 import { Home } from '../pages/Home/Home';
+import { ProductDetailView } from '../components/product-detail-view';
+import { StoreInfo } from '../components/store-info';
+import e from 'express';
+import { ProductDetailInfo } from '../components/product-detail-info';
+import { ProductDescription } from '../components/product-description';
+import { ProductDetail } from '../pages/product-detail';
 
 export const routes = [
   {
@@ -106,5 +112,21 @@ export const routes = [
   {
     path: '/reset-password',
     element: <ResetPassword />,
+  },
+  {
+    path: '/product-detail',
+    element: <ProductDetail />,
+  },
+  {
+    path: '/store-info',
+    element: <StoreInfo />,
+  },
+  {
+    path: '/product-detail-info',
+    element: <ProductDetailInfo />,
+  },
+  {
+    path: '/product-description',
+    element: <ProductDescription />,
   },
 ];

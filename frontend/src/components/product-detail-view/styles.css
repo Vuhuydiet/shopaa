@@ -1,0 +1,9 @@
+.arrow-prev:hover,
+.arrow-next:hover {
+    transform: scale(1.5);
+}
+
+.arrow-prev,
+.arrow-next {
+    font-size: 1rem;
+}
