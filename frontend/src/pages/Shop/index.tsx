@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { setFilter } from '../../service/state/slices/filter-slice';
 import { getUserProfile } from '../../service/userService';
 
+
 const ShopPage: React.FC = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const [shopInfo, setShopInfo] = useState({});
