@@ -8,6 +8,10 @@ model Product {
     publishedAt        DateTime @default(now())
     brand              String?
     productDescription String?
+    material           String?
+    origin             String?
+    colors             String[]
+    sizes              String[]
     numSoldProduct     Int      @default(0)
 
     shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Restrict)
