@@ -109,4 +109,4 @@ END;
 $$;
 
 
---CALL sp_update_report( 16, 'Updated description', 'post banned product', NULL, 2, NULL);
+CALL sp_update_report( , 'Updated description', 'fake product', NULL, 2, NULL);

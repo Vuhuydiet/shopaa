@@ -1,4 +1,4 @@
-model ShopCategoryReport {
+model ShopReportReason {
   categoryName  String   @id
   reports       Report[] 
 }

@@ -14,6 +14,6 @@ model Report {
     reportedProduct Product?    @relation(fields: [productId], references: [productId]) 
     reportResult  ReportResult?
 
-    shopCategoryReport ShopCategoryReport? @relation(fields: [shopCategory], references: [categoryName], onDelete: Restrict, map: "fk_shop_category") 
-    productCategoryReport ProductCategoryReport? @relation(fields: [productCategory], references: [categoryName], onDelete: Restrict, map: "fk_product_category") 
+    shopReportReason ShopReportReason? @relation(fields: [shopCategory], references: [categoryName], onDelete: Restrict, map: "fk_shop_category") 
+    productReportReason ProductReportReason? @relation(fields: [productCategory], references: [categoryName], onDelete: Restrict, map: "fk_product_category") 
 }

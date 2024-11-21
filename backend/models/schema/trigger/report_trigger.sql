@@ -15,7 +15,7 @@ $$ LANGUAGE plpgsql;
 
 
 
-CREATE TRIGGER tg_before_insert_report_result
+CREATE OR REPLACE TRIGGER tg_before_insert_report_result
 BEFORE INSERT ON "ReportResult"
 FOR EACH ROW
 EXECUTE FUNCTION fn_check_report_result_status();
@@ -29,7 +29,7 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF NEW."type" = 'shop' THEN
         IF NOT EXISTS (
-            SELECT 1 FROM "ShopCategoryReport" WHERE "categoryName" = NEW."shopCategory"
+            SELECT 1 FROM "ShopReportReason" WHERE "categoryName" = NEW."shopCategory"
         ) THEN
             RAISE EXCEPTION 'Invalid category for shop: %', NEW."shopCategory";
         END IF;
@@ -39,7 +39,7 @@ BEGIN
         END IF;
     ELSIF NEW."type" = 'product' THEN
         IF NOT EXISTS (
-            SELECT 1 FROM "ProductCategoryReport" WHERE "categoryName" = NEW."productCategory"
+            SELECT 1 FROM "ProductReportReason" WHERE "categoryName" = NEW."productCategory"
         ) THEN
             RAISE EXCEPTION 'Invalid category for product: %', NEW."productCategory";
         END IF;
