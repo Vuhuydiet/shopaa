@@ -4,9 +4,11 @@ import './styles.css';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
 import { useShop } from '../../service/api/useShop';
+import { useUser } from '../../service/api/useUser';
 
 export const StoreInfo = () => {
   const shopId = useSelector((state: RootState) => state.product?.sellerId);
+  const { data: seller } = useUser(`${shopId}`);
   const { data: shop } = useShop(`${shopId}`);
 
   return (
@@ -22,7 +24,7 @@ export const StoreInfo = () => {
     >
       <Col>
         <img
-          src="https://down-vn.img.susercontent.com/file/2060dc60cb0367043dccacc664c13030@resize_w160_nl.webp"
+          src={seller?.avatar?.url}
           alt="avatar"
           style={{ borderRadius: '50%', width: '100px', height: '100px' }}
         />
