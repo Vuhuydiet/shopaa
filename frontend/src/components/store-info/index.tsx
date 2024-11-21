@@ -1,8 +1,14 @@
-import { MessageOutlined, ShopOutlined } from '@ant-design/icons';
+import { ShopOutlined } from '@ant-design/icons';
 import { Button, Col, Divider, Row, Space } from 'antd';
 import './styles.css';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../service/state/store';
+import { useShop } from '../../service/api/useShop';
 
 export const StoreInfo = () => {
+  const shopId = useSelector((state: RootState) => state.product?.sellerId);
+  const { data: shop } = useShop(`${shopId}`);
+
   return (
     <Row
       style={{
@@ -10,6 +16,8 @@ export const StoreInfo = () => {
         color: 'black',
         display: 'flex',
         alignItems: 'center',
+        padding: '20px',
+        borderTop: '1px solid lightgray',
       }}
     >
       <Col>
@@ -21,21 +29,8 @@ export const StoreInfo = () => {
       </Col>
       <Col style={{ display: 'flex', margin: '0 10px' }}>
         <Space direction="vertical">
-          <span style={{ fontWeight: 'bold' }}>tongkhogiaydep88</span>
-          <span style={{ fontStyle: 'italic', color: 'gray' }}>
-            Online 7 phút trước
-          </span>
+          <span style={{ fontWeight: 'bold' }}>{shop?.name}</span>
           <Space direction="horizontal">
-            <Button
-              icon={<MessageOutlined />}
-              style={{
-                color: 'orange',
-                border: '1px solid orange',
-                backgroundColor: '#FFEEE8',
-              }}
-            >
-              Chat Ngay
-            </Button>
             <Button icon={<ShopOutlined />} style={{ color: 'gray' }}>
               Xem Shop
             </Button>

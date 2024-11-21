@@ -5,6 +5,8 @@ import { UserProvider } from './UserContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { store } from '../service/state/store';
+import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
+import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
 
 interface GlobalProviderProps {
   children: ReactNode;
@@ -12,6 +14,11 @@ interface GlobalProviderProps {
 
 const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
   const queryClient = new QueryClient();
+
+  const localStoragePersistor = createWebStoragePersistor({
+    storage: window.localStorage,
+  });
+  persistQueryClient({ queryClient, persistor: localStoragePersistor });
 
   return (
     <Provider store={store}>

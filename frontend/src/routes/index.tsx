@@ -12,18 +12,24 @@ import ShopPage from '../pages/Shop';
 import Category from '../pages/Category';
 import ManagerShop from '../pages/ManagerShop';
 import { Home } from '../pages/Home/Home';
-import { ProductDetailView } from '../components/product-detail-view';
-import { StoreInfo } from '../components/store-info';
-import e from 'express';
-import { ProductDetailInfo } from '../components/product-detail-info';
-import { ProductDescription } from '../components/product-description';
+import UploadProductForm from '../components/UpLoadProduct/UpLoadProductFrom';
+import ListProductShop from '../components/ListProductShop';
 import { ProductDetail } from '../pages/product-detail';
+import { ProductCatalog } from '../components/product-catalog/product-catalog';
 
 export const routes = [
   {
     path: '/',
     element: <LayoutBasic />,
     children: [
+      {
+        index: true,
+        element: <Navigate to="/home" replace />,
+      },
+      {
+        path: 'home',
+        element: <Home />,
+      },
       {
         element: <PrivateRoutes />,
         children: [
@@ -58,14 +64,6 @@ export const routes = [
             ],
           },
           {
-            index: true,
-            element: <Navigate to="/home" replace />,
-          },
-          {
-            path: 'home',
-            element: <Home />,
-          },
-          {
             path: 'notifications',
           },
           {
@@ -80,12 +78,16 @@ export const routes = [
                 element: <Navigate to="/manager-shop/list-product" replace />,
               },
               {
-                path: 'shop-info',
-                // element: <Profile />, information of shop
+                path: 'list-product',
+                element: <ListProductShop />,
               },
               {
-                path: 'list-product',
-                // element: <Profile />, list product of shop
+                path: 'add-product',
+                element: <UploadProductForm />,
+              },
+              {
+                path: 'shop-info',
+                // element: <Profile />, information of shop
               },
             ],
           },
@@ -98,6 +100,10 @@ export const routes = [
       {
         path: '/category',
         element: <Category />,
+      },
+      {
+        path: '/product-detail/:id',
+        element: <ProductDetail />,
       },
     ],
   },
@@ -114,19 +120,7 @@ export const routes = [
     element: <ResetPassword />,
   },
   {
-    path: '/product-detail',
-    element: <ProductDetail />,
-  },
-  {
-    path: '/store-info',
-    element: <StoreInfo />,
-  },
-  {
-    path: '/product-detail-info',
-    element: <ProductDetailInfo />,
-  },
-  {
-    path: '/product-description',
-    element: <ProductDescription />,
+    path: '/product-catalog',
+    element: <ProductCatalog />,
   },
 ];

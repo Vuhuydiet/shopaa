@@ -13,7 +13,7 @@ export const PaginationProduct = () => {
 
   useEffect(() => {
     dispatch(setFilter({ offset: (currentPage - 1) * itemsPerPage }));
-  }, [currentPage, currentPage, itemsPerPage, dispatch]);
+  }, [currentPage, itemsPerPage]);
 
   return (
     <Pagination

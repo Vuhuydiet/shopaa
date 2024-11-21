@@ -8,6 +8,7 @@ export const ProductDetailInfo = () => {
         color: 'black',
         padding: '20px',
         width: '100%',
+        borderTop: '1px solid lightgray',
       }}
       direction="vertical"
       size={12}

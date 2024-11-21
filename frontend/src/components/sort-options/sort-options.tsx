@@ -4,12 +4,19 @@ import { useDispatch } from 'react-redux';
 import { setFilter } from '../../service/state/slices/filter-slice';
 
 export const SortOptions = () => {
-  const [sortBy, setSortBy] = useState('currentPrice');
-  const [order, setOrder] = useState('asc');
+  const [sortBy, setSortBy] = useState<string | null>(null);
+  const [order, setOrder] = useState<string | null>(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setFilter({ sortBy: sortBy, order: order }));
+    if (sortBy && order) {
+      dispatch(
+        setFilter({
+          sortBy: sortBy,
+          order: order,
+        }),
+      );
+    }
   }, [sortBy, order]);
 
   return (
@@ -48,7 +55,7 @@ export const SortOptions = () => {
       >
         Time
       </Button>
-      <Select defaultValue="asc" onChange={(value) => setOrder(value)}>
+      <Select placeholder="Order" onChange={(value) => setOrder(value)}>
         <Select.Option value="asc">Ascending</Select.Option>
         <Select.Option value="desc">Descending</Select.Option>
       </Select>

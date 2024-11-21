@@ -28,14 +28,7 @@ const ShopPage: React.FC = () => {
   return (
     <>
       <HeaderShop shopInfo={shopInfo} />
-      <div
-        style={{
-          background: '#FDF5E6',
-          height: '70vh',
-          marginTop: '20px',
-          color: 'black',
-        }}
-      >
+      <div>
         <ProductCatalog />
       </div>
     </>

@@ -4,7 +4,12 @@ import { PRODUCT_API_ENDPOINTS } from '../../config/API_config';
 import { ICategory } from '../../interfaces/ICategory';
 
 export const useCategories = () => {
-  return useQuery(['categories'], () => getCategories());
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getCategories(),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 };
 
 const getCategories = async () => {
@@ -14,15 +19,16 @@ const getCategories = async () => {
         'Content-Type': 'application/json',
       },
     });
-    console.log('getCategories:', response);
     if (response.data?.metadata) {
-      return response.data.metadata.map(
+      const categories = response.data.metadata.map(
         (category: any): ICategory => ({
           id: category.categoryId,
           name: category.categoryName,
           description: category.description,
         }),
       );
+      console.log('categories:', categories);
+      return categories;
     }
   } catch (error) {
     console.error('Error fetching categories:', error);

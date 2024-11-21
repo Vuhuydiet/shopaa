@@ -8,11 +8,13 @@ import {
 } from '@ant-design/icons';
 import { RootState } from '../../service/state/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ICategory } from '../../interfaces/ICategory';
 import { setFilter } from '../../service/state/slices/filter-slice';
 import { setPagination } from '../../service/state/slices/pagination-slice';
 import { serializeDate } from '../../utils/date-convert';
+import { useCategories } from '../../service/api/useCategories';
+import { setCategories } from '../../service/state/slices/category-slice';
 
 export const CategoryFilter = () => {
   const [minPrice, setMinPrice] = useState<number | null>(null);
@@ -23,7 +25,13 @@ export const CategoryFilter = () => {
   const [postedBefore, setPostedBefore] = useState<Date | null>(null);
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.filters);
-  const categories = useSelector((state: RootState) => state.categories.items);
+  const { data: categories } = useCategories();
+
+  useEffect(() => {
+    if (categories) {
+      dispatch(setCategories(categories));
+    }
+  }, [categories]);
 
   const handleCategoryChange = useCallback(
     (key: number) => {
@@ -38,7 +46,6 @@ export const CategoryFilter = () => {
 
   const handleChangePriceRange = useCallback(
     (minPrice: number | null, maxPrice: number | null) => {
-      console.log('price change');
       if (minPrice != null && maxPrice != null && minPrice < maxPrice) {
         dispatch(
           setFilter({
@@ -54,7 +61,6 @@ export const CategoryFilter = () => {
 
   const handleChangeQuantityRange = useCallback(
     (minQuantity: number | null, maxQuantity: number | null) => {
-      console.log('quantity change');
       if (
         minQuantity != null &&
         maxQuantity != null &&
@@ -74,7 +80,6 @@ export const CategoryFilter = () => {
 
   const handleChangeDateRange = useCallback(
     (postedAfter: Date | null, postedBefore: Date | null) => {
-      console.log('date change');
       if (postedAfter != null && postedBefore != null) {
         dispatch(
           setFilter({
@@ -96,10 +101,10 @@ export const CategoryFilter = () => {
           key: 'all',
           label: 'All Categories',
           icon: <UnorderedListOutlined />,
-          children: categories.map((category: ICategory) => ({
-            key: category.id,
-            label: category.name,
-            onClick: () => handleCategoryChange(category.id),
+          children: categories?.map((category: ICategory) => ({
+            key: category?.id,
+            label: category?.name,
+            onClick: () => handleCategoryChange(category?.id),
           })),
         },
         {

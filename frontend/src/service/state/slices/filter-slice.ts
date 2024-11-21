@@ -5,7 +5,7 @@ import CompareObject from 'lodash/isEqual';
 export const filterSlice = createSlice({
   name: 'filters',
   initialState: {
-    limit: 24,
+    limit: 12,
   } as IFilterProduct,
   reducers: {
     setFilter: (state, action: PayloadAction<IFilterProduct>) => {

@@ -1,15 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { productSlice } from './slices/product-slice';
+import { productsSlice } from './slices/products-slice';
 import { paginationSlice } from './slices/pagination-slice';
 import { filterSlice } from './slices/filter-slice';
 import { categorySlice } from './slices/category-slice';
+import { productSlice } from './slices/product-slice';
 
 export const store = configureStore({
   reducer: {
-    products: productSlice.reducer,
+    products: productsSlice.reducer,
     filters: filterSlice.reducer,
     pagination: paginationSlice.reducer,
     categories: categorySlice.reducer,
+    product: productSlice.reducer,
   },
 });
 

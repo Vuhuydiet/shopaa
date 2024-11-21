@@ -11,6 +11,10 @@ export interface IProduct {
   description: string;
   soldCount: number;
   quantity: number;
+  material: string;
+  origin: string;
+  colors: string[];
+  sizes: string[];
   publishedAt: string;
   categories: ICategory[];
   images: IImage[];
