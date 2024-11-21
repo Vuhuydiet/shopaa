@@ -4,11 +4,11 @@ import { useEffect } from 'react';
 import { setFilter } from '../../service/state/slices/filter-slice';
 
 export const Home = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(setFilter({ shopId: undefined }));
-  // }, []);
+  useEffect(() => {
+    dispatch(setFilter({ shopId: undefined }));
+  }, []);
 
   return <ProductCatalog />;
 };

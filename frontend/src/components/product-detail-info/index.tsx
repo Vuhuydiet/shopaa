@@ -1,6 +1,10 @@
 import { Col, Row, Space, Typography } from 'antd';
+import { RootState } from '../../service/state/store';
+import { useSelector } from 'react-redux';
 
 export const ProductDetailInfo = () => {
+  const product = useSelector((state: RootState) => state.product);
+
   return (
     <Space
       style={{
@@ -28,23 +32,19 @@ export const ProductDetailInfo = () => {
 
       <Row style={{ marginLeft: '20px' }}>
         <Col style={{ width: '140px' }}>Warehouse</Col>
-        <Col>5271</Col>
+        <Col>{product?.quantity}</Col>
       </Row>
       <Row style={{ marginLeft: '20px' }}>
         <Col style={{ width: '140px' }}>Brand</Col>
-        <Col>Mỹ Diệu Company</Col>
+        <Col>{product?.brand}</Col>
       </Row>
       <Row style={{ marginLeft: '20px' }}>
         <Col style={{ width: '140px' }}>Material</Col>
-        <Col>Da, cao su</Col>
-      </Row>
-      <Row style={{ marginLeft: '20px' }}>
-        <Col style={{ width: '140px' }}>Address</Col>
-        <Col>Updating</Col>
+        <Col>{product?.material}</Col>
       </Row>
       <Row style={{ marginLeft: '20px' }}>
         <Col style={{ width: '140px' }}>Origin</Col>
-        <Col>China</Col>
+        <Col>{product?.origin}</Col>
       </Row>
     </Space>
   );

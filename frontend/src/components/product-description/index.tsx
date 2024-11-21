@@ -1,6 +1,10 @@
-import { Col, Row, Space, Typography } from 'antd';
+import { Row, Space, Typography } from 'antd';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../service/state/store';
 
 export const ProductDescription = () => {
+  const product = useSelector((state: RootState) => state.product);
+
   return (
     <Space
       style={{
@@ -25,15 +29,7 @@ export const ProductDescription = () => {
         </Typography.Text>
       </Row>
 
-      <Row style={{ marginLeft: '20px' }}>Dép nữ size từ 35-39</Row>
-      <Row style={{ marginLeft: '20px' }}>
-        Chân ai gầy, ốm thì đặt lùi 1 size
-      </Row>
-      <Row style={{ marginLeft: '20px' }}>Hàng cao cấp đế 4 cm</Row>
-      <Row style={{ marginLeft: '20px' }}>
-        Hàng thời trang cao cấp mới nhất 2024
-      </Row>
-      <Row style={{ marginLeft: '20px' }}>Hộp fullbox xịn xò</Row>
+      <Row style={{ marginLeft: '20px' }}>{product?.description}</Row>
     </Space>
   );
 };
