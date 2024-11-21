@@ -44,6 +44,11 @@ export const ProductCard = (product: IProductCard) => {
       <Typography.Text style={{ color: 'red', fontSize: '1rem' }} italic>
         $ {product.currentPrice}
       </Typography.Text>
+      <div style={{ marginTop: '5px' }}>
+        <Typography.Text style={{ fontSize: '0.8rem', color: 'blue' }}>
+          <span>Quantity:</span> {product.quantity}
+        </Typography.Text>
+      </div>
       <Space
         direction="horizontal"
         style={{

@@ -51,6 +51,7 @@ export const ProductGrid = () => {
             id={item.id}
             image={item.images[0]?.url || ''}
             title={item.name}
+            quantity={item.quantity}
             originalPrice={item.originalPrice}
             currentPrice={item.currentPrice}
             star={4.7}
