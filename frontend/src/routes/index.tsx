@@ -15,7 +15,8 @@ import { Home } from '../pages/Home/Home';
 import UploadProductForm from '../components/UpLoadProduct/UpLoadProductFrom';
 import ListProductShop from '../components/ListProductShop';
 import { ProductDetail } from '../pages/product-detail';
-import { ProductCatalog } from '../components/product-catalog/product-catalog';
+import { ProductCardItem } from '../components/product-card-item.tsx';
+import { ProductCart } from '../components/product-cart/index.tsx';
 
 export const routes = [
   {
@@ -120,11 +121,15 @@ export const routes = [
     element: <ResetPassword />,
   },
   {
-    path: '/product-catalog',
-    element: <ProductCatalog />,
-  },
-  {
     path: '*',
     element: <Navigate to="/" replace />,
+  },
+  {
+    path: 'product-cart',
+    element: <ProductCart />,
+  },
+  {
+    path: 'product-cart-item',
+    element: <ProductCardItem />,
   },
 ];
