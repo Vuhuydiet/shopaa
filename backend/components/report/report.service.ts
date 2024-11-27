@@ -29,6 +29,13 @@ type ReportQuery = {
 }
 
 
+
+type ReportResult = {
+		result: string;
+		handlerId: number
+
+}
+
 class ReportService {
 	static async createShopReport(reporterId: number, reportData: ShopReportData) {
 		return await prisma.report.create({
@@ -81,5 +88,37 @@ class ReportService {
 	}
 
 }
+
+
+class ReportResultService {
+	static async createReportResult(reportId: number ,resultdata : ReportResult ) {
+		return await prisma.reportResult.create({
+			data:{
+				reportId: reportId,
+				result: resultdata.result,
+				handlerId: resultdata.handlerId
+			}
+		});
+	}
+
+	static async getReportResult(reporterId: number) {
+		return await prisma.reportResult.findMany({
+			where : {
+				reportId: reporterId
+			}
+		});
+	}
+
+
+	static async deleteReportResult(reportId: number) {
+		await prisma.reportResult.delete({
+			where : {
+				reportId : reportId
+			}
+		})
+	} 
+	
+}
+
 
 export default ReportService;

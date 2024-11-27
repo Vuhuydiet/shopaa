@@ -1,9 +1,14 @@
-model ReportResult{
-    reportId Int  @id @default(autoincrement())
-    result String
-    createdAt DateTime @default(now())
-    handlerId Int
+enum ReporResultState {
+    accepted
+    dismissed
+}
 
-    report Report @relation(fields: [reportId],references: [reportId])
-    handler Admin @relation(fields: [handlerId],references: [adminId])
+model ReportResult {
+    reportId  Int              @id @default(autoincrement())
+    createdAt DateTime         @default(now())
+    handlerId Int
+    result    ReporResultState
+
+    report  Report @relation(fields: [reportId], references: [reportId])
+    handler Admin  @relation(fields: [handlerId], references: [adminId])
 }
