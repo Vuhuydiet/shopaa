@@ -123,4 +123,8 @@ export const routes = [
     path: '/product-catalog',
     element: <ProductCatalog />,
   },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
+  },
 ];

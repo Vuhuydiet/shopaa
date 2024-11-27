@@ -6,7 +6,7 @@ export const paginationSlice = createSlice({
   name: 'pagination',
   initialState: {
     currentPage: 1,
-    itemsPerPage: 24,
+    itemsPerPage: 12,
     totalItems: 0,
   } as IPagination,
   reducers: {
