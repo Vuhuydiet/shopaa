@@ -1,44 +1,38 @@
 /* styles.css */
-.large-font {
-  font-size: clamp(14px, 1vw, 20px);
-
+.Register .large-font {
+  font-size: clamp(12px, 1vw, 16px);
 }
 
-.large-font input,
-.large-font .ant-input-password,
-.large-font .ant-btn {
-  font-size: clamp(14px, 1vw, 20px);
-  font-size: 18px;
+.Register .large-font input,
+.Register .large-font .ant-input-password,
+.Register .large-font .ant-btn {
+  font-size: clamp(12px, 1vw, 16px);
 }
 
-.large-font input,
-.large-font .ant-input-password {
-  height: 5vh;
+.Register .large-font input,
+.Register .large-font .ant-input-password {
+  height: 4.5vh;
   display: flex;
   align-items: center;
 }
 
-.large-button {
-  padding: 13px 0;
-  font-size: 1vw;
+.Register .large-button {
+  padding: 10px 0;
+  font-size: clamp(12px, 1vw, 16px);
   height: auto;
   background-color: rgb(100, 22, 218);
 }
-.large-button-white {
-  padding: 13px 0;
-  font-size: clamp(14px, 1vw, 20px);
+.Register .large-button-white {
+  padding: 10px 0;
+  font-size: clamp(12px, 1vw, 16px);
   height: auto;
 }
 
-.ant-input {
+.Register .ant-input {
   min-width: 15vw;
 }
 
-.ant-form-item-explain-error {
+.Register .ant-form-item-explain-error {
   white-space: normal;
   max-width: 19vw;
-}
-
-  font-size: 18px;
-  height: auto;
 }

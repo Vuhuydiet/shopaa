@@ -1,0 +1,9 @@
+model Image {
+  imageId   Int      @id @default(autoincrement())
+  publicId  String   @unique
+  url       String
+  createdAt DateTime @default(now())
+
+  userProfile  UserProfile?
+  productImage ProductImage?
+}

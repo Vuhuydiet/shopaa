@@ -1,0 +1,14 @@
+model UserProfile {
+  userId        Int            @id @default(autoincrement())
+  role          Role           @default(USER)
+  fullname      String?
+  dateOfBirth   DateTime?      @db.Date
+  gender        Gender?
+  phoneNumber   String?
+  avatarImageId Int? @unique
+
+  oAuthProvider OAuthProvider?
+  userAccount   UserAccount?
+  shop Shop?
+  avatarImage   Image?  @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
+}

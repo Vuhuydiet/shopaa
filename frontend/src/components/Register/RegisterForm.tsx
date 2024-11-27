@@ -48,6 +48,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
           justifyContent: 'center',
           margin: '0',
         }}
+        className="Register"
       >
         <div style={{ margin: '20px' }}>
           <h1 style={{ color: 'black' }}>Create account</h1>
@@ -61,11 +62,22 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
           className="large-font "
         >
           <Form.Item
-            label="Your Name"
+            label="Username"
             name="name"
-            rules={[{ required: true, message: 'Please input your name!' }]}
+            rules={[
+              { required: true, message: 'Please input your name!' },
+              {
+                pattern: /^[A-Za-z][A-Za-z0-9]*$/,
+                message:
+                  'Username must start with a letter and contain no spaces!',
+              },
+              {
+                min: 5,
+                message: 'Username must be at least 5 characters long!',
+              },
+            ]}
           >
-            <Input placeholder="Enter your name" />
+            <Input placeholder="Enter your username" />
           </Form.Item>
 
           <Form.Item
@@ -148,8 +160,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onContinue }) => {
         </Form>
         <div style={{ marginBottom: '20px' }}>
           <Space>
-            <h3 style={{ color: 'black' }}>Do you have an account?</h3>
-            <Link to="/login" style={{ fontSize: '18px' }}>
+            <h4 style={{ color: 'black' }}>Do you have an account?</h4>
+            <Link to="/login" style={{ fontSize: '16px' }}>
               Log in
             </Link>
           </Space>

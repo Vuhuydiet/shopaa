@@ -1,20 +1,17 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
 const app = express();
 import cors from 'cors';
-
 import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
 import 'express-async-errors';
 
-import { NODE_ENV } from './configs/serve.config.js';
+import { NODE_ENV } from './configs/serve.config';
 
 // import middlewares and routes
-import router from './routes/index.js';
-import errorHandler from './middlewares/errorHandler.js';
+import router from './components';
+import notFoundHandler from './libraries/errorHandler/notFoundHandler';
+import errorHandler from './libraries/errorHandler/errorHandler';
 
 // middlewares
 app.use(cors());
@@ -29,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', router);
 
 // error handler
+router.use(notFoundHandler);
 app.use(errorHandler);
 
 // start server

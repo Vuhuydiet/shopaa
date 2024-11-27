@@ -5,8 +5,9 @@ run 'npm install' after cloning the repos.
 ```env
 DATABASE_URL="postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DB_NAME>?schema=public"
 ```
+2. run 'npm run genkey'
 
-2. set up database:
+3. set up database:
 
 - create a database <DB_NAME> in your local machine.
 - run 'npm run prisma:generate'

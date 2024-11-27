@@ -1,6 +1,6 @@
 import { Button, Divider, Space, Col, Row, Typography } from 'antd';
-import FacebookIcon from '../../images/logo_facebook.png';
-import GoogleIcon from '../../images/logo_google.png';
+import FacebookIcon from '../../assets/images/logo_facebook.png';
+import GoogleIcon from '../../assets/images/logo_google.png';
 import { Link } from 'react-router-dom';
 
 export const OtherLogin = () => {

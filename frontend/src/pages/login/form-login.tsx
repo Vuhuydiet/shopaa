@@ -3,8 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { KeyOutlined, UserOutlined } from '@ant-design/icons';
+import { jwtDecode } from 'jwt-decode';
+import { AUTH_API_ENDPOINTS } from '../../config/API_config';
+import { useAuthContext } from '../../context/AuthContext';
 
 export const FormLogin = () => {
+  const { setStateAuthenticated } = useAuthContext();
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -16,12 +21,20 @@ export const FormLogin = () => {
 
   const login = async (values: any) => {
     try {
-      const res = await axios.post('http://localhost:3000/sign-in', values);
-      console.log(res.data);
+      const res = await axios.post(AUTH_API_ENDPOINTS.SIGN_IN, values);
+      // In ra message từ phản hồi trả về
+      console.log(res.data.message);
       localStorage.setItem('token', res.data.metadata.token);
+      const decoded = jwtDecode(res.data.metadata.token);
+      if (!decoded.sub) {
+        throw Error('token.sub is undefined');
+      }
+      const { userId } = decoded.sub as any;
+      localStorage.setItem('userId', userId);
+      setStateAuthenticated();
       navigate('/');
     } catch (error: any) {
-      console.log(error?.response?.data);
+      console.log(error);
       Modal.confirm({
         title: error?.response?.data?.message,
         okText: 'Oke',
@@ -33,7 +46,6 @@ export const FormLogin = () => {
 
   const onFinish = (values: any) => {
     login(values);
-    navigate('/');
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -54,27 +66,27 @@ export const FormLogin = () => {
         rules={[
           {
             required: true,
-            message: 'Please enter your email/phone number',
+            message: 'Please enter your username',
           },
-          {
-            validator: async (_, value) => {
-              const emailPattern =
-                /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-              const phonePattern = /^(0|84)(3|5|7|8|9)[0-9]{8}$/;
+          // {
+          //   validator: async (_, value) => {
+          //     const emailPattern =
+          //       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+          //     const phonePattern = /^(0|84)(3|5|7|8|9)[0-9]{8}$/;
 
-              if (!value) return Promise.resolve();
+          //     if (!value) return Promise.resolve();
 
-              if (emailPattern.test(value) || phonePattern.test(value)) {
-                return Promise.resolve();
-              }
-              return Promise.reject(
-                'Please enter a valid email or phone number',
-              );
-            },
-          },
+          //     if (emailPattern.test(value) || phonePattern.test(value)) {
+          //       return Promise.resolve();
+          //     }
+          //     return Promise.reject(
+          //       'Please enter a valid email or phone number',
+          //     );
+          //   },
+          // },
         ]}
       >
-        <Input prefix={<UserOutlined />} placeholder="Email/Phone number" />
+        <Input prefix={<UserOutlined />} placeholder="Username" />
       </Form.Item>
       <Form.Item
         name="password"

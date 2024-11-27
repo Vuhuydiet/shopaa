@@ -41,7 +41,6 @@ class SuccessResponse {
       metadata: this.metadata,
     });
   }
-
 }
 
 class OKResponse extends SuccessResponse {

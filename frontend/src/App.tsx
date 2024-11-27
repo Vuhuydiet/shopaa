@@ -1,17 +1,11 @@
-
-import { BrowserRouter } from 'react-router-dom';
 import AllRoute from './components/AllRoutes';
 import './App.css';
+import { AutoLogout } from './utils/auto-logout';
 
 function App() {
-  return (
-    <>
-      <BrowserRouter>
-        <AllRoute />
-      </BrowserRouter>
-    </>
+  AutoLogout();
 
-  );
+  return <AllRoute />;
 }
 
 export default App;

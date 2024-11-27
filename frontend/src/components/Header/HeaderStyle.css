@@ -1,0 +1,169 @@
+.header {
+  background: linear-gradient(
+    to right,
+    rgb(231, 222, 250),
+    #9999ff,
+    rgb(255, 255, 255)
+  );
+  height: auto;
+  padding: 5px 20px;
+}
+
+.header__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+/* Header Logo */
+.header__logo {
+  flex: 0 0 15%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.header__logo a {
+  display: flex;
+  align-items: flex-end;
+  text-decoration: none;
+}
+.header__logo img {
+  width: 120px;
+  height: auto;
+}
+
+/* End Header Logo */
+
+/* Header Component  */
+.header__component {
+  flex: 0 0 85%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  gap: 10px;
+}
+
+.header__component-top {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.header__component-top .ant-badge .anticon {
+  font-size: clamp(12px, 2vw, 16px);
+}
+
+.header__component-bottom {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.header__component-bottom .ant-col {
+  display: flex;
+  align-items: center;
+}
+
+.header__component-bottom .ant-input {
+  font-size: 1rem;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+}
+
+.header__component-bottom .ant-input-search-button {
+  height: 40px;
+  width: 56px;
+  border: 2px solid white;
+  background-color: #9900ff;
+  color: white;
+  border-radius: 8px;
+}
+
+/* End Header Component  */
+
+.header__link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+  font-size: clamp(12px, 2vw, 16px);
+  margin-left: 20px;
+}
+
+.header__link:hover {
+  color: #9900ff;
+  transform: scale(1.1);
+}
+
+.header__icon {
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+}
+
+.header__icon:hover {
+  transform: scale(1.15);
+  color: #4f27b4;
+}
+
+.active-link {
+  color: #9999ff;
+}
+.header__component-bottom .icon-search {
+  font-size: 1rem !important;
+}
+.header__icon {
+  font-size: 1.7rem;
+}
+
+.user-name {
+  font-size: 1rem;
+}
+
+@media only screen and (max-width: 520px) {
+  /* .header__container {
+    flex-direction: column;
+  } */
+  .header__component {
+    flex: 0 0 90%;
+  }
+  .header__logo {
+    flex: 0 0 10%;
+  }
+  .header__logo img {
+    width: 60px;
+    height: auto;
+  }
+  .header__component-bottom .ant-input {
+    font-size: 1rem;
+    height: 26px;
+    padding: 0 16px;
+    border-radius: 8px;
+  }
+
+  .header__component-bottom .ant-input-search-button {
+    height: 26px;
+    width: 26px;
+    border: 2px solid white;
+    background-color: #9900ff;
+    color: white;
+    border-radius: 8px;
+  }
+  .header__component-bottom .icon-search {
+    font-size: 1rem !important;
+  }
+  .header__icon {
+    font-size: 1rem !important;
+  }
+  .user-name {
+    font-size: 0.7rem;
+  }
+}

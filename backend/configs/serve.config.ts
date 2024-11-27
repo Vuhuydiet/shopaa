@@ -1,18 +1,21 @@
-import getPathFromBackend from '../utils/getPath.js';
 import path from 'path';
 
-const envArg = process.argv.find((arg) => arg.startsWith('NODE_ENV='));
-const NODE_ENV = envArg ? envArg.split('=')[1] : null;
-const servePath = (() => {
-  switch (NODE_ENV) {
-    case 'production':
-      return getPathFromBackend('../frontend/dist');
-    case 'development':
-      return '';
-  }
-  console.error('NODE_ENV not set');
-  process.exit(1);
-})();
-const serveIndexPath = servePath ? path.join(servePath, 'index.html') : '';
+const modes = ['development', 'production'];
 
-export { servePath, serveIndexPath, NODE_ENV };
+const envArg = process.argv.find((arg) => arg.startsWith('NODE_ENV='));
+if (!envArg || !modes.includes(envArg.split('=')[1]))
+  throw new Error('Invalid NODE_ENV value');
+
+const NODE_ENV = envArg.split('=')[1];
+
+const [servePath, indexPath] = (() => {
+  if (NODE_ENV !== 'production')
+    return ['', ''];
+
+  const servePath = path.join(import.meta.dirname, '../../frontend/dist');
+  console.log(servePath);
+  const indexPath = path.join(servePath, 'index.html');
+  return [servePath, indexPath];
+})();
+
+export { servePath, indexPath, NODE_ENV };
