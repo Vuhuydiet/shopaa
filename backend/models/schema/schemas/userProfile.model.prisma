@@ -10,5 +10,7 @@ model UserProfile {
   oAuthProvider OAuthProvider?
   userAccount   UserAccount?
   shop Shop?
+  cart CartDetail[]
+  
   avatarImage   Image?  @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
 }
