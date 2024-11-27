@@ -17,6 +17,14 @@ import errorHandler from './libraries/errorHandler/errorHandler';
 app.use(cors());
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+    },
+  })
+);
 app.use(compression());
 
 app.use(express.json());
