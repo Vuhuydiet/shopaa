@@ -1,0 +1,52 @@
+enum OrderStatus {
+  WAITING_ACCEPTANCE
+  ACCEPTED
+  REJECTED
+  DELIVERING
+  DELIVERED
+  RECEIVED
+  RETURNED
+}
+
+model Order {
+  orderId         Int         @id @default(autoincrement())
+  customerId      Int?
+  createdAt       DateTime    @default(now())
+  status          OrderStatus
+  shippingAddress String
+  transProviderId Int?
+
+  shippingFee Float
+  totalAmount Float
+
+  customer               UserProfile?            @relation(fields: [customerId], references: [userId], onDelete: SetNull)
+  transportationProvider TransportationProvider? @relation(fields: [transProviderId], references: [providerId], onDelete: SetNull)
+  details                OrderDetail[]
+  ReturnSlip             ReturnSlip[]
+}
+
+model OrderDetail {
+  orderId   Int
+  productId Int // no FK because it's a key attribute and the referenced product could be deleted while order still exists
+  quantity  Int
+  price     Float
+
+  order Order @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+
+  @@id([orderId, productId])
+}
+
+enum ReturnStatus {
+  ACCEPTED
+  REJECTED
+}
+
+model ReturnSlip {
+  returnId  Int           @id @default(autoincrement())
+  orderId   Int
+  createdAt DateTime      @default(now())
+  status    ReturnStatus?
+  reason    String?
+
+  order Order @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+}
