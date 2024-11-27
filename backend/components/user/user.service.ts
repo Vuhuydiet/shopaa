@@ -21,7 +21,6 @@ class UserService {
       throw new NotFoundError(`User with userId: '${userId}' does not exist`);
     return user;
   }
-
   static async createOAuthProviderIfNotExists(providerName: string, providerUID: string, userFullname: string) {
     return await prisma.$transaction(async (tx) => {
       const userId = await tx.oAuthProvider.findUnique({
