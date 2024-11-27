@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { RcFile, UploadFile } from 'antd/es/upload/interface';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import { useNavigate } from 'react-router-dom';
 import './UpLoadProductFromStyle.css';
 import { useCategories } from '../../service/api/useCategories';
 import { ICategory } from '../../interfaces/ICategory';
@@ -162,9 +162,11 @@ const UploadProductForm: React.FC = () => {
                 { required: true, message: 'Price is required!' },
                 {
                   validator: (_, value) =>
-                    typeof value === 'number'
+                    value > 0
                       ? Promise.resolve()
-                      : Promise.reject(new Error('Price must be a number!')),
+                      : Promise.reject(
+                          new Error('Price must be greater than 0!'),
+                        ),
                 },
               ]}
             >
@@ -173,8 +175,8 @@ const UploadProductForm: React.FC = () => {
                 onChange={(value) =>
                   setProductData({ ...productData, price: value! })
                 }
-                placeholder="0.1"
-                min={0.1}
+                placeholder="0.0"
+                min={0.0}
                 step={0.1}
                 style={{ width: '100%' }}
               />
@@ -189,9 +191,11 @@ const UploadProductForm: React.FC = () => {
                 { required: true, message: 'Quantity is required!' },
                 {
                   validator: (_, value) =>
-                    typeof value === 'number'
+                    value > 0
                       ? Promise.resolve()
-                      : Promise.reject(new Error('Quantity must be a number!')),
+                      : Promise.reject(
+                          new Error('Quantity must be greater than 0!'),
+                        ),
                 },
               ]}
             >
@@ -201,7 +205,7 @@ const UploadProductForm: React.FC = () => {
                   setProductData({ ...productData, quantity: value! })
                 }
                 placeholder="0"
-                min={1}
+                min={0}
                 style={{ width: '100%' }}
               />
             </Form.Item>
