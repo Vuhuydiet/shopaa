@@ -20,7 +20,6 @@ const RegisterShop: React.FC = () => {
             className="RegisterShop__button"
             onClick={() => setIsStarted(true)}
           >
-            {' '}
             Start
           </Button>
         </div>

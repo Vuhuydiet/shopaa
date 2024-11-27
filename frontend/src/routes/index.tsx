@@ -14,6 +14,8 @@ import ManagerShop from '../pages/ManagerShop';
 import { Home } from '../pages/Home/Home';
 import UploadProductForm from '../components/UpLoadProduct/UpLoadProductFrom';
 import ListProductShop from '../components/ListProductShop';
+import { ProductDetail } from '../pages/product-detail';
+import { ProductCatalog } from '../components/product-catalog/product-catalog';
 
 export const routes = [
   {
@@ -99,6 +101,10 @@ export const routes = [
         path: '/category',
         element: <Category />,
       },
+      {
+        path: '/product-detail/:id',
+        element: <ProductDetail />,
+      },
     ],
   },
   {
@@ -112,5 +118,13 @@ export const routes = [
   {
     path: '/reset-password',
     element: <ResetPassword />,
+  },
+  {
+    path: '/product-catalog',
+    element: <ProductCatalog />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
   },
 ];

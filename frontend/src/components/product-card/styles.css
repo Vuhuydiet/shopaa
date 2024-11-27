@@ -1,0 +1,9 @@
+.ant-card-body {
+    padding: 8px !important;
+}
+
+.product-card:hover {
+    transform: scale(1.1);
+    transition: transform 0.5s;
+    z-index: 2;
+}
