@@ -3,14 +3,14 @@ model UserProfile {
   role          Role           @default(USER)
   fullname      String?
   dateOfBirth   DateTime?      @db.Date
-  gender        String?
+  gender        Gender?
   phoneNumber   String?
+  avatarImageId Int? @unique
+
   oAuthProvider OAuthProvider?
   userAccount   UserAccount?
-
-  shop   Shop?
+  shop Shop?
+  avatarImage   Image?  @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
+  
   reports Report[]
-
-  avatarImageId String? @unique
-  avatarImage   Image?  @relation(fields: [avatarImageId], references: [publicId], onDelete: SetNull)
 }
