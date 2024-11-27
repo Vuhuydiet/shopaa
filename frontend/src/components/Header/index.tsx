@@ -122,7 +122,7 @@ const HeaderComponent: React.FC = () => {
                           fontSize: '25px',
                         }}
                       />
-                      <div style={{ color: 'black' }}>
+                      <div className="user-name" style={{ color: 'black' }}>
                         {user?.fullname || 'User'}
                       </div>
                     </div>
@@ -162,15 +162,20 @@ const HeaderComponent: React.FC = () => {
             align="middle"
             className="header__component-bottom"
           >
-            <Col xs={24} sm={16} md={16} lg={18}>
+            <Col xs={16} sm={12} md={16} lg={18}>
               <Search
                 placeholder="Search"
                 style={{ width: '100%' }}
-                enterButton={<SearchOutlined style={{ fontSize: '28px' }} />}
+                enterButton={
+                  <SearchOutlined
+                    style={{ fontSize: '28px' }}
+                    className="icon-search"
+                  />
+                }
               />
             </Col>
 
-            <Col xs={24} sm={6} md={6} lg={3}>
+            <Col xs={5} sm={6} md={6} lg={3}>
               <Badge count={cartItemCount} offset={[3, 0]}>
                 <NavLink
                   to="/cart"
