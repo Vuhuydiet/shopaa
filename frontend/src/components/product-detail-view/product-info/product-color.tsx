@@ -22,7 +22,7 @@ export const ProductColor = React.memo(() => {
         <Row gutter={[16, 8]} wrap>
           {product?.colors?.map((color: string) => {
             return (
-              <Col style={{ width: '100px', display: 'flex' }}>
+              <Col style={{ width: '100px', display: 'flex' }} key={color}>
                 <Typography.Text
                   style={{
                     width: '100%',

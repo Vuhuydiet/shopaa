@@ -10,7 +10,7 @@ export const ProductDetailInfo = () => {
       style={{
         backgroundColor: 'white',
         color: 'black',
-        padding: '20px',
+        padding: '15px 40px',
         width: '100%',
         borderTop: '1px solid lightgray',
       }}

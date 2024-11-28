@@ -6,11 +6,33 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
 import { useEffect } from 'react';
 import { setPagination } from '../../service/state/slices/pagination-slice';
+import { setFilter } from '../../service/state/slices/filter-slice';
 
 export const ProductGrid = () => {
   const filters = useSelector((state: RootState) => state.filters);
   const { data: products, isLoading } = useProducts(filters);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setPagination({ currentPage: 1, totalItems: 0 }));
+    dispatch(
+      setFilter({
+        keyword: undefined,
+        shopId: undefined,
+        category: undefined,
+        brand: undefined,
+        postedAfter: undefined,
+        postedBefore: undefined,
+        minPrice: undefined,
+        maxPrice: undefined,
+        minQuantity: undefined,
+        maxQuantity: undefined,
+        sortBy: undefined,
+        order: undefined,
+        offset: 0,
+      }),
+    );
+  }, []);
 
   useEffect(() => {
     if (products?.count) {
@@ -46,7 +68,7 @@ export const ProductGrid = () => {
       }}
       dataSource={products?.items}
       renderItem={(item: IProduct) => (
-        <List.Item>
+        <List.Item key={item.id}>
           <ProductCard
             id={item.id}
             image={item.images[0]?.url || ''}

@@ -10,7 +10,7 @@ export const ProductDescription = () => {
       style={{
         backgroundColor: 'white',
         color: 'black',
-        padding: '20px',
+        padding: '10px 40px',
         width: '100%',
       }}
       direction="vertical"

@@ -15,8 +15,7 @@ import { Home } from '../pages/Home/Home';
 import UploadProductForm from '../components/UpLoadProduct/UpLoadProductFrom';
 import ListProductShop from '../components/ListProductShop';
 import { ProductDetail } from '../pages/product-detail';
-import { ProductCardItem } from '../components/product-card-item.tsx';
-import { ProductCart } from '../components/product-cart/index.tsx';
+import { ProductCart } from '../pages/product-cart';
 
 export const routes = [
   {
@@ -69,6 +68,7 @@ export const routes = [
           },
           {
             path: 'cart',
+            element: <ProductCart />,
           },
           {
             path: '/manager-shop',
@@ -123,13 +123,5 @@ export const routes = [
   {
     path: '*',
     element: <Navigate to="/" replace />,
-  },
-  {
-    path: 'product-cart',
-    element: <ProductCart />,
-  },
-  {
-    path: 'product-cart-item',
-    element: <ProductCardItem />,
   },
 ];

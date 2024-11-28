@@ -20,7 +20,7 @@ export const ProductSize = () => {
       <Col xs={24} sm={20}>
         <Row gutter={[16, 8]} wrap>
           {product?.sizes?.map((size) => (
-            <Col style={{ width: '70px', display: 'flex' }}>
+            <Col style={{ width: '70px', display: 'flex' }} key={size}>
               <Typography.Text
                 style={{
                   width: '100%',

@@ -1,17 +1,18 @@
 import { DeleteFilled } from '@ant-design/icons';
 import {
   Button,
+  Col,
   InputNumber,
+  Row,
   Select,
   Space,
   Table,
   Tooltip,
   Typography,
 } from 'antd';
-import { set } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-export const ProductCart = () => {
+export const ProductCartTable = () => {
   const shopColumns = [
     {
       title: 'Shop name',
@@ -126,7 +127,13 @@ export const ProductCart = () => {
 
   const [shopDataState, setShopDataState] = useState(shopData);
   const [selectedProducts, setSelectedProducts] = useState<
-    { id: string; size: string; color: string; quantity: number }[]
+    {
+      id: string;
+      size: string;
+      color: string;
+      currentPrice: number;
+      quantity: number;
+    }[]
   >([]);
 
   const productColumns = [
@@ -247,24 +254,42 @@ export const ProductCart = () => {
       dataIndex: 'quantity',
       render: (text: any, record: any) => {
         return (
-          <InputNumber
-            size="middle"
-            min={1}
-            defaultValue={record.quantity || 1}
-            onChange={(value) => {
-              setShopDataState((data) => {
-                const newData = [...data];
-                const shopIndex = newData.findIndex(
-                  (shop) => shop.key === record.shopId,
-                );
-                const productIndex = newData[shopIndex].products.findIndex(
-                  (product) => product.key === record.key,
-                );
-                newData[shopIndex].products[productIndex].quantity = value;
-                return newData;
-              });
-            }}
-          />
+          <Tooltip
+            title={
+              !selectedRowProductKeys.includes(record.key as string)
+                ? 'Please check the checkbox before updating the quantity'
+                : ''
+            }
+            color={'red'}
+          >
+            <InputNumber
+              disabled={!selectedRowProductKeys.includes(record.key as string)}
+              size="middle"
+              min={1}
+              defaultValue={record.quantity || 1}
+              onChange={(value) => {
+                setShopDataState((data) => {
+                  const newData = [...data];
+                  const shopIndex = newData.findIndex(
+                    (shop) => shop.key === record.shopId,
+                  );
+                  const productIndex = newData[shopIndex].products.findIndex(
+                    (product) => product.key === record.key,
+                  );
+                  setTotalPrice((price) => {
+                    return (
+                      price +
+                      record.currentPrice *
+                        (value -
+                          newData[shopIndex].products[productIndex].quantity)
+                    );
+                  });
+                  newData[shopIndex].products[productIndex].quantity = value;
+                  return newData;
+                });
+              }}
+            />
+          </Tooltip>
         );
       },
     },
@@ -305,6 +330,27 @@ export const ProductCart = () => {
                 }
                 return newData;
               });
+
+              if (selectedRowProductKeys.includes(record.key as string)) {
+                setTotalPrice((price) => {
+                  return price - record.currentPrice * record.quantity;
+                });
+              }
+
+              setSelectedProducts((products) => {
+                return products.filter((product) => product.id !== record.key);
+              });
+
+              setSelectedRowProductKeys((keys) => {
+                return keys.filter((key) => key !== record.key);
+              });
+
+              if (
+                selectedRowShopKeys &&
+                selectedRowShopKeys === record.shopId
+              ) {
+                setSelectedRowShopKeys('');
+              }
             }}
           />
         );
@@ -316,73 +362,94 @@ export const ProductCart = () => {
     string[]
   >([]);
   const [selectedRowShopKeys, setSelectedRowShopKeys] = useState('');
+  const [totalPrice, setTotalPrice] = useState(0);
 
   return (
-    <Table
-      columns={shopColumns}
-      dataSource={shopDataState}
-      expandable={{
-        // rowExpandable: (record: any) => !selectedRowShopKeys ? true : record.key === selectedRowShopKeys,
-        expandedRowRender: (record: any) => {
-          return (
-            <Table
-              columns={productColumns}
-              dataSource={record.products}
-              pagination={false}
-              rowSelection={{
-                type: 'checkbox',
-                selectedRowKeys: selectedRowProductKeys,
-                onChange: (keys) => {
-                  setSelectedRowProductKeys(keys as []);
-                  if (keys && keys.length > 0) {
-                    setSelectedRowShopKeys(record.key);
-                  } else {
-                    setSelectedRowShopKeys('');
-                    setSelectedProducts([]);
-                  }
-                },
-                onSelect: (record, selected, selectedRows) => {
-                  if (selected) {
-                    setSelectedProducts((products) => {
-                      return [
-                        ...products,
-                        {
-                          id: record.key,
-                          size: '',
-                          color: '',
-                          quantity: record.quantity,
-                        },
-                      ];
-                    });
-                  } else {
-                    setSelectedProducts((products) => {
-                      return products.filter(
-                        (product) => product.id !== record.key,
-                      );
-                    });
-                  }
-                },
-                getCheckboxProps: (record) => ({
-                  disabled: !selectedRowShopKeys
-                    ? false
-                    : record.shopId !== selectedRowShopKeys,
-                }),
-                selections:
-                  selectedRowShopKeys === record.key || !selectedRowShopKeys
-                    ? [
-                        Table.SELECTION_ALL,
-                        Table.SELECTION_NONE,
-                        Table.SELECTION_INVERT,
-                      ]
-                    : [],
-              }}
-            />
-          );
-        },
-        expandRowByClick: true,
-        defaultExpandAllRows: true,
-      }}
-      pagination={false}
-    />
+    <>
+      <Table
+        columns={shopColumns}
+        dataSource={shopDataState}
+        expandable={{
+          expandedRowRender: (record: any) => {
+            return (
+              <Table
+                columns={productColumns}
+                dataSource={record.products}
+                pagination={false}
+                rowSelection={{
+                  type: 'checkbox',
+                  selectedRowKeys: selectedRowProductKeys,
+                  onChange: (keys, selectedRow) => {
+                    console.log('onChange', { keys, selectedRow });
+                    setSelectedRowProductKeys(keys as []);
+                    if (keys && keys.length > 0) {
+                      setSelectedRowShopKeys(record.key);
+                      setSelectedProducts((_) => {
+                        return selectedRow.map((product: any) => {
+                          return {
+                            id: product.key,
+                            size: product.size,
+                            color: product.color,
+                            currentPrice: product.currentPrice,
+                            quantity: product.quantity,
+                          };
+                        });
+                      });
+
+                      setTotalPrice((price) => {
+                        return selectedRow.reduce(
+                          (total, product) =>
+                            total + product.currentPrice * product.quantity,
+                          0,
+                        );
+                      });
+                    } else {
+                      setSelectedRowShopKeys('');
+                      setSelectedProducts([]);
+                      setTotalPrice(0);
+                    }
+                  },
+                  getCheckboxProps: (record) => ({
+                    disabled: !selectedRowShopKeys
+                      ? false
+                      : record.shopId !== selectedRowShopKeys,
+                  }),
+                  selections:
+                    selectedRowShopKeys === record.key || !selectedRowShopKeys
+                      ? [
+                          Table.SELECTION_ALL,
+                          Table.SELECTION_NONE,
+                          Table.SELECTION_INVERT,
+                        ]
+                      : [],
+                }}
+              />
+            );
+          },
+          expandRowByClick: true,
+          defaultExpandAllRows: true,
+        }}
+        pagination={false}
+      />
+      <Col
+        span={24}
+        style={{ margin: '10px', display: 'flex', justifyContent: 'end' }}
+      >
+        <Row
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+          }}
+        >
+          <Typography.Text strong style={{ color: 'red' }}>
+            Total: ${totalPrice}
+          </Typography.Text>
+          <Button style={{ backgroundColor: 'purple', color: 'white' }}>
+            Checkout
+          </Button>
+        </Row>
+      </Col>
+    </>
   );
 };
