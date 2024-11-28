@@ -20,6 +20,7 @@ type ReportQuery = {
 	productId?: number;
 	postedAfter?: Date;
 	type?: ReportType;
+	reportResult?: ReportResultState;
 	// category?: string;
 	sortBy?: 'createdAt';
   order?: 'asc' | 'desc';
@@ -70,12 +71,19 @@ class ReportService {
 					gte: reportQuery.postedAfter
 				}, 
 				type: reportQuery.type,
+				reportResult: reportQuery.reportResult
 			},
 			orderBy: reportQuery.sortBy ? {
 				[reportQuery.sortBy as string]: reportQuery.order
 			} : undefined,
 			take: reportQuery.limit,
-			skip: reportQuery.offset
+			skip: reportQuery.offset,
+
+			include: {
+				reportResult: true,
+				shopReportReason: true,
+				productReportReason: true,
+			}
 		});
 	}
 
@@ -101,10 +109,11 @@ class ReportResultService {
 		});
 	}
 
-	static async getReportResult(reporterId: number) {
+	static async getReportResult(reporterId: number, resultdata: ReportResult) {
 		return await prisma.reportResult.findMany({
 			where : {
-				reportId: reporterId
+				reportId: reporterId,
+				result: resultdata.result
 			}
 		});
 	}
@@ -122,3 +131,4 @@ class ReportResultService {
 
 
 export default ReportService;
+export default ReportResultService;
