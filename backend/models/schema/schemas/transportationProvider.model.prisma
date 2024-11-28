@@ -5,5 +5,7 @@ model TransportationProvider {
   contactEmail  String
   shippingFee   Float
 
+  accessKey     String  @unique
+
   orders Order[]
 }

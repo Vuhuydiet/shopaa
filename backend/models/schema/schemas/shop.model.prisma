@@ -7,4 +7,5 @@ model Shop {
 
     shopOwner UserProfile @relation(fields: [shopOwnerId], references: [userId], onDelete: Restrict)
     products  Product[]
+    orders Order[]
 }

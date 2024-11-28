@@ -1,28 +1,33 @@
 enum OrderStatus {
   WAITING_ACCEPTANCE
+  CANCELED
   ACCEPTED
   REJECTED
   DELIVERING
   DELIVERED
   RECEIVED
+  COMPLETED
   RETURNED
 }
 
 model Order {
   orderId         Int         @id @default(autoincrement())
   customerId      Int?
-  createdAt       DateTime    @default(now())
-  status          OrderStatus
+  shopId          Int?
   shippingAddress String
   transProviderId Int?
+  status          OrderStatus @default(WAITING_ACCEPTANCE)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   shippingFee Float
   totalAmount Float
 
   customer               UserProfile?            @relation(fields: [customerId], references: [userId], onDelete: SetNull)
+  shop                   Shop?                   @relation(fields: [shopId], references: [shopOwnerId], onDelete: SetNull)
   transportationProvider TransportationProvider? @relation(fields: [transProviderId], references: [providerId], onDelete: SetNull)
-  details                OrderDetail[]
-  ReturnSlip             ReturnSlip[]
+  orderProducts          OrderDetail[]
+  returnSlip             ReturnSlip[]
 }
 
 model OrderDetail {
