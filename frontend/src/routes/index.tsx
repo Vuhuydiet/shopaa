@@ -16,6 +16,7 @@ import UploadProductForm from '../components/UpLoadProduct/UpLoadProductFrom';
 import ListProductShop from '../components/ListProductShop';
 import { ProductDetail } from '../pages/product-detail';
 import { ProductCatalog } from '../components/product-catalog/product-catalog';
+import UpdateProductForm from '../components/UpLoadProduct/UpdateProductForm';
 
 export const routes = [
   {
@@ -86,7 +87,15 @@ export const routes = [
                 element: <UploadProductForm />,
               },
               {
+                path: 'update-product/:productId',
+                element: <UpdateProductForm />,
+              },
+              {
                 path: 'shop-info',
+                // element: <Profile />, information of shop
+              },
+              {
+                path: 'list-order',
                 // element: <Profile />, information of shop
               },
             ],
