@@ -4,4 +4,6 @@ model Admin {
     username String  @unique
     password String
     fullname String?
+
+    reports ReportResult[]
 }

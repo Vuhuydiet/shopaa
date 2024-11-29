@@ -14,7 +14,8 @@ model Product {
     sizes              String[]
     numSoldProduct     Int      @default(0)
 
-    shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Restrict)
+    shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Cascade)
     categories    ProductCategory[]
     productImages ProductImage[]
+    reports       Report[]
 }
