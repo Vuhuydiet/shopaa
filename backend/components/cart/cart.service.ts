@@ -22,9 +22,13 @@ class CartService {
     if (!product)
       throw new NotFoundError('Product not found');
 
+    if (!cartItemData.color && product.colors.length > 0)
+      throw new BadRequestError('Color is required for this product');
     if (cartItemData.color && !product.colors.includes(cartItemData.color))
       throw new BadRequestError(`Invalid color: ${cartItemData.color}, available colors: ${product.colors.join(', ')}`);
 
+    if (!cartItemData.size && product.sizes.length > 0)
+      throw new BadRequestError('Size is required for this product');
     if (cartItemData.size && !product.sizes.includes(cartItemData.size))
       throw new BadRequestError(`Invalid size: ${cartItemData.size}, available sizes: ${product.sizes.join(', ')}`);
 
