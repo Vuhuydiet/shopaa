@@ -17,5 +17,5 @@ model Product {
     shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Restrict)
     categories    ProductCategory[]
     productImages ProductImage[]
-    cartProduct CartDetail[]
+    cartProduct CartItem[]
 }
