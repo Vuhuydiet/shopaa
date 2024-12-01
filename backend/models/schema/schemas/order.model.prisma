@@ -33,6 +33,8 @@ model Order {
 model OrderDetail {
   orderId   Int
   productId Int // no FK because it's a key attribute and the referenced product could be deleted while order still exists
+  color     String?
+  size      String?
   quantity  Int
   price     Float
 

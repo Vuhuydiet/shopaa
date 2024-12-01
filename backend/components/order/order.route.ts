@@ -18,6 +18,8 @@ const orderDataValidator = () => {
     body('orderData.products').isArray(),
     body('orderData.products.*.productId').isInt().toInt(),
     body('orderData.products.*.quantity').isInt().toInt(),
+    body('orderData.products.*.color').optional().isString(),
+    body('orderData.products.*.size').optional().isString(),
   ]
 }
 
