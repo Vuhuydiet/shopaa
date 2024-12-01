@@ -91,6 +91,28 @@ class ProductService {
     });
   }
 
+  static async checkProductVariantExists(productId: number, color?: string, size?: string) {
+    const product = await prisma.product.findFirst({
+      where: {
+        productId: productId,
+      }
+    });
+
+    if (!product)
+      return false;
+
+    if (color && !product.colors.includes(color))
+      return false;
+    if (!color && product.colors.length > 0)
+      return false;
+    if (size && !product.sizes.includes(size))
+      return false;
+    if (!size && product.sizes.length > 0)
+      return false;
+
+    return true;
+  }
+
   static async getCategoryById(categoryId: number) {
     return await prisma.productCategory.findUnique({
       where: {
