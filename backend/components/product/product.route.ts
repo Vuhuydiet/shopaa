@@ -79,10 +79,11 @@ router.post('/',
 );
 
 router.get('/',
-  queryValidator(),
+  keywordQueryValidator(),
+  queryValidator(), 
   handleValidationErrors,
 
-  productController.getAllProducts
+  productController.searchProducts
 );
 
 router.get('/:productId',
@@ -90,14 +91,6 @@ router.get('/:productId',
   handleValidationErrors,
 
   productController.getProductById
-);
-
-router.get('/search',
-  keywordQueryValidator(),
-  queryValidator(), 
-  handleValidationErrors,
-
-  productController.searchProducts
 );
 
 router.patch('/:productId',
