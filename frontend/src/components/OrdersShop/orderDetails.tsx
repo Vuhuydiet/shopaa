@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Button, Table, Tag, Dropdown, Menu, message } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Table, Tag, Dropdown, message } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 
 interface OrderDetail {
   productId: number;
@@ -24,6 +25,7 @@ interface Order {
 const OrderShopDetail: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const [order, setOrder] = useState<Order | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchedOrder: Order = {
@@ -64,23 +66,24 @@ const OrderShopDetail: React.FC = () => {
       message.success(`Update status successful: ${newStatus}`);
     }
   };
-
-  const statusMenu = (
-    <Menu>
-      <Menu.Item onClick={() => handleStatusChange('Confirmed')}>
-        Confirm
-      </Menu.Item>
-      <Menu.Item onClick={() => handleStatusChange('Shipping')}>
-        Shipping
-      </Menu.Item>
-      <Menu.Item onClick={() => handleStatusChange('Cancelled')}>
-        Cancel
-      </Menu.Item>
-      <Menu.Item onClick={() => handleStatusChange('Delivered')}>
-        Delivered
-      </Menu.Item>
-    </Menu>
-  );
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Pending':
+        return 'orange';
+      case 'Cancelled':
+        return 'red';
+      case 'Confirmed':
+        return 'blue';
+      case 'Shipping':
+        return 'cyan';
+      case 'Delivered':
+        return 'green';
+      case 'Returned':
+        return 'magenta';
+      default:
+        return 'gray';
+    }
+  };
 
   const columns = [
     {
@@ -122,7 +125,7 @@ const OrderShopDetail: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '30px', color: 'black' }}>
+    <div style={{ padding: '50px', color: 'black' }}>
       <h1>Order detail {order.orderId}</h1>
       <hr />
       <div style={{ marginTop: '40px' }}>
@@ -148,16 +151,6 @@ const OrderShopDetail: React.FC = () => {
               <td
                 style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
               >
-                Status:
-              </td>
-              <td style={{ padding: '8px' }}>
-                <Tag color="orange">{order.status}</Tag>
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
                 Total amount:
               </td>
               <td style={{ padding: '8px' }}>
@@ -172,6 +165,51 @@ const OrderShopDetail: React.FC = () => {
               </td>
               <td style={{ padding: '8px' }}>{order.createdAt}</td>
             </tr>
+            <tr>
+              <td
+                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+              >
+                Status:
+              </td>
+              <td style={{ padding: '8px' }}>
+                {order.status === 'Pending' ? (
+                  <Dropdown
+                    menu={{
+                      items: [
+                        {
+                          key: 'confirm',
+                          label: 'Confirm',
+                          onClick: () => handleStatusChange('Confirmed'),
+                        },
+                        {
+                          key: 'cancel',
+                          label: 'Cancel',
+                          onClick: () => handleStatusChange('Cancelled'),
+                        },
+                      ],
+                    }}
+                  >
+                    <span
+                      onClick={() => {}}
+                      style={{
+                        padding: 0,
+                        border: 'none',
+                        background: 'none',
+                        display: 'inline-block',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <Tag color={getStatusColor(order.status)}>
+                        {order.status}
+                      </Tag>
+                      <EditOutlined style={{ marginLeft: '3px' }} />
+                    </span>
+                  </Dropdown>
+                ) : (
+                  <Tag color={getStatusColor(order.status)}>{order.status}</Tag>
+                )}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -185,7 +223,7 @@ const OrderShopDetail: React.FC = () => {
 
       <Button
         style={{ marginTop: '20px' }}
-        // onClick={() => }
+        onClick={() => navigate('/manager-shop/list-order')}
       >
         Back
       </Button>

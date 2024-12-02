@@ -1,0 +1,11 @@
+model TransportationProvider {
+  providerId    Int    @id @default(autoincrement())
+  providerName  String
+  contactNumber String
+  contactEmail  String
+  shippingFee   Float
+
+  accessKey     String  @unique
+
+  orders Order[]
+}

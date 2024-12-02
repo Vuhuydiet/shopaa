@@ -159,8 +159,9 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Table, Tag, Button, Space } from 'antd';
+import { Menu, Table, Tag, Button, Space, Dropdown } from 'antd';
 import { NavLink } from 'react-router-dom';
+import { EditOutlined } from '@ant-design/icons';
 
 type OrderStatus =
   | 'pending'
@@ -174,14 +175,14 @@ interface Order {
   orderId: number;
   customerName: string;
   phoneNumber: string;
-  status: string;
+  status: OrderStatus;
   totalAmount: number;
   createdAt: string;
 }
 
 const OrderShop: React.FC = () => {
   const [currentStatus, setCurrentStatus] = useState<string>('all');
-  const [orders] = useState<Order[]>([
+  const [orders, setOrders] = useState<Order[]>([
     {
       orderId: 1,
       customerName: 'Nguyễn Văn A',
@@ -195,6 +196,38 @@ const OrderShop: React.FC = () => {
       customerName: 'Trần Thị B',
       phoneNumber: '0987654321',
       status: 'confirmed',
+      totalAmount: 300,
+      createdAt: '2024-12-01 15:45',
+    },
+    {
+      orderId: 3,
+      customerName: 'Trần Thị B',
+      phoneNumber: '0987654321',
+      status: 'delivered',
+      totalAmount: 300,
+      createdAt: '2024-12-01 15:45',
+    },
+    {
+      orderId: 4,
+      customerName: 'Trần Thị B',
+      phoneNumber: '0987654321',
+      status: 'pending',
+      totalAmount: 300,
+      createdAt: '2024-12-01 15:45',
+    },
+    {
+      orderId: 5,
+      customerName: 'Trần Thị B',
+      phoneNumber: '0987654321',
+      status: 'pending',
+      totalAmount: 300,
+      createdAt: '2024-12-01 15:45',
+    },
+    {
+      orderId: 6,
+      customerName: 'Trần Thị B',
+      phoneNumber: '0987654321',
+      status: 'pending',
       totalAmount: 300,
       createdAt: '2024-12-01 15:45',
     },
@@ -224,6 +257,14 @@ const OrderShop: React.FC = () => {
       ? orders
       : orders.filter((order) => order.status === currentStatus);
 
+  const handleStatusChange = (orderId: number, newStatus: OrderStatus) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.orderId === orderId ? { ...order, status: newStatus } : order,
+      ),
+    );
+  };
+
   const columns = [
     {
       title: '#',
@@ -244,9 +285,43 @@ const OrderShop: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: OrderStatus) => (
-        <Tag color={getStatusColor(status)}>{statusMapping[status]}</Tag>
-      ),
+      render: (status: OrderStatus, record: Order) =>
+        status === 'pending' ? (
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'confirm',
+                  label: 'Confirm',
+                  onClick: () =>
+                    handleStatusChange(record.orderId, 'confirmed'),
+                },
+                {
+                  key: 'cancel',
+                  label: 'Cancel',
+                  onClick: () =>
+                    handleStatusChange(record.orderId, 'cancelled'),
+                },
+              ],
+            }}
+          >
+            <span
+              onClick={() => {}}
+              style={{
+                padding: 0,
+                border: 'none',
+                background: 'none',
+                display: 'inline-block',
+                cursor: 'pointer',
+              }}
+            >
+              <Tag color={getStatusColor(status)}>{statusMapping[status]}</Tag>
+              <EditOutlined style={{ marginLeft: '3px' }} />
+            </span>
+          </Dropdown>
+        ) : (
+          <Tag color={getStatusColor(status)}>{statusMapping[status]}</Tag>
+        ),
     },
     {
       title: 'Total amount',
@@ -262,7 +337,7 @@ const OrderShop: React.FC = () => {
     {
       title: 'Action',
       key: 'action',
-      render: (text: any, record: Order) => (
+      render: (record: Order) => (
         <Space size="middle">
           <Button type="primary">
             <NavLink to={`/manager-shop/list-order/${record.orderId}`}>
