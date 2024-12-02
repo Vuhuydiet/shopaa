@@ -159,7 +159,8 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Table, Tag, Button } from 'antd';
+import { Menu, Table, Tag, Button, Space } from 'antd';
+import { NavLink } from 'react-router-dom';
 
 type OrderStatus =
   | 'pending'
@@ -170,21 +171,33 @@ type OrderStatus =
   | 'returned';
 
 interface Order {
-  id: number;
-  name: string;
-  status: OrderStatus;
+  orderId: number;
+  customerName: string;
+  phoneNumber: string;
+  status: string;
+  totalAmount: number;
+  createdAt: string;
 }
 
-const OrderShop = () => {
+const OrderShop: React.FC = () => {
   const [currentStatus, setCurrentStatus] = useState<string>('all');
-  const [orders, setOrders] = useState<Order[]>([
-    { id: 1, name: 'Đơn hàng A', status: 'pending' },
-    { id: 2, name: 'Đơn hàng B', status: 'cancelled' },
-    { id: 3, name: 'Đơn hàng C', status: 'confirmed' },
-    { id: 4, name: 'Đơn hàng D', status: 'shipping' },
-    { id: 5, name: 'Đơn hàng E', status: 'delivered' },
-    { id: 6, name: 'Đơn hàng F', status: 'delivered' },
-    { id: 7, name: 'Đơn hàng G', status: 'returned' },
+  const [orders] = useState<Order[]>([
+    {
+      orderId: 1,
+      customerName: 'Nguyễn Văn A',
+      phoneNumber: '0123456789',
+      status: 'pending',
+      totalAmount: 200,
+      createdAt: '2024-12-01 10:30',
+    },
+    {
+      orderId: 2,
+      customerName: 'Trần Thị B',
+      phoneNumber: '0987654321',
+      status: 'confirmed',
+      totalAmount: 300,
+      createdAt: '2024-12-01 15:45',
+    },
   ]);
 
   const navigate = useNavigate();
@@ -219,13 +232,13 @@ const OrderShop = () => {
     },
     {
       title: 'Order ID',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'orderId',
+      key: 'orderId',
     },
     {
-      title: 'Order Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Customer name',
+      dataIndex: 'customerName',
+      key: 'customerName',
     },
     {
       title: 'Status',
@@ -233,6 +246,30 @@ const OrderShop = () => {
       key: 'status',
       render: (status: OrderStatus) => (
         <Tag color={getStatusColor(status)}>{statusMapping[status]}</Tag>
+      ),
+    },
+    {
+      title: 'Total amount',
+      dataIndex: 'totalAmount',
+      key: 'totalAmount',
+      render: (amount: number) => `$${amount.toFixed(2)}`,
+    },
+    {
+      title: 'Time',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text: any, record: Order) => (
+        <Space size="middle">
+          <Button type="primary">
+            <NavLink to={`/manager-shop/list-order/${record.orderId}`}>
+              Detail
+            </NavLink>
+          </Button>
+        </Space>
       ),
     },
   ];
@@ -279,14 +316,8 @@ const OrderShop = () => {
           <Table
             dataSource={filteredOrders}
             columns={columns}
-            rowKey="id"
+            rowKey="orderId"
             style={{ marginTop: '16px' }}
-            onRow={(record) => ({
-              onClick: () => {
-                console.log('Click row: ', record.id);
-                navigate(`/manager-shop/list-order/${record.id}`);
-              },
-            })}
           />
         </div>
       </div>
