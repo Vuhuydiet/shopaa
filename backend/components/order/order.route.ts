@@ -12,7 +12,7 @@ import auth from '../../libraries/auth/authorization.middleware';
 
 const orderDataValidator = () => {
   return [
-    body('orderData').isJSON().customSanitizer(JSON.parse as any),
+    body('orderData').isObject(),
     body('orderData.shippingAddress').isString(),
     body('orderData.transProvider').isInt().toInt(),
     body('orderData.products').isArray(),
@@ -53,7 +53,7 @@ router.get(
 )
 
 router.get(
-  '/:orderId',
+  '/user/:orderId',
   passport.authenticate('jwt', { session: false }),
   orderPermissions.canGetOrder,
   
@@ -106,7 +106,7 @@ router.patch(
   orderPermissions.canUpdateDeliveryStatus,
 
   param('orderId').isInt().toInt(),
-  body('status').custom((value: string) => Object.values(OrderStatus).includes(value as OrderStatus)),
+  body('status').custom((value: string) => (Object.values(OrderStatus) as string[]).includes(value)),
   handleValidationErrors,
 
   orderController.updateOrderStatus
