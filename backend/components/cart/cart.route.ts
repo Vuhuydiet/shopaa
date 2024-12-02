@@ -5,7 +5,7 @@ const router = express.Router();
 import passport from '../../libraries/auth/authentication.middleware';
 import Auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 
 router.post(
@@ -38,8 +38,7 @@ router.delete(
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.USER]),
 
-  body('cartItemId').isNumeric().toInt(),
-  body('productId').optional().isNumeric(),
+  param('cartItemId').isNumeric().toInt(),
   handleValidationErrors,
   
   cartController.deleteCartItem

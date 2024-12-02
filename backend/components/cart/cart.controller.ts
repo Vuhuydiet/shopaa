@@ -22,8 +22,8 @@ export default {
 
   deleteCartItem: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
-    const cartItemData = matchedData(req) as any;
-    await CartService.deleteCartItem(userId, cartItemData);
+    const { cartItemId } = matchedData(req) as any;
+    await CartService.deleteCartItem(userId, cartItemId);
     new OKResponse({ message: 'Cart item deleted' }).send(res);
   }
 
