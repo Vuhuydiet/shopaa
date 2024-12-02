@@ -3,7 +3,7 @@ const router = express.Router();
 import reportController from './report.controller';
 import passport from '../../libraries/auth/authentication.middleware';
 import authorizationMiddleware from '../../libraries/auth/authorization.middleware';
-import { ReportResultState, Role } from '@prisma/client';
+import { ReportResultState, ReportType, Role } from '@prisma/client';
 import { body, query, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 
@@ -35,8 +35,8 @@ router.get('/',
   query('productId').optional().isNumeric().toInt(),
   query('postedAfter').optional().isISO8601().toDate(),
   query('postedBefore').optional().isISO8601().toDate(),
-  query('type').optional().isString(),
-  query('reportResult').optional().custom((value: string) => Object.values(ReportResultState).includes(value as ReportResultState)),
+  query('type').optional().custom((value: string) => Object.values(ReportType).includes(value as ReportType)),
+  query('result').optional().custom((value: string) => Object.values(ReportResultState).includes(value as ReportResultState)),
   query('category').optional().isString(),
   query('sortBy').optional().custom((value: string) => ["createdAt"].includes(value)),
   query('order').optional().custom((value: string) => ["asc", "desc"].includes(value)),
@@ -62,33 +62,17 @@ router.delete('/:reportId',
   reportController.deleteReport
 )
 
-router.post('/result',
+router.post('/:reportId/result',
   passport.authenticate('jwt', { session: false }),
   authorizationMiddleware.authorize([Role.ADMIN]),
-  body('reportId').isNumeric().toInt(),
+  param('reportId').isNumeric().toInt(),
   body('result').custom((value: string) => Object.values(ReportResultState).includes(value as ReportResultState)),
   handleValidationErrors,
   reportController.createReportResult
 
 )
 
-router.get('/result/:reportId',
-  passport.authenticate('jwt', { session: false }),
-  authorizationMiddleware.authorize([Role.ADMIN]),
-  param('reportId').isNumeric().toInt(),
-  handleValidationErrors,
-  reportController.getReportResultbyId
-)
-
-router.get('/result',
-  passport.authenticate('jwt', { session: false }),
-  authorizationMiddleware.authorize([Role.ADMIN]),
-  query('result').custom((value: string) => Object.values(ReportResultState).includes(value as ReportResultState)),
-  handleValidationErrors,
-  reportController.getReportResultbyState
-)
-
-router.delete('/:reportId',
+router.delete('/:reportId/result',
   passport.authenticate('jwt', { session: false }),
   authorizationMiddleware.authorize([Role.ADMIN]),
   param('reportId').isNumeric().toInt(),

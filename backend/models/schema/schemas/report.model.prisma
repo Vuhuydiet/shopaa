@@ -46,6 +46,6 @@ model ReportResult {
     handlerId Int
     result    ReportResultState
 
-    report  Report @relation(fields: [reportId], references: [reportId])
-    handler UserProfile  @relation(fields: [handlerId], references: [userId])
+    report  Report @relation(fields: [reportId], references: [reportId],onDelete: Cascade)
+    handler UserProfile  @relation(fields: [handlerId], references: [userId], onDelete: Restrict)
 }

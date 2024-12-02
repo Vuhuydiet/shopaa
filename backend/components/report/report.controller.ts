@@ -52,21 +52,6 @@ export default {
     new CreatedResponse({ message: "Report Result created sucessfully", metadata: { result } }).send(res);
   },
 
-  //get ReportResult by Id
-  getReportResultbyId: async (req: Request, res: Response) => {
-    const { reportId } = matchedData(req);
-    const reportResult = await ReportService.getReportResultById(reportId);
-    if (!reportResult)
-      throw new NotFoundError("Report not found");
-    new OKResponse({ message: "Report Result by Id displayed sucessfully", metadata: { reportResult } }).send(res);
-  },
-
-  //get ReportResult by State
-  getReportResultbyState: async (req: Request, res: Response) => {
-    const { result } = matchedData(req);
-    const reportResult = await ReportService.getReportResultsByState(result);
-    new OKResponse({ message: "Report Result by State displayed sucessfully", metadata: { reportResult } }).send(res);
-  },
 
   //delete reportresult
   deleteReportResult: async (req: Request, res: Response) => {

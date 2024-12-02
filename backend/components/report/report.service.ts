@@ -1,5 +1,7 @@
 import { ReportResultState, ReportType } from "@prisma/client";
 import prisma from "../../models";
+import { NotFoundError } from "../../core/ErrorResponse";
+import { report } from "process";
 
 type ShopReportData = {
 	reportReason: string;
@@ -22,7 +24,7 @@ type ReportQuery = {
 	postedAfter?: Date;
 	postedBefore?: Date;
 	type?: ReportType;
-	reportResult?: ReportResultState;
+	result?: ReportResultState;
 	// category?: string;
 	sortBy?: 'createdAt';
 	order?: 'asc' | 'desc';
@@ -41,6 +43,25 @@ type ReportResultData = {
 
 class ReportService {
 	static async createShopReport(reporterId: number, reportData: ShopReportData) {
+		const shop = await prisma.shop.findUnique({
+			where: {
+				shopOwnerId: reportData.shopId,
+			}
+		});
+
+		if (!shop)
+			throw new NotFoundError('Shop not found');
+
+
+		const reportReason = await prisma.shopReportReason.findUnique({
+			where: {
+				categoryName: reportData.reportReason
+			}
+		});
+
+		if (!reportReason)
+			throw new NotFoundError('Report Reason not found');
+
 		return await prisma.report.create({
 			data: {
 				reporterId: reporterId,
@@ -53,6 +74,23 @@ class ReportService {
 	}
 
 	static async createProductReport(reporterId: number, reportData: ProductReportData) {
+		const product = await prisma.product.findUnique({
+			where: {
+				productId: reportData.productId
+			}
+		});
+		if (!product)
+			throw new NotFoundError('Product not found')
+
+		const reportReason = await prisma.productReportReason.findUnique({
+			where: {
+				categoryName: reportData.reportReason
+			}
+		})
+		if (!reportReason)
+			throw new NotFoundError('Report Reason not found')
+
+
 		return await prisma.report.create({
 			data: {
 				reporterId: reporterId,
@@ -65,7 +103,29 @@ class ReportService {
 	}
 
 	static async getReports(reportQuery: ReportQuery) {
-		if(reportQuery.unprocess) 
+		if (reportQuery.shopId) {
+			const shop = await prisma.shop.findUnique({
+				where: {
+					shopOwnerId: reportQuery.shopId
+				}
+			});
+
+			if (!shop)
+				throw new NotFoundError('Shop not found')
+		}
+
+		if (reportQuery.productId) {
+			const product = await prisma.product.findUnique({
+				where: {
+					productId: reportQuery.productId
+				}
+			});
+
+			if (!product)
+				throw new NotFoundError('Product not found')
+		}
+
+		if (reportQuery.unprocess)
 			return this.getUnprocessReports;
 
 		return await prisma.report.findMany({
@@ -76,8 +136,8 @@ class ReportService {
 					gte: reportQuery.postedAfter
 				},
 				type: reportQuery.type,
-				reportResult: reportQuery.reportResult ? {
-					result: reportQuery.reportResult,
+				reportResult: reportQuery.result ? {
+					result: reportQuery.result,
 				} : undefined
 
 			},
@@ -98,11 +158,36 @@ class ReportService {
 		return await prisma.report.findUnique({
 			where: {
 				reportId: reportId
+			},
+			include: {
+				reportResult: true,
 			}
 		});
 	}
 
 	static async getUnprocessReports(reportQuery: ReportQuery) {
+		if (reportQuery.shopId) {
+			const shop = await prisma.shop.findUnique({
+				where: {
+					shopOwnerId: reportQuery.shopId
+				}
+			});
+
+			if (!shop)
+				throw new NotFoundError('Shop not found')
+		}
+
+		if (reportQuery.productId) {
+			const product = await prisma.product.findUnique({
+				where: {
+					productId: reportQuery.productId
+				}
+			});
+
+			if (!product)
+				throw new NotFoundError('Product not found')
+		}
+
 		return await prisma.report.findMany({
 			where: {
 				shopId: reportQuery.shopId,
@@ -119,7 +204,7 @@ class ReportService {
 			} : undefined,
 			take: reportQuery.limit,
 			skip: reportQuery.offset,
-		})
+		});
 	}
 
 	static async deleteReport(reportId: number) {
@@ -132,6 +217,15 @@ class ReportService {
 
 
 	static async createReportResult(handlerId: number, resultdata: ReportResultData) {
+		const report = await prisma.report.findUnique({
+			where: {
+				reportId: resultdata.reportId
+			}
+		});
+
+		if (!report)
+			throw new NotFoundError('Report not found')
+
 		return await prisma.reportResult.create({
 			data: {
 				reportId: resultdata.reportId,
@@ -139,22 +233,6 @@ class ReportService {
 				handlerId: handlerId
 			}
 		});
-	}
-
-	static async getReportResultById(reportId: number) {
-		return await prisma.reportResult.findUnique({
-			where: {
-				reportId: reportId,
-			}
-		});
-	}
-
-	static async getReportResultsByState(result: ReportResultState) {
-		return await prisma.reportResult.findMany({
-			where: {
-				result: result,
-			}
-		})
 	}
 
 
