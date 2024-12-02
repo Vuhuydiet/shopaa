@@ -33,3 +33,19 @@ model Report {
     shopReportReason    ShopReportReason?    @relation(fields: [shopCategory], references: [categoryName], onDelete: Restrict, map: "fk_shop_category")
     productReportReason ProductReportReason? @relation(fields: [productCategory], references: [categoryName], onDelete: Restrict, map: "fk_product_category")
 }
+
+
+enum ReportResultState {
+    accepted
+    dismissed
+}
+
+model ReportResult {
+    reportId  Int              @id @default(autoincrement())
+    createdAt DateTime         @default(now())
+    handlerId Int
+    result    ReportResultState
+
+    report  Report @relation(fields: [reportId], references: [reportId],onDelete: Cascade)
+    handler UserProfile  @relation(fields: [handlerId], references: [userId], onDelete: Restrict)
+}
