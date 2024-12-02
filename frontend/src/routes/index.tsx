@@ -17,6 +17,8 @@ import ListProductShop from '../components/ListProductShop';
 import { ProductDetail } from '../pages/product-detail';
 import { ProductCatalog } from '../components/product-catalog/product-catalog';
 import UpdateProductForm from '../components/UpLoadProduct/UpdateProductForm';
+import OrderShop from '../components/OrdersShop';
+import OrderShopDetail from '../components/OrdersShop/orderDetails';
 
 export const routes = [
   {
@@ -96,7 +98,11 @@ export const routes = [
               },
               {
                 path: 'list-order',
-                // element: <Profile />, information of shop
+                element: <OrderShop />,
+              },
+              {
+                path: 'list-order/:orderId',
+                element: <OrderShopDetail />,
               },
             ],
           },
