@@ -276,20 +276,17 @@ const ListProductShop: React.FC = () => {
     setAction('search');
     console.log('Value search: ', value);
     try {
-      const response = await axios.get(
-        `${PRODUCT_API_ENDPOINTS.PRODUCTS}/search`,
-        {
-          params: {
-            keyword: value,
-            shopId,
-            limit: pageSize,
-            offset: (currentPage - 1) * pageSize,
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
+      const response = await axios.get(`${PRODUCT_API_ENDPOINTS.PRODUCTS}`, {
+        params: {
+          keyword: value,
+          shopId,
+          limit: pageSize,
+          offset: (currentPage - 1) * pageSize,
         },
-      );
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
       if (response.status === 200) {
         console.log('Result: ', response);

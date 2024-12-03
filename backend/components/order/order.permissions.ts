@@ -27,10 +27,10 @@ export default {
 
     const order = await OrderService.getOrderById(orderId);
     if (role === Role.USER && order?.customerId !== userId) {
-      throw new ForbiddenError("You do not have permission to get this order");
+      throw new ForbiddenError("You do not have permission to get this order. Order is belong to another user");
     }
     if (role === Role.SHOP_MANAGER && order?.shopId !== userId) {
-      throw new ForbiddenError("You do not have permission to get this order");
+      throw new ForbiddenError("You do not have permission to get this order. Order is belong to another shop");
     }
 
     next();
@@ -49,14 +49,14 @@ export default {
       case OrderStatus.RETURNED:
       case OrderStatus.COMPLETED:
         if (role !== Role.USER || order?.customerId !== userId) {
-          throw new ForbiddenError("You do not have permission to update this order status");
+          throw new ForbiddenError("Only USERs have permission to update this order status");
         }
         break;
 
       case OrderStatus.ACCEPTED:
       case OrderStatus.REJECTED:
         if (role !== Role.SHOP_MANAGER || order?.shopId !== userId) {
-          throw new ForbiddenError("You do not have permission to update this order status");
+          throw new ForbiddenError("Only SHOP_MANAGERs have permission to update this order status");
         }
         break;
 
@@ -98,11 +98,11 @@ export default {
     }
     
     if (status !== OrderStatus.DELIVERING && status !== OrderStatus.DELIVERED) {
-      throw new ForbiddenError(`You cannot update the order status to '${status}'`);
+      throw new ForbiddenError(`Transport providers do not have permission to update the order status to '${status}'`);
     }
 
     if (order.transProviderId !== req.transporter?.providerId) {
-      throw new ForbiddenError("You do not have permission to update this order status");
+      throw new ForbiddenError("You do not have permission to update this order status. Order is not assigned to you");
     }
 
     next();

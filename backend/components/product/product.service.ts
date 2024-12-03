@@ -28,7 +28,8 @@ type ProductData = {
   }
 }
 
-type ProductQueryParams = {
+type ProductQuery = {
+  keyword?: string;
   shopId?: number;
   category?: number;
   brand?: string;
@@ -54,7 +55,7 @@ const returnProductInclude: any = {
   }
 }
 
-function getCondition(queryParams: ProductQueryParams) {
+function getCondition(queryParams: ProductQuery) {
   const condition = {
     sellerId: queryParams.shopId,
     categories: queryParams.category ? {
@@ -75,6 +76,10 @@ function getCondition(queryParams: ProductQueryParams) {
       gte: queryParams.postedAfter,
       lte: queryParams.postedBefore,
     },
+    OR: queryParams.keyword ? [
+      { productName: { contains: queryParams.keyword } },
+      { productDescription: { contains: queryParams.keyword } }
+    ] : undefined
   } as any;
 
   return condition;
@@ -209,7 +214,7 @@ class ProductService {
     return product;
   }
 
-  static async getAllProducts(queryParams: ProductQueryParams) {
+  static async getAllProducts(queryParams: ProductQuery) {
     const [count, products] = await Promise.all([
       prisma.product.count({
         where: getCondition(queryParams)
@@ -232,27 +237,17 @@ class ProductService {
   }
 
   // temporary implementation
-  static async searchProducts(keyword: string, queryParams: ProductQueryParams) {
+  static async searchProducts(queryParams: ProductQuery) {
     const [count, products] = await Promise.all([
       prisma.product.count({
-        where: {
-          ...getCondition(queryParams),
-          productName: { contains: keyword },
-          productDescription: { contains: keyword }
-        }
+        where: getCondition(queryParams),
       }),
 
       prisma.product.findMany({
         skip: queryParams.offset,
         take: queryParams.limit,
 
-        where: {
-          ...getCondition(queryParams),
-          OR: [
-            { productName: { contains: keyword } },
-            { productDescription: { contains: keyword } }
-          ]
-        },
+        where: getCondition(queryParams),
 
         orderBy: queryParams.sortBy ? {
           [queryParams.sortBy as string]: queryParams.order
@@ -340,5 +335,4 @@ class ProductService {
   }
 }
 
-export { ProductQueryParams };
 export default ProductService;
