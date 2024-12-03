@@ -82,20 +82,13 @@ router.post(
 
 router.get(
   '/',
-  queryValidator(),
-  handleValidationErrors,
-
-  productController.getAllProducts,
-);
-
-router.get(
-  '/search',
   keywordQueryValidator(),
   queryValidator(),
   handleValidationErrors,
 
   productController.searchProducts,
 );
+
 router.get(
   '/:productId',
   productIdValidator(),

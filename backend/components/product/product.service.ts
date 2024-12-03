@@ -149,7 +149,7 @@ class ProductService {
     if (!(await tx.product.findUnique({ where: { productId } }))) {
       throw new InternalServerError('Product not found');
     }
-    
+
     const images = await Promise.all(imageFiles.map(image => ImageService.createImage(image, tx)));
 
     await Promise.all(images.map(({ imageId }) => tx.productImage.create({
@@ -227,7 +227,7 @@ class ProductService {
         include: returnProductInclude
       })
     ]);
-    
+
     return { count, products };
   }
 
@@ -248,8 +248,10 @@ class ProductService {
 
         where: {
           ...getCondition(queryParams),
-          productName: { contains: keyword },
-          productDescription: { contains: keyword }
+          OR: [
+            { productName: { contains: keyword } },
+            { productDescription: { contains: keyword } }
+          ]
         },
 
         orderBy: queryParams.sortBy ? {
@@ -289,7 +291,7 @@ class ProductService {
       });
       console.log(deletingImages);
       await Promise.all(deletingImages.map(({ imageId }) => ImageService.deleteImage(imageId, tx)));
-      
+
       await tx.product.update({
         where: {
           productId: productId,

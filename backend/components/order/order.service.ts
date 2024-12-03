@@ -75,6 +75,17 @@ class OrderService {
     return { totalProductCost, shippingFee: provider.shippingFee };
   }
 
+  private static getTotalNoEachProduct(orderProducts: any[]): Map<number, { total: number, stock: number }> {
+    return orderProducts.reduce((acc, product) => {
+      const { stock, total } = acc.get(product.productId) || { stock: product.quantity, total: 0 };
+      acc.set(product.productId, {
+        total: total + product.boughtQuantity,
+        stock: stock
+      });
+      return acc;
+    }, new Map<number, { total: number, stock: number }>());
+  }
+
   static async createOrder(userid: number, productData: OrderData) {
     if (productData.products.length === 0) {
       throw new BadRequestError("Order must contain at least one product");
@@ -87,21 +98,14 @@ class OrderService {
       throw new BadRequestError("All products must be from the same shop");
     }
 
-    orderProducts.reduce((acc, product) => {
-      const { stock, total } = acc.get(product.productId) || { stock: product.quantity, total: 0 };
-      acc.set(product.productId, {
-        total: total + product.boughtQuantity,
-        stock: stock
-      });
-      return acc;
-    }, new Map<number, { total: number, stock: number }>())
+    this.getTotalNoEachProduct(orderProducts)
       .forEach(({ total, stock }, productId) => {
         if (total > stock) {
           throw new BadRequestError(`Not enough stock for product ${productId}`);
         }
       });
 
-    orderProducts.forEach(async ({productId, color, size}) => {
+    orderProducts.forEach(async ({ productId, color, size }) => {
       if (!(await ProductService.checkProductVariantExists(productId, color, size)))
         throw new BadRequestError(`Invalid variant for product ${productId}`);
     });
@@ -189,13 +193,35 @@ class OrderService {
   }
 
   static async updateOrderStatus(orderId: number, newStatus: OrderStatus) {
-    const order = await prisma.order.findUnique({ where: { orderId: orderId } });
+    const order = await prisma.order.findUnique({
+      where: { orderId: orderId },
+      include: {
+        orderProducts: {
+          select: { 
+            productId: true, 
+            quantity: true
+          }
+        }
+      }
+    });
     if (!order) {
       throw new NotFoundError("Order not found");
     }
 
     if (!this.canUpdateOrderStatus(order.status, newStatus)) {
       throw new BadRequestError("Invalid status transition");
+    }
+
+    if (newStatus === OrderStatus.COMPLETED) {
+      order.orderProducts.forEach(async ({ productId, quantity }) => {
+        await prisma.product.update({
+          where: { productId: productId },
+          data: { 
+            quantity: { decrement: quantity },
+            numSoldProduct: { increment: quantity }
+          }
+        });
+      });
     }
 
     return await prisma.order.update({
