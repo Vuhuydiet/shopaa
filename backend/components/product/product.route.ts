@@ -47,25 +47,22 @@ const productDataValidator = (post: boolean) => {
 
 const queryValidator = () => {
   return [
-    query('shopId').optional().isNumeric().toInt(),
-    query('category').optional().isNumeric().toInt(),
-    query('brand').optional().isString(),
-    query('postedAfter').optional().isISO8601().toDate(),
-    query('postedBefore').optional().isISO8601().toDate(),
-    query('minPrice').optional().isNumeric().toFloat(),
-    query('maxPrice').optional().isNumeric().toFloat(),
-    query('minQuantity').optional().isNumeric().toInt(),
-    query('maxQuantity').optional().isNumeric().toInt(),
-    query('sortBy').optional().isString(),
-    query('order').optional().isString(),
-    query('offset').optional().isNumeric().toInt(),
-    query('limit').optional().isNumeric().toInt(),
+    query('keyword').optional().isString(),
+    query('shopId')        .optional() .isNumeric().toInt(),
+    query('category')      .optional() .isNumeric().toInt(),
+    query('brand')         .optional() .isString(),
+    query('postedAfter')   .optional() .isISO8601().toDate(),
+    query('postedBefore')  .optional() .isISO8601().toDate(),
+    query('minPrice')      .optional() .isNumeric().toFloat(),
+    query('maxPrice')      .optional() .isNumeric().toFloat(),
+    query('minQuantity')   .optional() .isNumeric().toInt(),
+    query('maxQuantity')   .optional() .isNumeric().toInt(),
+    query('sortBy')        .optional() .isString(),
+    query('order')         .optional() .isString(),
+    query('offset')        .optional() .isNumeric().toInt(),
+    query('limit')         .optional() .isNumeric().toInt(),
   ];
-};
-
-const keywordQueryValidator = () => {
-  return [query('keyword').isString()];
-};
+}
 
 router.post(
   '/',
@@ -80,28 +77,18 @@ router.post(
   productController.createProduct,
 );
 
-router.get(
-  '/',
-  queryValidator(),
+router.get('/',
+  queryValidator(), 
   handleValidationErrors,
 
-  productController.getAllProducts,
+  productController.searchProducts
 );
 
-router.get(
-  '/search',
-  keywordQueryValidator(),
-  queryValidator(),
-  handleValidationErrors,
-
-  productController.searchProducts,
-);
-router.get(
-  '/:productId',
+router.get('/:productId',
   productIdValidator(),
   handleValidationErrors,
 
-  productController.getProductById,
+  productController.getProductById
 );
 
 router.patch(

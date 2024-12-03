@@ -1,4 +1,4 @@
-import { NotFoundError } from '../../core/ErrorResponse'
+import { InternalServerError, NotFoundError } from '../../core/ErrorResponse'
 import prisma from "../../models"
 import ImageService from '../image/image.service';
 import ShopService from '../shop/shop.service';
@@ -28,7 +28,8 @@ type ProductData = {
   }
 }
 
-type ProductQueryParams = {
+type ProductQuery = {
+  keyword?: string;
   shopId?: number;
   category?: number;
   brand?: string;
@@ -54,7 +55,7 @@ const returnProductInclude: any = {
   }
 }
 
-function getCondition(queryParams: ProductQueryParams) {
+function getCondition(queryParams: ProductQuery) {
   const condition = {
     sellerId: queryParams.shopId,
     categories: queryParams.category ? {
@@ -75,6 +76,10 @@ function getCondition(queryParams: ProductQueryParams) {
       gte: queryParams.postedAfter,
       lte: queryParams.postedBefore,
     },
+    OR: queryParams.keyword ? [
+      { productName: { contains: queryParams.keyword } },
+      { productDescription: { contains: queryParams.keyword } }
+    ] : undefined
   } as any;
 
   return condition;
@@ -145,6 +150,21 @@ class ProductService {
     });
   }
 
+  static async createProductImages(productId: number, imageFiles: Express.Multer.File[], tx: any) {
+    if (!(await tx.product.findUnique({ where: { productId } }))) {
+      throw new InternalServerError('Product not found');
+    }
+
+    const images = await Promise.all(imageFiles.map(image => ImageService.createImage(image, tx)));
+
+    await Promise.all(images.map(({ imageId }) => tx.productImage.create({
+      data: {
+        imageId: imageId,
+        productId: productId
+      }
+    })));
+  }
+
   static async createProduct(shopId: number, productData: ProductData) {
     await ShopService.checkShopExists(shopId);
 
@@ -171,14 +191,7 @@ class ProductService {
         select: { productId: true }
       });
 
-      const images = await Promise.all((productData.images?.add || []).map(image => ImageService.createImage(image, tx)));
-
-      await Promise.all(images.map(({ publicId }) => tx.productImage.create({
-        data: {
-          image: { connect: { publicId: publicId } },
-          product: { connect: { productId: productId } }
-        }
-      })));
+      await this.createProductImages(productId, productData.images?.add || [], tx);
 
       return await tx.product.findUnique({
         where: { productId },
@@ -201,7 +214,7 @@ class ProductService {
     return product;
   }
 
-  static async getAllProducts(queryParams: ProductQueryParams) {
+  static async getAllProducts(queryParams: ProductQuery) {
     const [count, products] = await Promise.all([
       prisma.product.count({
         where: getCondition(queryParams)
@@ -219,30 +232,22 @@ class ProductService {
         include: returnProductInclude
       })
     ]);
-    
+
     return { count, products };
   }
 
   // temporary implementation
-  static async searchProducts(keyword: string, queryParams: ProductQueryParams) {
+  static async searchProducts(queryParams: ProductQuery) {
     const [count, products] = await Promise.all([
       prisma.product.count({
-        where: {
-          ...getCondition(queryParams),
-          productName: { contains: keyword },
-          productDescription: { contains: keyword }
-        }
+        where: getCondition(queryParams),
       }),
 
       prisma.product.findMany({
         skip: queryParams.offset,
         take: queryParams.limit,
 
-        where: {
-          ...getCondition(queryParams),
-          productName: { contains: keyword },
-          productDescription: { contains: keyword }
-        },
+        where: getCondition(queryParams),
 
         orderBy: queryParams.sortBy ? {
           [queryParams.sortBy as string]: queryParams.order
@@ -276,12 +281,11 @@ class ProductService {
       const deletingImages = await tx.productImage.findMany({
         where: {
           productId: productId,
-          imageId: { in: productData.images?.remove }
+          imageId: { in: productData.images?.remove || [] }
         }
       });
-
+      console.log(deletingImages);
       await Promise.all(deletingImages.map(({ imageId }) => ImageService.deleteImage(imageId, tx)));
-      const newImages = await Promise.all((productData.images?.add || []).map(image => ImageService.createImage(image, tx)));
 
       await tx.product.update({
         where: {
@@ -301,21 +305,10 @@ class ProductService {
             connect: productData.categories?.add?.map(category => ({ categoryId: category })),
             disconnect: productData.categories?.remove?.map(category => ({ categoryId: category }))
           },
-
-          productImages: {
-            create: newImages.map(publicId => ({
-              image: { connect: publicId }
-            }))
-          }
         }
       });
 
-      await Promise.all(newImages.map(({ publicId }) => tx.productImage.create({
-        data: {
-          image: { connect: { publicId: publicId } },
-          product: { connect: { productId: productId } }
-        }
-      })));
+      await this.createProductImages(productId, productData.images?.add || [], tx);
 
       return await tx.product.findUnique({
         where: { productId },
@@ -342,5 +335,4 @@ class ProductService {
   }
 }
 
-export { ProductQueryParams };
 export default ProductService;
