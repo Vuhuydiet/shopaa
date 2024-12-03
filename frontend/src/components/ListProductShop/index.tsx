@@ -121,7 +121,7 @@ const ListProductShop: React.FC = () => {
 
       if (action === 'search') {
         console.log(dataSearch);
-        handleSearch(searchValue);
+        handleSearch(searchValue, searchPage);
       } else if (action === 'all') {
         setTotalPage(data?.count);
         await refreshDataTable(data?.items);
@@ -262,7 +262,7 @@ const ListProductShop: React.FC = () => {
   const handleSearchPagination = async (page: number, pageSize: number) => {
     setSearchPage(page);
     setPageSize(pageSize);
-    handleSearch(searchValue);
+    await handleSearch(searchValue, page);
   };
 
   const handleDefaultPagination = async (page: number, pageSize: number) => {
@@ -270,18 +270,19 @@ const ListProductShop: React.FC = () => {
     setPageSize(pageSize);
   };
 
-  const handleSearch = async (value: string) => {
+  const handleSearch = async (value: string, page: number) => {
     setSearching(true);
     setSearchValue(value);
-    setAction('search');
-    console.log('Value search: ', value);
+    setSearchPage(page);
+    console.log('=== hàm search Value search: ', value);
+    console.log('Page search: ', searchPage);
     try {
       const response = await axios.get(`${PRODUCT_API_ENDPOINTS.PRODUCTS}`, {
         params: {
           keyword: value,
           shopId,
           limit: pageSize,
-          offset: (searchPage - 1) * pageSize,
+          offset: (page - 1) * pageSize,
         },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -301,7 +302,7 @@ const ListProductShop: React.FC = () => {
           await refreshDataTable(products);
           setDataSearch(products);
         } else {
-          setCurrentPage(1);
+          setSearchPage(1);
           setTotalPage(0);
           setTableData([]);
         }
@@ -313,6 +314,10 @@ const ListProductShop: React.FC = () => {
     } finally {
       setSearching(false);
     }
+  };
+
+  const handleSearchMiddle = async (value: string) => {
+    await handleSearch(value, 1);
   };
 
   return (
@@ -346,6 +351,7 @@ const ListProductShop: React.FC = () => {
                   setAction('all');
                   refreshDataTable(data?.items);
                   setCurrentPage(1);
+                  setSearchPage(1);
                   setTotalPage(data?.count);
                   message.info('Showing all products');
                 }}
@@ -353,7 +359,7 @@ const ListProductShop: React.FC = () => {
               <Input.Search
                 placeholder="Search product by keyword"
                 enterButton
-                onSearch={handleSearch}
+                onSearch={handleSearchMiddle}
                 style={{ width: '250px' }}
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}

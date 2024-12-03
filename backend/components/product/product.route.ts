@@ -47,6 +47,7 @@ const productDataValidator = (post: boolean) => {
 
 const queryValidator = () => {
   return [
+    query('keyword').optional().isString(),
     query('shopId').optional().isNumeric().toInt(),
     query('category').optional().isNumeric().toInt(),
     query('brand').optional().isString(),
