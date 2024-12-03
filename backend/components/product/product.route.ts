@@ -43,6 +43,7 @@ const productDataValidator = (post: boolean) => {
 
 const queryValidator = () => {
   return [
+    query('keyword').optional().isString(),
     query('shopId')        .optional() .isNumeric().toInt(),
     query('category')      .optional() .isNumeric().toInt(),
     query('brand')         .optional() .isString(),
@@ -59,13 +60,6 @@ const queryValidator = () => {
   ];
 }
 
-const keywordQueryValidator = () => {
-  return [
-    query('keyword').isString(),
-  ];
-}
-
-
 router.post('/',
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.SHOP_MANAGER]),
@@ -79,7 +73,6 @@ router.post('/',
 );
 
 router.get('/',
-  keywordQueryValidator(),
   queryValidator(), 
   handleValidationErrors,
 

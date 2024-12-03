@@ -1,5 +1,5 @@
 enum OrderStatus {
-  WAITING_ACCEPTANCE
+  PENDING
   CANCELED
   ACCEPTED
   REJECTED
@@ -16,7 +16,7 @@ model Order {
   shopId          Int?
   shippingAddress String
   transProviderId Int?
-  status          OrderStatus @default(WAITING_ACCEPTANCE)
+  status          OrderStatus @default(PENDING)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 

@@ -1,12 +1,12 @@
 import express from 'express';
 const router = express.Router();
 
-import productController from './product.controller';
-import passport from '../../libraries/auth/authentication.middleware';
-import Auth from '../../libraries/auth/authorization.middleware';
+import categoryController from './category.controller';
+import passport from '../../../libraries/auth/authentication.middleware';
+import Auth from '../../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import { body, param } from 'express-validator';
-import { handleValidationErrors } from '../../libraries/validator/validator';
+import { handleValidationErrors } from '../../../libraries/validator/validator';
 
 const IdValidator = () => {
   return [
@@ -28,11 +28,11 @@ router.post('/',
   dataValidator(),
   handleValidationErrors,
   
-  productController.createProductCategory
+  categoryController.createProductCategory
 );
 
 router.get('/',
-  productController.getAllProductCategories
+  categoryController.getAllProductCategories
 );
 
 router.patch('/', 
@@ -43,7 +43,7 @@ router.patch('/',
   dataValidator(),
   handleValidationErrors,
   
-  productController.updateProductCategory
+  categoryController.updateProductCategory
 );
 
 router.delete('/:categoryId',
@@ -53,7 +53,7 @@ router.delete('/:categoryId',
   IdValidator(),
   handleValidationErrors,
   
-  productController.deleteProductCategory
+  categoryController.deleteProductCategory
 );
 
 

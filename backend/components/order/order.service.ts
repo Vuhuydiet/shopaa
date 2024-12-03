@@ -178,7 +178,7 @@ class OrderService {
 
   private static canUpdateOrderStatus(currentStatus: OrderStatus, newStatus: OrderStatus) {
     const ORDER_MAP = new Map<OrderStatus, OrderStatus[]>([
-      [OrderStatus.WAITING_ACCEPTANCE, [OrderStatus.CANCELED, OrderStatus.ACCEPTED, OrderStatus.REJECTED]],
+      [OrderStatus.PENDING, [OrderStatus.CANCELED, OrderStatus.ACCEPTED, OrderStatus.REJECTED]],
       [OrderStatus.CANCELED, []],
       [OrderStatus.REJECTED, []],
       [OrderStatus.ACCEPTED, [OrderStatus.DELIVERING]],

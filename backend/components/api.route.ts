@@ -4,7 +4,7 @@ const router = express.Router();
 import accessRouter from './access/access.route';
 import userRouter from './user/user.route';
 import shopRouter from './shop/shop.route';
-import categoryRouter from './product/category.route';
+import categoryRouter from './product/category/category.route';
 import productRouter from './product/product.route';
 import orderRouter from './order/order.route';
 
