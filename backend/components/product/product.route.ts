@@ -63,10 +63,6 @@ const queryValidator = () => {
   ];
 };
 
-const keywordQueryValidator = () => {
-  return [query('keyword').isString()];
-};
-
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
@@ -82,7 +78,6 @@ router.post(
 
 router.get(
   '/',
-  keywordQueryValidator(),
   queryValidator(),
   handleValidationErrors,
 

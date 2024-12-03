@@ -281,7 +281,7 @@ const ListProductShop: React.FC = () => {
           keyword: value,
           shopId,
           limit: pageSize,
-          offset: (currentPage - 1) * pageSize,
+          offset: (searchPage - 1) * pageSize,
         },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
