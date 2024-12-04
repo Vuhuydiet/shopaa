@@ -22,3 +22,7 @@ export const SHOP_API_ENDPOINTS = {
   SHOP: `${API_DOMAIN}api/v1/shop/`,
   REGISTER_SHOP: `${API_DOMAIN}api/v1/shop/register`,
 };
+
+export const ADMIN_API_ENDPOINTS = {
+  REPORTS: `${API_DOMAIN}api/v1/report/`,
+};

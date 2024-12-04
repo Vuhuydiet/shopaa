@@ -1,15 +1,6 @@
-import { InfoCircleFilled } from '@ant-design/icons';
-import {
-  Badge,
-  Button,
-  Collapse,
-  CollapseProps,
-  Descriptions,
-  DescriptionsProps,
-  Modal,
-  Table,
-} from 'antd';
-import { useState } from 'react';
+import { Descriptions, DescriptionsProps, Modal, Table } from 'antd';
+import { ReportContext } from '../../context/ReportContext';
+import { useContext } from 'react';
 
 const shopDetail: DescriptionsProps['items'] = [
   {
@@ -47,7 +38,7 @@ const shopDetail: DescriptionsProps['items'] = [
     children: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea eaque quis nobis
      qui accusantium ab veritatis rerum voluptates fugiat, perspiciatis consequuntur quaerat
      quae reprehenderit blanditiis praesentium fuga? Distinctio, totam corporis.`,
-    span: 4,
+    span: 3,
   },
 ];
 
@@ -133,89 +124,6 @@ const reportResult: DescriptionsProps['items'] = [
 ];
 
 export const ReportTable = () => {
-  const [open, setOpen] = useState(false);
-
-  const getReportDetail = (record: any) => {
-    setOpen(true);
-  };
-
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      render: (date: string) => new Date(date).toLocaleString(),
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-    },
-    {
-      title: 'Category',
-      render: (record: any) => record.shopCategory || record.productCategory,
-    },
-    {
-      title: 'Report Result',
-      dataIndex: 'reportResult',
-      render: (data: any) => data?.result,
-    },
-    {
-      title: 'Action',
-      render: (record: any) => (
-        <Button type="primary" onClick={() => getReportDetail(record)}>
-          Detail <InfoCircleFilled />
-        </Button>
-      ),
-    },
-  ];
-
-  const data = [
-    {
-      id: 1,
-      createdAt: '2021-08-01T00:00:00Z',
-      description: 'This is a report',
-      type: 'shop',
-      shopCategory: 'fake',
-      productCategory: null,
-      reportResult: {
-        reportId: 1,
-        createdAt: '2021-08-01T00:00:00Z',
-        handlerId: 1,
-        result: 'accepted',
-      },
-    },
-    {
-      id: 2,
-      createdAt: '2021-08-01T00:00:00Z',
-      description: 'This is a report',
-      type: 'product',
-      shopCategory: null,
-      productCategory: 'fake',
-      reportResult: {
-        reportId: 2,
-        createdAt: '2021-08-01T00:00:00Z',
-        handlerId: 1,
-        result: 'dismissed',
-      },
-    },
-    {
-      id: 3,
-      createdAt: '2021-08-01T00:00:00Z',
-      description: 'This is a report',
-      type: 'shop',
-      shopCategory: 'fake',
-      productCategory: null,
-      reportResult: null,
-    },
-  ];
-
   const items: DescriptionsProps['items'] = [
     {
       key: '1',
@@ -265,19 +173,22 @@ export const ReportTable = () => {
     },
   ];
 
+  const { reports, isLoading, isOpenModal, columnReport, toggleModal } =
+    useContext(ReportContext);
+
   return (
     <>
       <Modal
-        open={open}
+        open={isOpenModal}
         title={'Report Detail'}
         onOk={() => {}}
-        onCancel={() => setOpen(false)}
+        onCancel={toggleModal}
         footer={[]}
-        width={1200}
+        width={1100}
       >
         <Descriptions title="User Info" bordered items={items} />
       </Modal>
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columnReport} dataSource={reports} loading={isLoading} />
     </>
   );
 };

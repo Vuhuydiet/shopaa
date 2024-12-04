@@ -17,6 +17,7 @@ import ListProductShop from '../components/ListProductShop';
 import { ProductDetail } from '../pages/product-detail';
 import { ProductCatalog } from '../components/product-catalog/product-catalog';
 import { ReportTable } from '../components/report-table';
+import { ReportPage } from '../pages/admin/report';
 
 export const routes = [
   {
@@ -106,6 +107,10 @@ export const routes = [
         path: '/product-detail/:id',
         element: <ProductDetail />,
       },
+      {
+        path: '/admin',
+        element: <ReportPage />,
+      },
     ],
   },
   {
@@ -127,9 +132,5 @@ export const routes = [
   {
     path: '*',
     element: <Navigate to="/" replace />,
-  },
-  {
-    path: '/report',
-    element: <ReportTable />,
   },
 ];
