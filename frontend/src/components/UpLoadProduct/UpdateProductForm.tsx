@@ -25,8 +25,7 @@ const { Option } = Select;
 
 const UpdateProductForm: React.FC = () => {
   const location = useLocation();
-  const { product, action, currentPage, pageSize, keyword } =
-    location.state || {};
+  const { product } = location.state || {};
   const [initialCategories, setInitialCategories] = useState<number[]>([]);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [originalImages, setOriginalImages] = useState<UploadFile[]>([]);
@@ -441,19 +440,7 @@ const UpdateProductForm: React.FC = () => {
           {!isEditMode ? (
             <>
               <Space>
-                <Button
-                  onClick={() =>
-                    navigate('/manager-shop/list-product', {
-                      state: {
-                        name: 'updateForm',
-                        keyword: keyword,
-                        action: action,
-                        currentPage: currentPage,
-                        pageSize: pageSize,
-                      },
-                    })
-                  }
-                >
+                <Button onClick={() => navigate('/manager-shop/list-product')}>
                   Back
                 </Button>
                 <Button type="primary" onClick={() => setIsEditMode(true)}>
