@@ -1,0 +1,13 @@
+model CartItem {
+    cartItemId Int      @id @default(autoincrement())
+    userId     Int
+    productId  Int
+    color      String?
+    size       String?
+    createdAt  DateTime @default(now())
+
+    @@unique([userId, productId, color, size])
+ 
+    user    UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    product Product     @relation(fields: [productId], references: [productId], onDelete: Cascade)
+}
