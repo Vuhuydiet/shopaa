@@ -18,6 +18,7 @@ import { ProductDetail } from '../pages/product-detail';
 import { ProductCatalog } from '../components/product-catalog/product-catalog';
 import { ReportPage } from '../pages/admin/report';
 import { AdminRoute } from '../components/admin-route';
+import { LayoutAdmin } from '../layout/admin';
 
 export const routes = [
   {
@@ -107,25 +108,26 @@ export const routes = [
         path: '/product-detail/:id',
         element: <ProductDetail />,
       },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <LayoutAdmin />,
+    children: [
       {
         element: <AdminRoute />,
         children: [
           {
-            path: 'admin',
-            children: [
-              {
-                index: true,
-                element: <Navigate to="/admin/dashboard" replace />,
-              },
-              {
-                path: 'dashboard',
-                // element:
-              },
-              {
-                path: 'report',
-                element: <ReportPage />,
-              },
-            ],
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
+            path: 'dashboard',
+            // element:
+          },
+          {
+            path: 'report',
+            element: <ReportPage />,
           },
         ],
       },
