@@ -1,6 +1,7 @@
 import { Typography } from 'antd';
 import { ProductCartTable } from '../../components/product-cart-table';
 import { ShoppingCartOutlined } from '@ant-design/icons';
+import { CartProvider } from '../../context/CartContext';
 
 export const ProductCart = () => {
   return (
@@ -9,7 +10,9 @@ export const ProductCart = () => {
         <ShoppingCartOutlined style={{ marginRight: '5px' }} />
         Your Cart
       </Typography.Title>
-      <ProductCartTable />
+      <CartProvider>
+        <ProductCartTable />
+      </CartProvider>
     </div>
   );
 };
