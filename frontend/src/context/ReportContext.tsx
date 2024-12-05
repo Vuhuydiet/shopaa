@@ -1,10 +1,18 @@
 import { Key, ReactNode, createContext, useMemo, useState } from 'react';
 import { useReports } from '../service/api/useReports';
 import { IReport } from '../interfaces/IReport';
-import { Button, DatePicker, Input, Space, TableColumnsType } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Descriptions,
+  Input,
+  Space,
+  TableColumnsType,
+} from 'antd';
 import { InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
 import { useProduct } from '../service/api/useProduct';
 import { useShop } from '../service/api/useShop';
+import { Link } from 'react-router-dom';
 
 interface ReportContextType {
   reports: IReport[];
@@ -67,7 +75,9 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
           {
             key: 'productId',
             label: 'Product ID',
-            children: product?.id,
+            children: (
+              <Link to={`/product-detail/${productId}`}>{productId}</Link>
+            ),
             span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
           },
           {
@@ -97,7 +107,7 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
           {
             key: 'publishedAt',
             label: 'Published at',
-            children: product?.publishedAt,
+            children: new Date(product?.publishedAt).toLocaleString(),
             span: { xs: 3, sm: 3, md: 2, lg: 1, xl: 1, xxl: 1 },
           },
           {
@@ -127,7 +137,7 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
           {
             key: 'shopOwnerId',
             label: 'Shop Owner ID',
-            children: shop?.shopOwnerId,
+            children: <Link to={`/shop/${shopId}`}>{shopId}</Link>,
             span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
           },
           {
@@ -153,41 +163,88 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
     }
 
     setReportDetail([
-      { key: 'id', label: 'Report ID', children: record?.id },
+      {
+        key: 'reportId',
+        label: 'Report ID',
+        children: record.id,
+      },
       {
         key: 'reporterId',
         label: 'Reporter ID',
-        children: record?.reporterId,
+        children: record.reporterId,
       },
       {
-        key: 'reporteeId',
-        label: 'Reportee ID',
-        children: record?.shopId || record?.productId,
+        key: 'createdAt',
+        label: 'Created At',
+        children: new Date(record.createdAt).toLocaleString(),
+        span: { xs: 4, sm: 4, md: 1, lg: 1, xl: 1, xxl: 1 },
       },
-      { key: 'createdAt', label: 'Created At', children: record?.createdAt },
       {
-        key: 'description',
-        label: 'Description',
-        children: record?.description,
+        key: 'type',
+        label: 'Type',
+        children: record.type,
       },
-      { key: 'type', label: 'Type', children: record?.type },
       {
         key: 'category',
         label: 'Category',
-        children: record?.shopCategory || record?.productCategory,
+        children: record.shopCategory || record.productCategory,
+        span: 2,
       },
       {
-        key: 'reportResult',
-        label: 'Report Result',
-        children: record?.reportResult?.result,
+        key: 'description',
+        label: 'Description',
+        span: 4,
+        children: record.description,
       },
-      ...getReportee(record?.productId?.toString())(record?.shopId?.toString()),
+      {
+        key: 'reportee',
+        label: 'Reportee',
+        children: (
+          <Descriptions
+            items={getReportee(record?.productId?.toString())(
+              record?.shopId?.toString(),
+            )}
+          />
+        ),
+        span: 4,
+      },
+      {
+        key: 'result',
+        label: 'Result',
+        children: (
+          <Descriptions
+            items={[
+              {
+                key: 'createdAt',
+                label: 'Created At',
+                children: record.reportResult?.createdAt
+                  ? new Date(record.reportResult?.createdAt).toLocaleString()
+                  : '',
+              },
+              {
+                key: 'handlerId',
+                label: 'Handler ID',
+                children: record.reportResult?.handlerId,
+              },
+              {
+                key: 'result',
+                label: 'Result',
+                children: record.reportResult?.result,
+                span: 4,
+              },
+            ]}
+          />
+        ),
+        span: 4,
+      },
     ]);
   };
 
   const toggleModal = () => {
     setOpen((prev) => !prev);
   };
+
+  const [filterValues, setFilterValues] = useState<any>({});
 
   const columns = useMemo<TableColumnsType<ReportType>>(() => {
     return [
@@ -296,21 +353,33 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         render: (date: string) => new Date(date).toLocaleString(),
         filterDropdown: ({ setSelectedKeys, confirm }) => {
           return (
-            <DatePicker.RangePicker
-              showTime={{ format: 'HH:mm' }}
-              format="DD-MM-YYYY HH:mm"
-              onOk={(value) => {
-                if (value == undefined) return;
-                if (value.at(0) && value.at(1)) {
-                  setCreatedAt([
-                    value?.at(0)?.toDate(),
-                    value?.at(1)?.toDate(),
-                  ]);
-                  setSelectedKeys(['oke']);
-                  confirm();
-                }
-              }}
-            />
+            <>
+              <DatePicker.RangePicker
+                showTime={{ format: 'HH:mm' }}
+                format="DD-MM-YYYY HH:mm"
+                onOk={(value) => {
+                  if (value == undefined) {
+                    return;
+                  }
+                  if (value.at(0) && value.at(1)) {
+                    setCreatedAt([
+                      value?.at(0)?.toDate(),
+                      value?.at(1)?.toDate(),
+                    ]);
+                    setSelectedKeys(['oke']);
+                    confirm();
+                  }
+                }}
+              />
+              <Button
+                onClick={() => {
+                  setCreatedAt([null, null]);
+                }}
+                type="primary"
+              >
+                Clear
+              </Button>
+            </>
           );
         },
         onFilter: (_, record: ReportType) => {

@@ -16,8 +16,8 @@ import UploadProductForm from '../components/UpLoadProduct/UpLoadProductFrom';
 import ListProductShop from '../components/ListProductShop';
 import { ProductDetail } from '../pages/product-detail';
 import { ProductCatalog } from '../components/product-catalog/product-catalog';
-import { ReportTable } from '../components/report-table';
 import { ReportPage } from '../pages/admin/report';
+import { AdminRoute } from '../components/admin-route';
 
 export const routes = [
   {
@@ -108,8 +108,26 @@ export const routes = [
         element: <ProductDetail />,
       },
       {
-        path: '/admin',
-        element: <ReportPage />,
+        element: <AdminRoute />,
+        children: [
+          {
+            path: 'admin',
+            children: [
+              {
+                index: true,
+                element: <Navigate to="/admin/dashboard" replace />,
+              },
+              {
+                path: 'dashboard',
+                // element:
+              },
+              {
+                path: 'report',
+                element: <ReportPage />,
+              },
+            ],
+          },
+        ],
       },
     ],
   },

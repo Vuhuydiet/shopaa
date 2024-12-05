@@ -1,4 +1,4 @@
-import { Descriptions, Modal, Spin, Table } from 'antd';
+import { Button, Descriptions, Modal, Spin, Table } from 'antd';
 import { ReportContext } from '../../context/ReportContext';
 import { useContext } from 'react';
 
@@ -19,10 +19,27 @@ export const ReportTable = () => {
         title={'Report Detail'}
         onOk={() => {}}
         onCancel={toggleModal}
-        footer={[]}
+        footer={[
+          <Button
+            key="dismiss"
+            type="primary"
+            loading={false}
+            onClick={() => {}}
+          >
+            Dismiss
+          </Button>,
+          <Button
+            key="accept"
+            type="primary"
+            loading={false}
+            onClick={() => {}}
+          >
+            Accept
+          </Button>,
+        ]}
         width={1100}
       >
-        <Descriptions title="User Info" bordered items={reportDetail} />
+        <Descriptions bordered items={reportDetail} />
       </Modal>
       {isLoading ? (
         <Spin
