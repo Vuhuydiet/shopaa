@@ -1,23 +1,7 @@
-import {
-  Key,
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { Key, ReactNode, createContext, useMemo, useState } from 'react';
 import { useReports } from '../service/api/useReports';
 import { IReport } from '../interfaces/IReport';
-import {
-  Button,
-  DatePicker,
-  Descriptions,
-  DescriptionsProps,
-  Input,
-  Space,
-  TableColumnsType,
-} from 'antd';
+import { Button, DatePicker, Input, Space, TableColumnsType } from 'antd';
 import { InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
 import { useProduct } from '../service/api/useProduct';
 import { useShop } from '../service/api/useShop';
@@ -28,6 +12,7 @@ interface ReportContextType {
   isOpenModal: boolean;
   columnReport: TableColumnsType<IReport>;
   toggleModal: () => void;
+  reportDetail: DescriptionsItem[];
 }
 
 export const ReportContext = createContext<ReportContextType>({
@@ -36,6 +21,7 @@ export const ReportContext = createContext<ReportContextType>({
   isOpenModal: false,
   columnReport: [],
   toggleModal: () => {},
+  reportDetail: [],
 });
 
 type ReportType = IReport;
@@ -43,7 +29,7 @@ type ReportType = IReport;
 interface DescriptionsItem {
   key: string;
   label: string;
-  children: ReactNode;
+  children: ReactNode | string;
   span?:
     | {
         xs?: number;
@@ -59,133 +45,149 @@ interface DescriptionsItem {
 export const ReportProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { data, isLoading } = useReports({});
-
   const [open, setOpen] = useState(false);
-
   const [reportDetail, setReportDetail] = useState<DescriptionsItem[]>([]);
+  const [createdAt, setCreatedAt] = useState<
+    [Date | null | undefined, Date | null | undefined]
+  >([null, null]);
+
+  const { data, isLoading } = useReports({});
+  const [productId, setProductId] = useState<string | undefined>(undefined);
+  const [shopId, setShopId] = useState<string | undefined>(undefined);
+  const { data: product } = useProduct(productId);
+  const { data: shop } = useShop(shopId);
 
   const getReportDetail = (record: IReport) => {
-    let reportee;
-    if (record.productId) {
-      const { data } = useProduct(record.productId.toString());
-      reportee = data;
+    toggleModal();
+    setProductId(record.productId?.toString());
+    setShopId(record.shopId?.toString());
+    function getReportee(productId: string | undefined) {
+      if (productId) {
+        return (_: string | undefined) => [
+          {
+            key: 'productId',
+            label: 'Product ID',
+            children: product?.id,
+            span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
+          },
+          {
+            key: 'productName',
+            label: 'Product name',
+            children: product?.name,
+            span: { xs: 3, sm: 3, md: 2, lg: 2, xl: 1, xxl: 1 },
+          },
+          {
+            key: 'currentPrice',
+            label: 'Current price',
+            children: product?.currentPrice,
+            span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
+          },
+          {
+            key: 'originalPrice',
+            label: 'Original price',
+            children: product?.originalPrice,
+            span: { xs: 3, sm: 3, md: 2, lg: 1, xl: 1, xxl: 1 },
+          },
+          {
+            key: 'quantity',
+            label: 'Quantity',
+            children: product?.quantity,
+            span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
+          },
+          {
+            key: 'publishedAt',
+            label: 'Published at',
+            children: product?.publishedAt,
+            span: { xs: 3, sm: 3, md: 2, lg: 1, xl: 1, xxl: 1 },
+          },
+          {
+            key: 'brand',
+            label: 'Brand',
+            span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
+            children: product?.brand,
+          },
+          {
+            key: 'material',
+            label: 'Material',
+            span: { xs: 3, sm: 3, md: 2, lg: 1, xl: 2, xxl: 2 },
+            children: product?.material,
+          },
+          {
+            key: 'description',
+            label: 'Product Description',
+            span: 3,
+            children: product?.description,
+          },
+        ];
+      }
+      return (shopId: string | undefined) => {
+        if (!shopId) return [];
+
+        return [
+          {
+            key: 'shopOwnerId',
+            label: 'Shop Owner ID',
+            children: shop?.shopOwnerId,
+            span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
+          },
+          {
+            key: 'shopName',
+            label: 'Shop name',
+            children: shop?.name,
+            span: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2, xxl: 2 },
+          },
+          {
+            key: 'address',
+            label: 'Address',
+            children: shop?.address,
+            span: 3,
+          },
+          {
+            key: 'description',
+            label: 'Shop Description',
+            children: shop?.description,
+            span: 3,
+          },
+        ];
+      };
     }
 
-    if (record.shopId) {
-      const { data } = useShop(record.shopId.toString());
-      reportee = data;
-    }
-
-    const productDetail: DescriptionsProps['items'] = [
-      {
-        label: 'Product ID',
-        children: reportee?.id,
-        span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
-      },
-      {
-        label: 'Product name',
-        children: product?.name,
-        span: { xs: 3, sm: 3, md: 2, lg: 2, xl: 1, xxl: 1 },
-      },
-      {
-        label: 'Current price',
-        children: '$80.00',
-        span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
-      },
-      {
-        label: 'Original price',
-        children: '$100.00',
-        span: { xs: 3, sm: 3, md: 2, lg: 1, xl: 1, xxl: 1 },
-      },
-      {
-        label: 'Quantity',
-        children: 100654,
-        span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
-      },
-      {
-        label: 'Published at',
-        children: '2021-08-01T00:00:00Z',
-        span: { xs: 3, sm: 3, md: 2, lg: 1, xl: 1, xxl: 1 },
-      },
-      {
-        label: 'Brand',
-        span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
-        children: 'Gucci',
-      },
-      {
-        label: 'Material',
-        span: { xs: 3, sm: 3, md: 2, lg: 1, xl: 2, xxl: 2 },
-        children: 'Leather',
-      },
-      {
-        label: 'Product Description',
-        span: 3,
-        children: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea eaque quis nobis`,
-      },
-    ];
-
-    setOpen(true);
     setReportDetail([
-      {
-        key: 'reportId',
-        label: 'Report ID',
-        children: record.id,
-      },
+      { key: 'id', label: 'Report ID', children: record?.id },
       {
         key: 'reporterId',
         label: 'Reporter ID',
-        children: record.reporterId,
+        children: record?.reporterId,
       },
       {
-        key: 'createdAt',
-        label: 'Created At',
-        children: record.createdAt,
-        span: { xs: 4, sm: 4, md: 1, lg: 1, xl: 1, xxl: 1 },
+        key: 'reporteeId',
+        label: 'Reportee ID',
+        children: record?.shopId || record?.productId,
       },
-      {
-        key: 'type',
-        label: 'Type',
-        children: record.type,
-      },
-      {
-        key: 'category',
-        label: 'Category',
-        children: record.shopCategory || record.productCategory,
-        span: 2,
-      },
+      { key: 'createdAt', label: 'Created At', children: record?.createdAt },
       {
         key: 'description',
         label: 'Description',
-        span: 4,
-        children: record.description,
+        children: record?.description,
+      },
+      { key: 'type', label: 'Type', children: record?.type },
+      {
+        key: 'category',
+        label: 'Category',
+        children: record?.shopCategory || record?.productCategory,
       },
       {
-        key: '7',
-        label: 'Reportee',
-        children: (
-          <Descriptions
-            items={record.type === 'product' ? productDetail : shopDetail}
-          />
-        ),
-        span: 4,
+        key: 'reportResult',
+        label: 'Report Result',
+        children: record?.reportResult?.result,
       },
-      {
-        key: '8',
-        label: 'Result',
-        children: <Descriptions items={reportResult} />,
-        span: 4,
-      },
+      ...getReportee(record?.productId?.toString())(record?.shopId?.toString()),
     ]);
   };
 
   const toggleModal = () => {
     setOpen((prev) => !prev);
   };
-
-  const [createdAt, setCreatedAt] = useState<
-    [Date | null | undefined, Date | null | undefined]
-  >([null, null]);
 
   const columns = useMemo<TableColumnsType<ReportType>>(() => {
     return [
@@ -427,8 +429,9 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
       columnReport: columns,
       isOpenModal: open,
       toggleModal: toggleModal,
+      reportDetail: reportDetail,
     }),
-    [data, isLoading],
+    [data, isLoading, columns, open, reportDetail],
   );
 
   return (
