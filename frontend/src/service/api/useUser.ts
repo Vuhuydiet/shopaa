@@ -13,7 +13,8 @@ export const useUser = (id: string) => {
 };
 
 async function fetchUserDetail(id: string) {
-  if (id == undefined) return {} as IUser;
+  if (!id) return {} as IUser;
+
   try {
     const res = await axios.get(`${USER_API_ENDPOINTS.USER_PROFILE}${id}`);
     const data = res?.data;

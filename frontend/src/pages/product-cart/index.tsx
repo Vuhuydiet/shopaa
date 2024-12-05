@@ -7,7 +7,7 @@ export const ProductCart = () => {
     <div style={{ maxWidth: '1200px' }}>
       <Typography.Title style={{ margin: '10px 0 0 40px', color: 'purple' }}>
         <ShoppingCartOutlined style={{ marginRight: '5px' }} />
-        Review Your Cart
+        Your Cart
       </Typography.Title>
       <ProductCartTable />
     </div>

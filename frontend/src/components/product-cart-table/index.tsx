@@ -11,11 +11,11 @@ import {
   Typography,
 } from 'antd';
 import { useState } from 'react';
+import { useCart } from '../../service/api/useCart';
 
 export const ProductCartTable = () => {
   const shopColumns = [
     {
-      title: 'Shop name',
       dataIndex: 'shopName',
     },
   ];
@@ -363,6 +363,8 @@ export const ProductCartTable = () => {
   >([]);
   const [selectedRowShopKeys, setSelectedRowShopKeys] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
+
+  const test = useCart();
 
   return (
     <>
