@@ -60,13 +60,15 @@ class CartService {
           p."originalPrice",
           img."url" as "imageUrl",
           i."color",
-          i."size"
+          i."size",
+          p."colors" as "availableColors",
+          p."sizes" as "availableSizes"
         FROM "CartItem" i
         LEFT JOIN "Product" p ON i."productId" = p."productId"
         LEFT JOIN "ProductImage" pi ON p."productId" = pi."productId"
         LEFT JOIN "Image" img ON img."imageId" = pi."imageId"
         WHERE i."userId" = ${userId}
-        AND (pi."order" = NULL OR pi."order" = (
+        AND (pi."order" IS NULL OR pi."order" = (
           SELECT MIN("order") FROM "ProductImage" WHERE "productId" = p."productId"
         ))
         ORDER BY p."sellerId"
