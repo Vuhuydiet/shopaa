@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import ReportService from "./report.service";
 import { CreatedResponse, OKResponse } from "../../core/SuccessResponse";
-import { NotFoundError } from "../../core/ErrorResponse";
 
 
 export default {

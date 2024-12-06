@@ -67,6 +67,7 @@ router.post('/:reportId/result',
   authorizationMiddleware.authorize([Role.ADMIN]),
   param('reportId').isNumeric().toInt(),
   body('result').custom((value: string) => Object.values(ReportResultState).includes(value as ReportResultState)),
+  body('reason').optional().isString(),
   handleValidationErrors,
   reportController.createReportResult
 
