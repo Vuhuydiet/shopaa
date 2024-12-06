@@ -85,14 +85,30 @@ class CartService {
             products: []
           });
         }
-        
+        /*
+        i."cartItemId",
+        p."sellerId",
+        p."productId",
+        p."productName",
+        p."currentPrice",
+        p."originalPrice",
+        img."url" as "imageUrl",
+        i."color",
+        i."size",
+        p."colors" as "availableColors",
+        p."sizes" as "availableSizes"
+*/
         groups[groups.length - 1].products.push({
+          cartItemId: item.cartItemId,
           productId: item.productId,
           productName: item.productName,
           currentPrice: item.currentPrice,
+          originalPrice: item.originalPrice,
           imageUrl: item.imageUrl,
           color: item.color,
-          size: item.size
+          size: item.size,
+          availableColors: item.availableColors,
+          availableSizes: item.availableSizes
         });
         
         return groups; 
