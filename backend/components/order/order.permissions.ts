@@ -2,7 +2,6 @@ import { OrderStatus, Role } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { ForbiddenError, NotFoundError } from "../../core/ErrorResponse";
 import OrderService from "./order.service";
-import Transportation from "./transportation/transportation.service";
 
 
 export default {
@@ -64,19 +63,6 @@ export default {
       case OrderStatus.DELIVERED:
         throw new ForbiddenError("Only transportation providers have permission to update this order status");
     }
-
-    next();
-  },
-
-  canAccessAsTransporter: async (req: Request, _res: Response, next: NextFunction) => {
-    const { key } = req.query;
-    const provider = await Transportation.getProviderByKey(key as string);
-
-    if (!provider) {
-      throw new ForbiddenError("Invalid provider key");
-    }
-
-    req.transporter = provider;
 
     next();
   },
