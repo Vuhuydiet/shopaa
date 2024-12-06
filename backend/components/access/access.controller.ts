@@ -33,10 +33,10 @@ export default {
   signIn: async (req: Request, res: Response) => {
     const { username, password } = matchedData(req);
 
-    const token = await AccessService.signIn(username, password);
+    const { token, isAdmin } = await AccessService.signIn(username, password);
     new OKResponse({
       message: 'User signed in successfully',
-      metadata: { token }
+      metadata: { token, isAdmin }
     }).send(res);
   },
 
