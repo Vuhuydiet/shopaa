@@ -10,9 +10,9 @@ export default {
   getOrders: async (req: Request, res: Response) => {
     const queries = matchedData(req);
 
-    const orders = await OrderService.getOrders(queries);
+    const { count, orders } = await OrderService.getOrders(queries);
 
-    new OKResponse({ message: 'Get orders successfully', metadata: { orders } }).send(res);
+    new OKResponse({ message: 'Get orders successfully', metadata: { count, orders } }).send(res);
   },
 
   getOrderById: async (req: Request, res: Response) => {
