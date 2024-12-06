@@ -4,6 +4,7 @@ import { getHashedPassword, comparePassword } from "../../libraries/utils/passwo
 import JWT from "../../libraries/auth/JWT";
 import UserService from "../user/user.service";
 import EmailService from "../../externalServices/email/email.service";
+import { Role } from "@prisma/client";
 
 class AccessService {
 
@@ -50,7 +51,7 @@ class AccessService {
     }
 
     const token = JWT.generateToken(user.userId);
-    return token;
+    return { token, isAdmin: user.profile.role === Role.ADMIN };
   }
 
   static async getUserAccount(userId: number) {
