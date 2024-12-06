@@ -22,6 +22,29 @@ import { LayoutAdmin } from '../layout/admin';
 
 export const routes = [
   {
+    path: '/admin',
+    element: <LayoutAdmin />,
+    children: [
+      {
+        element: <AdminRoute />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
+            path: 'dashboard',
+            // element:
+          },
+          {
+            path: 'report',
+            element: <ReportPage />,
+          },
+        ],
+      },
+    ],
+  },
+  {
     path: '/',
     element: <LayoutBasic />,
     children: [
@@ -107,29 +130,6 @@ export const routes = [
       {
         path: '/product-detail/:id',
         element: <ProductDetail />,
-      },
-    ],
-  },
-  {
-    path: '/admin',
-    element: <LayoutAdmin />,
-    children: [
-      {
-        element: <AdminRoute />,
-        children: [
-          {
-            index: true,
-            element: <Navigate to="dashboard" replace />,
-          },
-          {
-            path: 'dashboard',
-            // element:
-          },
-          {
-            path: 'report',
-            element: <ReportPage />,
-          },
-        ],
       },
     ],
   },

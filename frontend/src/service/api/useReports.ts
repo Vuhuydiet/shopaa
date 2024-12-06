@@ -44,13 +44,16 @@ export const useReports = (params: IReportParams) => {
             productCategory: report?.productCategory,
             shopId: report?.shopId,
             productId: report?.productId,
-            reportResult: {
-              reportId: report?.reportResult?.reportId,
-              createdAt: report?.reportResult?.createdAt,
-              handlerId: report?.reportResult?.handlerId,
-              result: report?.reportResult?.result,
-            },
+            reportResult: report?.reportResult
+              ? {
+                  reportId: report?.reportResult?.reportId,
+                  createdAt: report?.reportResult?.createdAt,
+                  handlerId: report?.reportResult?.handlerId,
+                  result: report?.reportResult?.result,
+                }
+              : null,
           };
+
           return temp;
         },
       );

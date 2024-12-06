@@ -10,6 +10,7 @@ export const ReportTable = () => {
     columnReport,
     toggleModal,
     reportDetail,
+    isProcessing,
   } = useContext(ReportContext);
 
   return (
@@ -19,24 +20,26 @@ export const ReportTable = () => {
         title={'Report Detail'}
         onOk={() => {}}
         onCancel={toggleModal}
-        footer={[
-          <Button
-            key="dismiss"
-            type="primary"
-            loading={false}
-            onClick={() => {}}
-          >
-            Dismiss
-          </Button>,
-          <Button
-            key="accept"
-            type="primary"
-            loading={false}
-            onClick={() => {}}
-          >
-            Accept
-          </Button>,
-        ]}
+        footer={
+          isProcessing && [
+            <Button
+              key="dismiss"
+              type="primary"
+              loading={false}
+              onClick={() => {}}
+            >
+              Dismiss
+            </Button>,
+            <Button
+              key="accept"
+              type="primary"
+              loading={false}
+              onClick={() => {}}
+            >
+              Accept
+            </Button>,
+          ]
+        }
         width={1100}
       >
         <Descriptions bordered items={reportDetail} />

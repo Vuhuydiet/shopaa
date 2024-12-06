@@ -1,4 +1,11 @@
-import { Key, ReactNode, createContext, useMemo, useState } from 'react';
+import {
+  Key,
+  ReactNode,
+  createContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useReports } from '../service/api/useReports';
 import { IReport } from '../interfaces/IReport';
 import {
@@ -21,6 +28,7 @@ interface ReportContextType {
   columnReport: TableColumnsType<IReport>;
   toggleModal: () => void;
   reportDetail: DescriptionsItem[];
+  isProcessing: boolean;
 }
 
 export const ReportContext = createContext<ReportContextType>({
@@ -30,6 +38,7 @@ export const ReportContext = createContext<ReportContextType>({
   columnReport: [],
   toggleModal: () => {},
   reportDetail: [],
+  isProcessing: false,
 });
 
 type ReportType = IReport;
@@ -58,6 +67,7 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
   const [createdAt, setCreatedAt] = useState<
     [Date | null | undefined, Date | null | undefined]
   >([null, null]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const { data, isLoading } = useReports({});
   const [productId, setProductId] = useState<string | undefined>(undefined);
@@ -162,6 +172,8 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
       };
     }
 
+    setIsProcessing(record.reportResult === null);
+
     setReportDetail([
       {
         key: 'reportId',
@@ -243,8 +255,6 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
   const toggleModal = () => {
     setOpen((prev) => !prev);
   };
-
-  const [filterValues, setFilterValues] = useState<any>({});
 
   const columns = useMemo<TableColumnsType<ReportType>>(() => {
     return [
@@ -473,10 +483,11 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
           },
         ],
         onFilter: (value: Boolean | Key, record: ReportType) => {
-          if (!value) return true;
-          if (!record.reportResult) return value === 'processing';
-
-          return record.reportResult.result === value;
+          console.log('testdstfadsf', value, record);
+          if (record.reportResult === null) {
+            return value == 'processing';
+          }
+          return record.reportResult?.result === value;
         },
       },
       {
@@ -499,6 +510,7 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
       isOpenModal: open,
       toggleModal: toggleModal,
       reportDetail: reportDetail,
+      isProcessing: isProcessing,
     }),
     [data, isLoading, columns, open, reportDetail],
   );
