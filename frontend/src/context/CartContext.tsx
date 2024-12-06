@@ -32,7 +32,8 @@ export const CartContext = createContext<CartContextType>({
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { data, isLoading } = useCart({ limit: 10, offset: 0 });
+  const [cartParams, setCartParams] = useState({ limit: 10, offset: 0 });
+  const { data, isLoading } = useCart(cartParams);
   const [shopDataState, setShopDataState] = useState<any>([]);
   const [selectedProducts, setSelectedProducts] = useState<
     {
@@ -68,7 +69,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <img
-            key={`img-${record?.productId}`}
+            key={`img-${record?.id}`}
             src={record?.image}
             alt="product"
             style={{ width: '60px' }}
@@ -83,7 +84,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <span
-            key={`name-${record?.productId}`}
+            key={`name-${record?.id}`}
             style={{
               fontSize: '0.8rem',
               display: '-webkit-box',
@@ -105,6 +106,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <Tooltip
+            key={record?.id}
             title={
               !selectedRowProductKeys.includes(record?.key as string)
                 ? 'Please check the checkbox before selecting the attributes'
@@ -132,6 +134,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 options={record?.sizes?.map((size: any) => ({
                   value: size,
                   label: size,
+                  key: `${record?.id}-${size}`,
                 }))}
                 style={{ width: '100%' }}
               />
@@ -155,6 +158,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 options={record?.colors?.map((color: any) => ({
                   value: color,
                   label: color,
+                  key: `${record?.id}-${color}`,
                 }))}
                 style={{ width: '100%' }}
               />
@@ -168,7 +172,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       title: 'Price',
       render: (text: any, record: any) => {
         return (
-          <Space direction="vertical" size={8}>
+          <Space direction="vertical" size={8} key={record?.id}>
             <Typography.Text
               strong
               italic
@@ -190,6 +194,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <Tooltip
+            key={record?.id}
             title={
               !selectedRowProductKeys.includes(record.key as string)
                 ? 'Please check the checkbox before updating the quantity'
@@ -234,6 +239,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <Typography.Text
+            key={record?.id}
             strong
             italic
             style={{ color: 'green', fontSize: '0.8rem' }}
@@ -247,6 +253,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <Button
+            key={record?.id}
             icon={<DeleteFilled />}
             type="text"
             danger
@@ -300,7 +307,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     expandedRowRender: (record: any) => {
       return (
         <Table
-          rowKey={(record) => record.productId}
+          rowKey={(record) => record?.key}
           columns={productColumns}
           dataSource={record.products}
           pagination={false}

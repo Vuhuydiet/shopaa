@@ -5,14 +5,14 @@ import { CartProvider } from '../../context/CartContext';
 
 export const ProductCart = () => {
   return (
-    <div style={{ maxWidth: '1200px' }}>
-      <Typography.Title style={{ margin: '10px 0 0 40px', color: 'purple' }}>
-        <ShoppingCartOutlined style={{ marginRight: '5px' }} />
-        Your Cart
-      </Typography.Title>
-      <CartProvider>
+    <CartProvider>
+      <div style={{ maxWidth: '1200px' }}>
+        <Typography.Title style={{ margin: '10px 0 0 40px', color: 'purple' }}>
+          <ShoppingCartOutlined style={{ marginRight: '5px' }} />
+          Your Cart
+        </Typography.Title>
         <ProductCartTable />
-      </CartProvider>
-    </div>
+      </div>
+    </CartProvider>
   );
 };
