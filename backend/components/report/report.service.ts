@@ -1,7 +1,6 @@
 import { ReportResultState, ReportType } from "@prisma/client";
 import prisma from "../../models";
 import { NotFoundError } from "../../core/ErrorResponse";
-import { report } from "process";
 
 type ShopReportData = {
 	reportReason: string;
@@ -38,7 +37,7 @@ type ReportQuery = {
 type ReportResultData = {
 	reportId: number;
 	result: ReportResultState;
-
+	reason?: string;
 }
 
 class ReportService {
@@ -229,8 +228,9 @@ class ReportService {
 		return await prisma.reportResult.create({
 			data: {
 				reportId: resultdata.reportId,
+				handlerId: handlerId,
 				result: resultdata.result,
-				handlerId: handlerId
+				reason: resultdata.reason
 			}
 		});
 	}
