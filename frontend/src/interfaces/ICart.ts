@@ -4,7 +4,6 @@ interface IProduct {
   id: number;
   name: string;
   currentPrice: number;
-  originalPrice: number;
   imageUrl: string;
   currentColor: string;
   currentSize: string;
