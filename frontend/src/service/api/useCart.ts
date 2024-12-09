@@ -9,10 +9,37 @@ interface ICartParams {
 }
 
 export const useCart = (params: ICartParams) => {
-  return useQuery({
-    queryKey: ['cart', params],
-    queryFn: () => getAllProductsInCart(params),
-  });
+  return {
+    cart: useQuery({
+      queryKey: ['cart', params],
+      queryFn: () => getAllProductsInCart(params),
+    }),
+    deleteItem: (cartItemId: number) => {
+      deleteItemInCart(cartItemId);
+    },
+  };
+};
+
+const deleteItemInCart = async (cartItemId: number) => {
+  if (!localStorage.getItem('token')) {
+    throw new Error('Unauthorized');
+  }
+
+  try {
+    const response = await axios.delete(
+      `${CART_API_ENDPOINTS.CART}/${cartItemId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 async function getAllProductsInCart(params: ICartParams) {
@@ -35,21 +62,23 @@ async function getAllProductsInCart(params: ICartParams) {
         return {
           key: item?.shop?.shopOwnerId,
           shopName: item?.shop?.shopName,
-          description: item?.product?.description,
+          description: item?.shop?.shopDescription,
           address: item?.shop?.address,
           bankingBalance: item?.shop?.bankingBalance,
-          products: item?.products.map((product: any) => {
+          products: item?.products?.map((product: any) => {
             return {
-              key: `${product?.productId}${product?.color}${product?.size}`,
+              key: product?.cartItemId,
               id: product?.productId,
               shopId: item?.shop?.shopOwnerId,
               name: product?.productName,
               currentPrice: product?.currentPrice,
+              originalPrice: product?.originalPrice,
               color: product?.color,
               size: product?.size,
-              colors: product?.colors,
-              sizes: product?.sizes,
+              colors: product?.availableColors,
+              sizes: product?.availableSizes,
               image: product?.imageUrl,
+              quantity: 1,
             };
           }),
         };

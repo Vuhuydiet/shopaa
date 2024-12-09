@@ -16,11 +16,11 @@ import { useContext } from 'react';
 export const ProductCartTable = () => {
   const {
     shopColumns,
-    productColumns,
     shopDataState,
     expandTable,
     isLoading,
     totalPrice,
+    totalItems,
   } = useContext(CartContext);
 
   return (
@@ -44,7 +44,7 @@ export const ProductCartTable = () => {
           }}
         >
           <Typography.Text strong style={{ color: 'red' }}>
-            Total: ${totalPrice}
+            Total ({totalItems} items): ${totalPrice}
           </Typography.Text>
           <Button style={{ backgroundColor: 'purple', color: 'white' }}>
             Checkout

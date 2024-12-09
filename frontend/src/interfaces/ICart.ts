@@ -1,12 +1,14 @@
 import { IShop } from './IShop';
 
 interface IProduct {
+  key: number;
   id: number;
   name: string;
   currentPrice: number;
+  originalPrice: number;
   imageUrl: string;
-  currentColor: string;
-  currentSize: string;
+  color: string;
+  size: string;
   colors: string[];
   sizes: string[];
 }

@@ -3,5 +3,5 @@ export interface IShop {
   name: string;
   description: string;
   address: string;
-  bankBalance?: number;
+  bankBalance: number;
 }

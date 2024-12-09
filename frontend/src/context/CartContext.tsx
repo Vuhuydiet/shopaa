@@ -18,6 +18,7 @@ interface CartContextType {
   isLoading: boolean;
   expandTable: any;
   totalPrice: number;
+  totalItems: number;
 }
 
 export const CartContext = createContext<CartContextType>({
@@ -27,17 +28,23 @@ export const CartContext = createContext<CartContextType>({
   isLoading: false,
   expandTable: {},
   totalPrice: 0,
+  totalItems: 0,
 });
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [cartParams, setCartParams] = useState({ limit: 10, offset: 0 });
-  const { data, isLoading } = useCart(cartParams);
-  const [shopDataState, setShopDataState] = useState<any>([]);
+  const {
+    cart: { data, isLoading },
+    deleteItem,
+  } = useCart(cartParams);
+
+  const [shopDataState, setShopDataState] = useState<any[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<
     {
-      id: string;
+      key: number;
+      id: number;
       size: string;
       color: string;
       currentPrice: number;
@@ -49,6 +56,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
   >([]);
   const [selectedRowShopKeys, setSelectedRowShopKeys] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
     setShopDataState(data);
@@ -69,7 +77,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <img
-            key={`img-${record?.id}`}
+            key={`img-${record?.key}`}
             src={record?.image}
             alt="product"
             style={{ width: '60px' }}
@@ -84,7 +92,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <span
-            key={`name-${record?.id}`}
+            key={`name-${record?.key}`}
             style={{
               fontSize: '0.8rem',
               display: '-webkit-box',
@@ -106,7 +114,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <Tooltip
-            key={record?.id}
+            key={record?.key}
             title={
               !selectedRowProductKeys.includes(record?.key as string)
                 ? 'Please check the checkbox before selecting the attributes'
@@ -119,13 +127,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 disabled={
                   !selectedRowProductKeys.includes(record?.key as string)
                 }
+                defaultValue={record?.size}
                 size="small"
                 placeholder="Select size"
                 onChange={(value) => {
                   setSelectedProducts((products) => {
                     const newProducts = [...products];
                     const productIndex = newProducts.findIndex(
-                      (product) => product.id === record?.key,
+                      (product) => product.key === record.key,
                     );
                     newProducts[productIndex].size = value;
                     return newProducts;
@@ -134,7 +143,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 options={record?.sizes?.map((size: any) => ({
                   value: size,
                   label: size,
-                  key: `${record?.id}-${size}`,
+                  key: `${record?.key}-${size}`,
+                  disabled: shopDataState.some((shop) => {
+                    if (shop.key !== record?.shopId) return false;
+                    return shop.products.some((product: any) => {
+                      return (
+                        product.key !== record?.key &&
+                        product.size === size &&
+                        product.color === record?.color
+                      );
+                    });
+                  }),
                 }))}
                 style={{ width: '100%' }}
               />
@@ -145,11 +164,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 size="small"
                 placeholder="Select color"
                 optionFilterProp="label"
+                defaultValue={record?.color}
                 onChange={(value) => {
                   setSelectedProducts((products) => {
                     const newProducts = [...products];
                     const productIndex = newProducts.findIndex(
-                      (product) => product.id === record?.key,
+                      (product) => product.key === record?.key,
                     );
                     newProducts[productIndex].color = value;
                     return newProducts;
@@ -158,7 +178,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 options={record?.colors?.map((color: any) => ({
                   value: color,
                   label: color,
-                  key: `${record?.id}-${color}`,
+                  key: `${record?.key}-${color}`,
+                  disabled: shopDataState.some((shop) => {
+                    if (shop.key !== record?.shopId) return false;
+                    return shop.products.some((product: any) => {
+                      return (
+                        product.key !== record?.key &&
+                        product.color === color &&
+                        product.size === record?.size
+                      );
+                    });
+                  }),
                 }))}
                 style={{ width: '100%' }}
               />
@@ -172,7 +202,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       title: 'Price',
       render: (text: any, record: any) => {
         return (
-          <Space direction="vertical" size={8} key={record?.id}>
+          <Space direction="vertical" size={8} key={record?.key}>
             <Typography.Text
               strong
               italic
@@ -194,7 +224,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <Tooltip
-            key={record?.id}
+            key={record?.key}
             title={
               !selectedRowProductKeys.includes(record.key as string)
                 ? 'Please check the checkbox before updating the quantity'
@@ -206,8 +236,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
               disabled={!selectedRowProductKeys.includes(record.key as string)}
               size="middle"
               min={1}
-              defaultValue={record.quantity || 1}
+              defaultValue={1}
               onChange={(value) => {
+                if (!value) return;
+
                 setShopDataState((data: any) => {
                   const newData = [...data];
                   const shopIndex = newData.findIndex(
@@ -239,7 +271,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <Typography.Text
-            key={record?.id}
+            key={record?.key}
             strong
             italic
             style={{ color: 'green', fontSize: '0.8rem' }}
@@ -253,7 +285,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       render: (text: any, record: any) => {
         return (
           <Button
-            key={record?.id}
+            key={record?.key}
             icon={<DeleteFilled />}
             type="text"
             danger
@@ -276,14 +308,22 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 return newData;
               });
 
+              deleteItem(record.key);
+
               if (selectedRowProductKeys.includes(record.key as string)) {
                 setTotalPrice((price) => {
                   return price - record?.currentPrice * record?.quantity;
                 });
+
+                setTotalItems((items) => {
+                  return items - 1;
+                });
               }
 
               setSelectedProducts((products) => {
-                return products.filter((product) => product.id !== record?.key);
+                return products.filter(
+                  (product) => product.key !== record?.key,
+                );
               });
 
               setSelectedRowProductKeys((keys) => {
@@ -321,7 +361,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 setSelectedProducts((_) => {
                   return selectedRow.map((product: any) => {
                     return {
-                      id: product.key,
+                      key: product.key,
+                      id: product.id,
                       size: product.size,
                       color: product.color,
                       currentPrice: product.currentPrice,
@@ -337,10 +378,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                     0,
                   );
                 });
+
+                setTotalItems(keys.length);
               } else {
                 setSelectedRowShopKeys('');
                 setSelectedProducts([]);
                 setTotalPrice(0);
+                setTotalItems(0);
               }
             },
             getCheckboxProps: (record: any) => ({
@@ -370,6 +414,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     shopDataState: shopDataState,
     isLoading: isLoading,
     totalPrice: totalPrice,
+    totalItems: totalItems,
     expandTable: expandTable,
   };
 
