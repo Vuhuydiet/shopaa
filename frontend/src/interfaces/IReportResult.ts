@@ -3,4 +3,5 @@ export interface IReportResult {
   createdAt: string;
   handlerId: number;
   result: 'accepted' | 'dismissed';
+  reason: string | null;
 }

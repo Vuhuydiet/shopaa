@@ -19,9 +19,8 @@ export const ProductDescription = () => {
       <Row>
         <Typography.Text
           style={{
-            backgroundColor: 'lightgray',
             padding: '5px 30px',
-            color: 'blue',
+            color: 'gray',
             fontWeight: 'bold',
           }}
         >

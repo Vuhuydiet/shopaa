@@ -6,6 +6,12 @@ import { IReportParams } from '../../interfaces/IReportParams';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 
+export interface IPostReportResult {
+  reportId: number;
+  result: 'accepted' | 'dismissed';
+  reason: string;
+}
+
 export const useReports = (params: IReportParams) => {
   const navigate = useNavigate();
 
@@ -50,6 +56,7 @@ export const useReports = (params: IReportParams) => {
                   createdAt: report?.reportResult?.createdAt,
                   handlerId: report?.reportResult?.handlerId,
                   result: report?.reportResult?.result,
+                  reason: report?.reportResult?.reason,
                 }
               : null,
           };
@@ -66,10 +73,41 @@ export const useReports = (params: IReportParams) => {
     return [];
   }
 
-  return useQuery({
-    queryKey: ['reports', params],
-    queryFn: () => getReports(params),
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-  });
+  return {
+    report: useQuery({
+      queryKey: ['reports', params],
+      queryFn: () => getReports(params),
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }),
+
+    postReportResult: postReportResult,
+  };
 };
+
+async function postReportResult(report: IPostReportResult) {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('Please login first');
+    return;
+  }
+
+  try {
+    await axios.post(
+      `${ADMIN_API_ENDPOINTS.REPORTS}/${report.reportId}/result`,
+      {
+        result: report.result,
+        reason: report.reason,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+  } catch (error) {
+    throw new Error('Failed to post report result');
+  }
+}

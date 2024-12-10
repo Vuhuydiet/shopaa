@@ -1,18 +1,12 @@
-import {
-  Key,
-  ReactNode,
-  createContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { useReports } from '../service/api/useReports';
+import { Key, ReactNode, createContext, useMemo, useState } from 'react';
+import { IPostReportResult, useReports } from '../service/api/useReports';
 import { IReport } from '../interfaces/IReport';
 import {
   Button,
   DatePicker,
   Descriptions,
   Input,
+  message,
   Space,
   TableColumnsType,
 } from 'antd';
@@ -20,6 +14,9 @@ import { InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
 import { useProduct } from '../service/api/useProduct';
 import { useShop } from '../service/api/useShop';
 import { Link } from 'react-router-dom';
+import modal from 'antd/es/modal';
+import { body } from 'express-validator';
+import TextArea from 'antd/es/input/TextArea';
 
 interface ReportContextType {
   reports: IReport[];
@@ -29,6 +26,7 @@ interface ReportContextType {
   toggleModal: () => void;
   reportDetail: DescriptionsItem[];
   isProcessing: boolean;
+  handleReport: (result: 'accepted' | 'dismissed') => void;
 }
 
 export const ReportContext = createContext<ReportContextType>({
@@ -39,6 +37,7 @@ export const ReportContext = createContext<ReportContextType>({
   toggleModal: () => {},
   reportDetail: [],
   isProcessing: false,
+  handleReport: () => {},
 });
 
 type ReportType = IReport;
@@ -69,13 +68,60 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
   >([null, null]);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const { data, isLoading } = useReports({});
+  const {
+    report: { data, isLoading, refetch: refetchReport },
+    postReportResult: postReportResult,
+  } = useReports({});
   const [productId, setProductId] = useState<string | undefined>(undefined);
   const [shopId, setShopId] = useState<string | undefined>(undefined);
-  const { data: product } = useProduct(productId);
-  const { data: shop } = useShop(shopId);
+  const { data: product, refetch: refetchProduct } = useProduct(productId);
+  const { data: shop, refetch: refetchShop } = useShop(shopId);
+  const [reportId, setReportId] = useState<number | undefined>(undefined);
+  const [modalApi, modalHolder] = modal.useModal();
+  const [reason, setReason] = useState<string>('');
+  const [messageApi, messageHolder] = message.useMessage();
+
+  const handleReport = (result: 'accepted' | 'dismissed') => {
+    modalApi.confirm({
+      title: `Are you sure to ${result === 'accepted' ? 'accept' : 'dismiss'}?`,
+      content: (
+        <TextArea
+          placeholder="Reason"
+          onChange={(event) => {
+            setReason(event.target.value);
+          }}
+        />
+      ),
+      onOk: () => {
+        console.log('test', reason);
+        postReportResult({
+          reportId: reportId as number,
+          result: result,
+          reason: reason,
+        })
+          .then(() => {
+            messageApi.open({
+              type: 'success',
+              content: 'Report result updated',
+            });
+            toggleModal();
+            refetchReport();
+            refetchProduct();
+            refetchShop();
+          })
+          .catch((error) => {
+            messageApi.open({
+              type: 'error',
+              content: error.response?.data?.message || 'Something went wrong',
+            });
+          });
+      },
+      onCancel: () => {},
+    });
+  };
 
   const getReportDetail = (record: IReport) => {
+    setReportId(record.id);
     toggleModal();
     setProductId(record.productId?.toString());
     setShopId(record.shopId?.toString());
@@ -189,7 +235,7 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         key: 'createdAt',
         label: 'Created At',
         children: new Date(record.createdAt).toLocaleString(),
-        span: { xs: 4, sm: 4, md: 1, lg: 1, xl: 1, xxl: 1 },
+        span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
       },
       {
         key: 'type',
@@ -205,7 +251,7 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
       {
         key: 'description',
         label: 'Description',
-        span: 4,
+        span: 3,
         children: record.description,
       },
       {
@@ -218,7 +264,7 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
             )}
           />
         ),
-        span: 4,
+        span: 3,
       },
       {
         key: 'result',
@@ -242,12 +288,18 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
                 key: 'result',
                 label: 'Result',
                 children: record.reportResult?.result,
-                span: 4,
+                span: 3,
+              },
+              {
+                key: 'reason',
+                label: 'Reason',
+                children: record.reportResult?.reason,
+                span: 3,
               },
             ]}
           />
         ),
-        span: 4,
+        span: 3,
       },
     ]);
   };
@@ -483,7 +535,6 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
           },
         ],
         onFilter: (value: Boolean | Key, record: ReportType) => {
-          console.log('testdstfadsf', value, record);
           if (record.reportResult === null) {
             return value == 'processing';
           }
@@ -511,12 +562,15 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
       toggleModal: toggleModal,
       reportDetail: reportDetail,
       isProcessing: isProcessing,
+      handleReport: handleReport,
     }),
     [data, isLoading, columns, open, reportDetail],
   );
 
   return (
     <ReportContext.Provider value={contextValue}>
+      {messageHolder}
+      {modalHolder}
       {children}
     </ReportContext.Provider>
   );

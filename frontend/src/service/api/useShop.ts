@@ -12,7 +12,7 @@ export const useShop = (id: string | undefined) => {
   });
 };
 
-async function fetchShopDetail(id: string) {
+async function fetchShopDetail(id: string | undefined) {
   if (!id) return {} as IShop;
 
   const res = await axios.get(`${SHOP_API_ENDPOINTS.SHOP}${id}`);

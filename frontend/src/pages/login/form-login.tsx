@@ -25,6 +25,7 @@ export const FormLogin = () => {
 
   const login = async (values: any) => {
     try {
+      console.log(values);
       const res = await axios.post(AUTH_API_ENDPOINTS.SIGN_IN, values);
       // In ra message từ phản hồi trả về
       console.log(res.data.message);
@@ -47,7 +48,7 @@ export const FormLogin = () => {
     } catch (error: any) {
       console.log(error);
       Modal.confirm({
-        title: error?.response?.data?.message,
+        title: error?.response?.data?.message || 'Login failed',
         okText: 'Oke',
         okType: 'danger',
         cancelText: 'Cancel',

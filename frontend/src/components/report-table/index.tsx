@@ -11,6 +11,7 @@ export const ReportTable = () => {
     toggleModal,
     reportDetail,
     isProcessing,
+    handleReport,
   } = useContext(ReportContext);
 
   return (
@@ -26,7 +27,7 @@ export const ReportTable = () => {
               key="dismiss"
               type="primary"
               loading={false}
-              onClick={() => {}}
+              onClick={() => handleReport('dismissed')}
             >
               Dismiss
             </Button>,
@@ -34,7 +35,7 @@ export const ReportTable = () => {
               key="accept"
               type="primary"
               loading={false}
-              onClick={() => {}}
+              onClick={() => handleReport('accepted')}
             >
               Accept
             </Button>,
