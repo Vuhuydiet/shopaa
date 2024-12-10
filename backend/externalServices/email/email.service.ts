@@ -1,6 +1,6 @@
 import keyConfig from '../../configs/key.config';
 import nodemailer from 'nodemailer';
-import { generateOtp } from '../../libraries/utils/ramdom'
+import { generateOtp } from '../../libraries/utils/random'
 
 type Record = {
   otp: number,

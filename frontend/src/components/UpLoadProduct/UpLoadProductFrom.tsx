@@ -78,10 +78,16 @@ const UploadProductForm: React.FC = () => {
       categories: {
         add: productData.categories,
       },
-      colors: (productData.colors || '')
-        .split(',')
-        .map((color) => color.trim()),
-      sizes: (productData.sizes || '').split(',').map((size) => size.trim()),
+      colors:
+        (productData.colors || '')
+          .split(',')
+          .map((color) => color.trim())
+          .filter((color) => color != '') || undefined,
+      sizes:
+        (productData.sizes || '')
+          .split(',')
+          .map((size) => size.trim())
+          .filter((size) => size != '') || undefined,
     };
     console.log('Updated productData with categories:', updatedProductData);
 

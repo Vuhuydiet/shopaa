@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Menu, Table, Tag, Button, Space, Dropdown } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { EditOutlined } from '@ant-design/icons';
-import { IQueryOrder } from '../../interfaces/IQueryOrder';
+import { IQueryOrder } from '../../interfaces/Order/IQueryOrder';
 import axios from 'axios';
 import { ORDER_API_ENDPOINTS } from '../../config/API_config';
-import { IOrder } from '../../interfaces/IOrder';
+import { useOrders } from '../../service/api/order/useOrders';
+import { useDispatch } from 'react-redux';
 
 type OrderStatus =
   | 'pending'
@@ -97,6 +98,21 @@ const OrderShop: React.FC = () => {
       createdAt: '2024-12-01 15:45',
     },
   ]);
+  const dispatch = useDispatch();
+  const { data, isLoading } = useOrders({
+    shopId: parseInt(localStorage.getItem('userId') || '0'),
+    limit: 10,
+    sortBy: 'createdAt',
+    order: 'desc',
+    offset: 0,
+  });
+  if (isLoading) {
+    console.log('Loading orders...');
+  }
+
+  if (data) {
+    console.log(data.count); // Sử dụng biến `data`
+  }
 
   const navigate = useNavigate();
 

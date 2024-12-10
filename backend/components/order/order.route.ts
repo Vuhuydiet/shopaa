@@ -9,6 +9,7 @@ import orderPermissions from './order.permissions';
 import { OrderStatus, Role } from '@prisma/client';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 import auth from '../../libraries/auth/authorization.middleware';
+import transportationPermissions from './transportation/transportation.permissions';
 
 const orderDataValidator = () => {
   return [
@@ -100,7 +101,7 @@ router.patch(
 
 router.get(
   '/transportation',
-  orderPermissions.canAccessAsTransporter,
+  transportationPermissions.canAccessAsTransporter,
   orderPermissions.alterTransporterGetOrders,
 
   queryValidator(),
@@ -111,7 +112,7 @@ router.get(
 
 router.patch(
   '/transportation/:orderId',
-  orderPermissions.canAccessAsTransporter,
+  transportationPermissions.canAccessAsTransporter,
   orderPermissions.canUpdateDeliveryStatus,
 
   param('orderId').isInt().toInt(),

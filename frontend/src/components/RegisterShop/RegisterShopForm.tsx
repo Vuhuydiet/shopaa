@@ -79,11 +79,6 @@ const RegisterShopForm: React.FC = () => {
                     required: true,
                     message: 'Please enter your shop name',
                   },
-                  {
-                    pattern: /^[a-zA-Z][a-zA-Z0-9\s]*$/,
-                    message:
-                      'Shop name must start with an uppercase letter and only contain alphanumeric characters and spaces',
-                  },
                 ]}
               >
                 <Input />
