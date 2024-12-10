@@ -16,8 +16,8 @@ export default {
   getCartItems: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
     const query = matchedData(req) as any;
-    const cartItems = await CartService.getCartItems(userId, query);
-    new OKResponse({ message: 'Cart items retrieved', metadata: { cartItems } }).send(res);
+    const { count, cartItems } = await CartService.getCartItems(userId, query);
+    new OKResponse({ message: 'Cart items retrieved', metadata: { cartItems, count } }).send(res);
   },
 
   deleteCartItem: async (req: Request, res: Response) => {
