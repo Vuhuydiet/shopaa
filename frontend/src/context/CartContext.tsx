@@ -2,6 +2,7 @@ import { DeleteFilled } from '@ant-design/icons';
 import {
   Button,
   InputNumber,
+  message,
   Select,
   Space,
   Table,
@@ -10,6 +11,8 @@ import {
 } from 'antd';
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useCart } from '../service/api/useCart';
+import { CART_PRODUCTS_FILTER } from '../config/constants';
+import { AxiosResponse } from 'axios';
 
 interface CartContextType {
   shopColumns: any;
@@ -19,28 +22,39 @@ interface CartContextType {
   expandTable: any;
   totalPrice: number;
   totalItems: number;
+  setCartParams: (params: any) => void;
 }
 
 export const CartContext = createContext<CartContextType>({
   shopColumns: [],
   productColumns: [],
-  shopDataState: [],
+  shopDataState: {
+    cart: [],
+    count: 0,
+  },
   isLoading: false,
   expandTable: {},
   totalPrice: 0,
   totalItems: 0,
+  setCartParams: () => {},
 });
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [cartParams, setCartParams] = useState({ limit: 10, offset: 0 });
+  const [cartParams, setCartParams] = useState({
+    limit: CART_PRODUCTS_FILTER.ITEMS_PER_PAGE,
+    offset: 0,
+  });
   const {
     cart: { data, isLoading },
     deleteItem,
   } = useCart(cartParams);
 
-  const [shopDataState, setShopDataState] = useState<any[]>([]);
+  const [shopDataState, setShopDataState] = useState<any>({
+    cart: [],
+    count: 0,
+  });
   const [selectedProducts, setSelectedProducts] = useState<
     {
       key: number;
@@ -57,6 +71,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
   const [selectedRowShopKeys, setSelectedRowShopKeys] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
+
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     setShopDataState(data);
@@ -144,9 +160,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                   value: size,
                   label: size,
                   key: `${record?.key}-${size}`,
-                  disabled: shopDataState.some((shop) => {
+                  disabled: shopDataState?.cart?.some((shop: any) => {
                     if (shop.key !== record?.shopId) return false;
-                    return shop.products.some((product: any) => {
+                    return shop?.products?.some((product: any) => {
                       return (
                         product.key !== record?.key &&
                         product.size === size &&
@@ -179,9 +195,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                   value: color,
                   label: color,
                   key: `${record?.key}-${color}`,
-                  disabled: shopDataState.some((shop) => {
+                  disabled: shopDataState?.cart?.some((shop: any) => {
                     if (shop.key !== record?.shopId) return false;
-                    return shop.products.some((product: any) => {
+                    return shop?.products?.some((product: any) => {
                       return (
                         product.key !== record?.key &&
                         product.color === color &&
@@ -241,7 +257,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                 if (!value) return;
 
                 setShopDataState((data: any) => {
-                  const newData = [...data];
+                  const newData = [...data?.cart];
                   const shopIndex = newData.findIndex(
                     (shop) => shop.key === record?.shopId,
                   );
@@ -257,7 +273,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                     );
                   });
                   newData[shopIndex].products[productIndex].quantity = value;
-                  return newData;
+                  return {
+                    ...data,
+                    cart: newData,
+                  };
                 });
               }}
             />
@@ -290,52 +309,68 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
             type="text"
             danger
             onClick={() => {
-              setShopDataState((data: any) => {
-                let newData = [...data];
-                const shopIndex = newData.findIndex(
-                  (shop) => shop.key === record?.shopId,
-                );
-                newData[shopIndex].products = newData[
-                  shopIndex
-                ]?.products?.filter(
-                  (product: any) => product.key !== record.key,
-                );
-                if (newData[shopIndex].products.length === 0) {
-                  newData = newData.filter(
-                    (shop: any) => shop.products.length > 0,
-                  );
-                }
-                return newData;
-              });
+              deleteItem(record.key)
+                .then((response: AxiosResponse) => {
+                  messageApi.open({
+                    type: 'success',
+                    content: 'Item deleted successfully',
+                  });
 
-              deleteItem(record.key);
+                  setShopDataState((data: any) => {
+                    let newData = [...data?.cart];
+                    const shopIndex = newData.findIndex(
+                      (shop) => shop.key === record?.shopId,
+                    );
+                    newData[shopIndex].products = newData[
+                      shopIndex
+                    ]?.products?.filter(
+                      (product: any) => product.key !== record.key,
+                    );
+                    if (newData[shopIndex].products.length === 0) {
+                      newData = newData.filter(
+                        (shop: any) => shop.products.length > 0,
+                      );
+                    }
+                    return {
+                      ...data,
+                      cart: newData,
+                    };
+                  });
 
-              if (selectedRowProductKeys.includes(record.key as string)) {
-                setTotalPrice((price) => {
-                  return price - record?.currentPrice * record?.quantity;
+                  if (selectedRowProductKeys.includes(record.key as string)) {
+                    setTotalPrice((price) => {
+                      return price - record?.currentPrice * record?.quantity;
+                    });
+
+                    setTotalItems((items) => {
+                      return items - 1;
+                    });
+                  }
+
+                  setSelectedProducts((products) => {
+                    return products.filter(
+                      (product) => product.key !== record?.key,
+                    );
+                  });
+
+                  setSelectedRowProductKeys((keys) => {
+                    return keys.filter((key) => key !== record?.key);
+                  });
+
+                  if (
+                    selectedRowShopKeys &&
+                    selectedRowShopKeys === record?.shopId
+                  ) {
+                    setSelectedRowShopKeys('');
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                  messageApi.open({
+                    type: 'error',
+                    content: error?.response?.data || 'Failed to delete item',
+                  });
                 });
-
-                setTotalItems((items) => {
-                  return items - 1;
-                });
-              }
-
-              setSelectedProducts((products) => {
-                return products.filter(
-                  (product) => product.key !== record?.key,
-                );
-              });
-
-              setSelectedRowProductKeys((keys) => {
-                return keys.filter((key) => key !== record?.key);
-              });
-
-              if (
-                selectedRowShopKeys &&
-                selectedRowShopKeys === record?.shopId
-              ) {
-                setSelectedRowShopKeys('');
-              }
             }}
           />
         );
@@ -416,7 +451,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     totalPrice: totalPrice,
     totalItems: totalItems,
     expandTable: expandTable,
+    setCartParams,
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {contextHolder}
+      {children}
+    </CartContext.Provider>
+  );
 };

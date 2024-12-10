@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { ICart } from '../../interfaces/ICart';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { CART_API_ENDPOINTS } from '../../config/API_config';
 
 interface ICartParams {
@@ -8,19 +8,56 @@ interface ICartParams {
   offset?: number;
 }
 
-export const useCart = (params: ICartParams) => {
+interface IProduct {
+  productId: number;
+  color?: string;
+  size?: string;
+}
+
+interface ICartResponse {
+  cart: ICart[];
+  count: number;
+}
+
+export const useCart = (params: ICartParams | undefined) => {
   return {
     cart: useQuery({
       queryKey: ['cart', params],
       queryFn: () => getAllProductsInCart(params),
     }),
-    deleteItem: (cartItemId: number) => {
-      deleteItemInCart(cartItemId);
+    deleteItem: async (cartItemId: number): Promise<AxiosResponse> => {
+      return await deleteItemInCart(cartItemId);
+    },
+    addItem: async (product: IProduct): Promise<AxiosResponse> => {
+      return await addItemToCart(product);
     },
   };
 };
 
-const deleteItemInCart = async (cartItemId: number) => {
+const addItemToCart = async (product: IProduct): Promise<AxiosResponse> => {
+  if (!localStorage.getItem('token')) {
+    throw new Error('Unauthorized');
+  }
+
+  try {
+    const response = await axios.post(CART_API_ENDPOINTS.CART, product, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    if (response.status >= 400) {
+      throw new Error('Bad response from server');
+    }
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteItemInCart = async (cartItemId: number): Promise<AxiosResponse> => {
   if (!localStorage.getItem('token')) {
     throw new Error('Unauthorized');
   }
@@ -36,13 +73,23 @@ const deleteItemInCart = async (cartItemId: number) => {
       },
     );
 
-    return response.data;
+    console.log('test', response);
+
+    if (response.status >= 400) {
+      throw new Error('Bad response from server');
+    }
+
+    return response;
   } catch (error) {
     throw error;
   }
 };
 
-async function getAllProductsInCart(params: ICartParams) {
+async function getAllProductsInCart(params: ICartParams | undefined) {
+  if (!params) {
+    return;
+  }
+
   if (!localStorage.getItem('token')) {
     throw new Error('Unauthorized');
   }
@@ -55,6 +102,10 @@ async function getAllProductsInCart(params: ICartParams) {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
+    if (response.status >= 400) {
+      throw new Error('Bad response from server');
+    }
+
     const cartItems = response.data?.metadata?.cartItems;
 
     if (cartItems) {
@@ -85,11 +136,12 @@ async function getAllProductsInCart(params: ICartParams) {
       });
 
       console.log('cart: ', result);
-      return result;
+      return {
+        cart: result || [],
+        count: response.data?.metadata?.count || 0,
+      } as ICartResponse;
     }
   } catch (error) {
     throw error;
   }
-
-  return {} as ICart;
 }

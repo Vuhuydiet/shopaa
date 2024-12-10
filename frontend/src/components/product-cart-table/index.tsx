@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import { CartContext } from '../../context/CartContext';
 import { useContext } from 'react';
+import { CART_PRODUCTS_FILTER } from '../../config/constants';
 
 export const ProductCartTable = () => {
   const {
@@ -21,6 +22,7 @@ export const ProductCartTable = () => {
     isLoading,
     totalPrice,
     totalItems,
+    setCartParams,
   } = useContext(CartContext);
 
   return (
@@ -28,9 +30,19 @@ export const ProductCartTable = () => {
       <Table
         loading={isLoading}
         columns={shopColumns}
-        dataSource={shopDataState}
+        dataSource={shopDataState?.cart}
         expandable={expandTable}
-        pagination={false}
+        pagination={{
+          pageSize: CART_PRODUCTS_FILTER.ITEMS_PER_PAGE,
+          onChange(page, pageSize) {
+            console.log(page, pageSize);
+            setCartParams({
+              limit: pageSize,
+              offset: (page - 1) * pageSize,
+            });
+          },
+          total: shopDataState?.count,
+        }}
       />
       <Col
         span={24}
