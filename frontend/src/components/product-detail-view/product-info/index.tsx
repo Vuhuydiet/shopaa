@@ -18,6 +18,9 @@ export const ProductInfo = () => {
   const { addItem } = useCart(undefined);
   const product = useSelector((state: RootState) => state.product);
   const [messageApi, messageHolder] = message.useMessage();
+  const {
+    cart: { refetch },
+  } = useCart({ limit: 1, offset: 0 });
 
   const handleChooseSize = useCallback((e: any) => {
     setSize(e.target.innerText);
@@ -39,6 +42,7 @@ export const ProductInfo = () => {
             type: 'success',
             content: 'Added to cart',
           });
+          refetch();
         })
         .catch((error) => {
           console.log(error);
