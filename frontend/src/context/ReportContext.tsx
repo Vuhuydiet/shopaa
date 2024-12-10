@@ -1,5 +1,5 @@
 import { Key, ReactNode, createContext, useMemo, useState } from 'react';
-import { IPostReportResult, useReports } from '../service/api/useReports';
+import { useReports } from '../service/api/useReports';
 import { IReport } from '../interfaces/IReport';
 import {
   Button,
@@ -15,7 +15,6 @@ import { useProduct } from '../service/api/useProduct';
 import { useShop } from '../service/api/useShop';
 import { Link } from 'react-router-dom';
 import modal from 'antd/es/modal';
-import { body } from 'express-validator';
 import TextArea from 'antd/es/input/TextArea';
 
 interface ReportContextType {
@@ -106,8 +105,6 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
             });
             toggleModal();
             refetchReport();
-            refetchProduct();
-            refetchShop();
           })
           .catch((error) => {
             messageApi.open({
