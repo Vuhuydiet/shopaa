@@ -50,6 +50,10 @@ class CartService {
   static async getCartItems(userId: number, query: Query) {
     const { limit, offset } = query;
     return await prisma.$transaction(async (tx) => {
+      const count = await tx.cartItem.count({
+        where: { userId: userId }
+      });
+
       const cartItems = await tx.$queryRaw`
         SELECT
           i."cartItemId",
@@ -85,19 +89,7 @@ class CartService {
             products: []
           });
         }
-        /*
-        i."cartItemId",
-        p."sellerId",
-        p."productId",
-        p."productName",
-        p."currentPrice",
-        p."originalPrice",
-        img."url" as "imageUrl",
-        i."color",
-        i."size",
-        p."colors" as "availableColors",
-        p."sizes" as "availableSizes"
-*/
+
         groups[groups.length - 1].products.push({
           cartItemId: item.cartItemId,
           productId: item.productId,
@@ -118,10 +110,14 @@ class CartService {
         where: { shopOwnerId: group.sellerId }
       })));
 
-      return cartItemsGroups.map((group: any, index: number) => ({
+      const result = cartItemsGroups.map((group: any, index: number) => ({
         shop: shops[index],
         products: group.products
       }));
+      return {
+        count,
+        cartItems: result
+      }
     });
   }
 
