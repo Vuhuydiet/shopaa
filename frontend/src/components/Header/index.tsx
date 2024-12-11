@@ -7,6 +7,7 @@ import {
   ShoppingCartOutlined,
   LogoutOutlined,
   SearchOutlined,
+  ShopOutlined,
   IdcardOutlined,
 } from '@ant-design/icons';
 import './HeaderStyle.css';
@@ -24,7 +25,6 @@ const HeaderComponent: React.FC = () => {
   const {
     cart: { data: cartItems, refetch },
   } = useCart({ limit: 1, offset: 0 });
-
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -49,9 +49,24 @@ const HeaderComponent: React.FC = () => {
         </NavLink>
       ),
     },
+    ...(user?.role === 'SHOP_MANAGER'
+      ? [
+          {
+            key: '2',
+            label: (
+              <NavLink to="/manager-shop">
+                <ShopOutlined
+                  style={{ marginRight: '10px', color: '#FF6600' }}
+                />
+                My shop
+              </NavLink>
+            ),
+          },
+        ]
+      : []),
     user?.role && user?.role === 'ADMIN'
       ? {
-          key: '2',
+          key: '3',
           label: (
             <NavLink to="/admin">
               <IdcardOutlined
@@ -63,7 +78,7 @@ const HeaderComponent: React.FC = () => {
         }
       : null,
     {
-      key: '3',
+      key: '4',
       label: (
         <div onClick={handleLogout}>
           <LogoutOutlined style={{ marginRight: '10px', color: '#B8860B' }} />{' '}

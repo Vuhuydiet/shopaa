@@ -78,10 +78,16 @@ const UploadProductForm: React.FC = () => {
       categories: {
         add: productData.categories,
       },
-      colors: (productData.colors || '')
-        .split(',')
-        .map((color) => color.trim()),
-      sizes: (productData.sizes || '').split(',').map((size) => size.trim()),
+      colors:
+        (productData.colors || '')
+          .split(',')
+          .map((color) => color.trim())
+          .filter((color) => color != '') || undefined,
+      sizes:
+        (productData.sizes || '')
+          .split(',')
+          .map((size) => size.trim())
+          .filter((size) => size != '') || undefined,
     };
     console.log('Updated productData with categories:', updatedProductData);
 
@@ -127,256 +133,278 @@ const UploadProductForm: React.FC = () => {
   };
 
   return (
-    <div className="upload-product-form">
-      <h2 style={{ textAlign: 'center', color: 'black', marginBottom: '30px' }}>
-        NEW PRODUCT
-      </h2>
-      <Form layout="vertical" onFinish={handleSubmit}>
-        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Col span={16}>
-            {' '}
-            <Form.Item
-              label="Product Name"
-              name="name"
-              required
-              rules={[{ required: true, message: 'Product name is required!' }]}
-            >
-              <Input
-                value={productData.name}
+    <>
+      <Spin spinning={loading} tip="Adding new product...">
+        <div className="upload-product-form">
+          <h2
+            style={{
+              textAlign: 'center',
+              color: 'black',
+              marginBottom: '30px',
+            }}
+          >
+            NEW PRODUCT
+          </h2>
+          <Form layout="vertical" onFinish={handleSubmit}>
+            <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Col span={16}>
+                {' '}
+                <Form.Item
+                  label="Product Name"
+                  name="name"
+                  required
+                  rules={[
+                    { required: true, message: 'Product name is required!' },
+                  ]}
+                >
+                  <Input
+                    value={productData.name}
+                    onChange={(e) =>
+                      setProductData({ ...productData, name: e.target.value })
+                    }
+                    placeholder="Enter product name"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Col span={6}>
+                {' '}
+                <Form.Item
+                  label="Price ($)"
+                  name="price"
+                  required
+                  rules={[
+                    { required: true, message: 'Price is required!' },
+                    {
+                      validator: (_, value) =>
+                        value > 0
+                          ? Promise.resolve()
+                          : Promise.reject(
+                              new Error('Price must be greater than 0!'),
+                            ),
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    value={productData.price}
+                    onChange={(value) =>
+                      setProductData({ ...productData, price: value! })
+                    }
+                    placeholder="0.0"
+                    min={0.0}
+                    step={0.1}
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item
+                  label="Quantity"
+                  name="quantity"
+                  required
+                  rules={[
+                    { required: true, message: 'Quantity is required!' },
+                    {
+                      validator: (_, value) =>
+                        value > 0
+                          ? Promise.resolve()
+                          : Promise.reject(
+                              new Error('Quantity must be greater than 0!'),
+                            ),
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    value={productData.quantity}
+                    onChange={(value) =>
+                      setProductData({ ...productData, quantity: value! })
+                    }
+                    placeholder="0"
+                    min={0}
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="Brand" name="brand">
+                  <Input
+                    value={productData.brand}
+                    onChange={(e) =>
+                      setProductData({ ...productData, brand: e.target.value })
+                    }
+                    placeholder="Enter brand"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Col span={9}>
+                {' '}
+                <Form.Item label="Size" name="size">
+                  <Input
+                    value={productData.sizes}
+                    onChange={(e) =>
+                      setProductData({ ...productData, sizes: e.target.value })
+                    }
+                    placeholder="Enter product size (ex: X, M, L, ..)"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={13}>
+                <Form.Item label="Color" name="color">
+                  <Input
+                    value={productData.colors}
+                    onChange={(e) =>
+                      setProductData({ ...productData, colors: e.target.value })
+                    }
+                    placeholder="Enter product color  (ex: red, blue, ...)"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Col span={11}>
+                {' '}
+                <Form.Item label="Material" name="material">
+                  <Input
+                    value={productData.material}
+                    onChange={(e) =>
+                      setProductData({
+                        ...productData,
+                        material: e.target.value,
+                      })
+                    }
+                    placeholder="Enter product material"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={11}>
+                <Form.Item label="Origin" name="origin">
+                  <Input
+                    value={productData.origin}
+                    onChange={(e) =>
+                      setProductData({ ...productData, origin: e.target.value })
+                    }
+                    placeholder="Enter product origin"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                {' '}
+                <Form.Item
+                  label="Categories"
+                  name="categories"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please select at least one category!',
+                    },
+                  ]}
+                >
+                  <Select
+                    mode="multiple"
+                    value={productData.categories}
+                    onChange={(values) =>
+                      setProductData({ ...productData, categories: values })
+                    }
+                    placeholder="Select categories"
+                    showSearch
+                    filterOption={(input, option) => {
+                      const label = option?.label;
+                      if (typeof label === 'string') {
+                        return label
+                          .toLowerCase()
+                          .includes(input.toLowerCase());
+                      }
+                      return false;
+                    }}
+                  >
+                    {curCategories?.map((category: ICategory) => {
+                      return (
+                        <Option
+                          key={category.id}
+                          value={category.id}
+                          label={category.name}
+                        >
+                          {category.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Form.Item label="Description" name="descripton">
+              <Input.TextArea
+                value={productData.description}
                 onChange={(e) =>
-                  setProductData({ ...productData, name: e.target.value })
+                  setProductData({
+                    ...productData,
+                    description: e.target.value,
+                  })
                 }
-                placeholder="Enter product name"
+                placeholder="Enter product description"
+                rows={4}
               />
             </Form.Item>
-          </Col>
-        </Row>
-        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Col span={6}>
-            {' '}
+
             <Form.Item
-              label="Price ($)"
-              name="price"
+              label="Product Images"
+              name="productImages"
               required
               rules={[
-                { required: true, message: 'Price is required!' },
-                {
-                  validator: (_, value) =>
-                    value > 0
-                      ? Promise.resolve()
-                      : Promise.reject(
-                          new Error('Price must be greater than 0!'),
-                        ),
-                },
+                { required: true, message: 'At least one image is required!' },
               ]}
             >
-              <InputNumber
-                value={productData.price}
-                onChange={(value) =>
-                  setProductData({ ...productData, price: value! })
-                }
-                placeholder="0.0"
-                min={0.0}
-                step={0.1}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item
-              label="Quantity"
-              name="quantity"
-              required
-              rules={[
-                { required: true, message: 'Quantity is required!' },
-                {
-                  validator: (_, value) =>
-                    value > 0
-                      ? Promise.resolve()
-                      : Promise.reject(
-                          new Error('Quantity must be greater than 0!'),
-                        ),
-                },
-              ]}
-            >
-              <InputNumber
-                value={productData.quantity}
-                onChange={(value) =>
-                  setProductData({ ...productData, quantity: value! })
-                }
-                placeholder="0"
-                min={0}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="Brand" name="brand">
-              <Input
-                value={productData.brand}
-                onChange={(e) =>
-                  setProductData({ ...productData, brand: e.target.value })
-                }
-                placeholder="Enter brand"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Col span={9}>
-            {' '}
-            <Form.Item label="Size" name="size">
-              <Input
-                value={productData.sizes}
-                onChange={(e) =>
-                  setProductData({ ...productData, sizes: e.target.value })
-                }
-                placeholder="Enter product size (ex: X, M, L, ..)"
-              />
-            </Form.Item>
-          </Col>
-          <Col span={13}>
-            <Form.Item label="Color" name="color">
-              <Input
-                value={productData.colors}
-                onChange={(e) =>
-                  setProductData({ ...productData, colors: e.target.value })
-                }
-                placeholder="Enter product color  (ex: red, blue, ...)"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Col span={11}>
-            {' '}
-            <Form.Item label="Material" name="material">
-              <Input
-                value={productData.material}
-                onChange={(e) =>
-                  setProductData({ ...productData, material: e.target.value })
-                }
-                placeholder="Enter product material"
-              />
-            </Form.Item>
-          </Col>
-          <Col span={11}>
-            <Form.Item label="Origin" name="origin">
-              <Input
-                value={productData.origin}
-                onChange={(e) =>
-                  setProductData({ ...productData, origin: e.target.value })
-                }
-                placeholder="Enter product origin"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            {' '}
-            <Form.Item
-              label="Categories"
-              name="categories"
-              required
-              rules={[
-                {
-                  required: true,
-                  message: 'Please select at least one category!',
-                },
-              ]}
-            >
-              <Select
-                mode="multiple"
-                value={productData.categories}
-                onChange={(values) =>
-                  setProductData({ ...productData, categories: values })
-                }
-                placeholder="Select categories"
-                showSearch
-                filterOption={(input, option) => {
-                  const label = option?.label;
-                  if (typeof label === 'string') {
-                    return label.toLowerCase().includes(input.toLowerCase());
-                  }
+              <Upload
+                name="images"
+                listType="picture-card"
+                fileList={imageFiles}
+                beforeUpload={(file: RcFile) => {
+                  const fileWithPreview = handlePreviewUrl(file);
+                  setImageFiles((prevFiles) => [...prevFiles, fileWithPreview]);
                   return false;
                 }}
+                onChange={handleImageChange}
+                multiple
+                showUploadList={{ showRemoveIcon: true }}
+                accept="image/*"
               >
-                {curCategories?.map((category: ICategory) => {
-                  return (
-                    <Option
-                      key={category.id}
-                      value={category.id}
-                      label={category.name}
-                    >
-                      {category.name}
-                    </Option>
-                  );
-                })}
-              </Select>
+                {imageFiles.length >= 5 ? null : (
+                  <div>
+                    <PlusOutlined /> Upload
+                  </div>
+                )}
+              </Upload>
             </Form.Item>
-          </Col>
-        </Row>
 
-        <Form.Item label="Description" name="descripton">
-          <Input.TextArea
-            value={productData.description}
-            onChange={(e) =>
-              setProductData({ ...productData, description: e.target.value })
-            }
-            placeholder="Enter product description"
-            rows={4}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Product Images"
-          name="productImages"
-          required
-          rules={[
-            { required: true, message: 'At least one image is required!' },
-          ]}
-        >
-          <Upload
-            name="images"
-            listType="picture-card"
-            fileList={imageFiles}
-            beforeUpload={(file: RcFile) => {
-              const fileWithPreview = handlePreviewUrl(file);
-              setImageFiles((prevFiles) => [...prevFiles, fileWithPreview]);
-              return false;
-            }}
-            onChange={handleImageChange}
-            multiple
-            showUploadList={{ showRemoveIcon: true }}
-            accept="image/*"
-          >
-            {imageFiles.length >= 5 ? null : (
-              <div>
-                <PlusOutlined /> Upload
-              </div>
-            )}
-          </Upload>
-        </Form.Item>
-
-        <Form.Item name="button">
-          {loading ? (
-            <Spin />
-          ) : (
-            <>
-              <Space>
-                <Button onClick={() => navigate('/manager-shop/list-product')}>
-                  Cancel
-                </Button>
-                <Button type="primary" htmlType="submit" loading={loading}>
-                  Upload Product
-                </Button>
-              </Space>
-            </>
-          )}
-        </Form.Item>
-      </Form>
-    </div>
+            <Form.Item name="button">
+              {loading ? (
+                <Spin />
+              ) : (
+                <>
+                  <Space>
+                    <Button
+                      onClick={() => navigate('/manager-shop/list-product')}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="primary" htmlType="submit" loading={loading}>
+                      Upload Product
+                    </Button>
+                  </Space>
+                </>
+              )}
+            </Form.Item>
+          </Form>
+        </div>
+      </Spin>
+    </>
   );
 };
 

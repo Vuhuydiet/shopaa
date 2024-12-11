@@ -19,4 +19,5 @@ model Product {
     productImages ProductImage[]
     reports       Report[]
     cartProduct CartItem[]
+
 }

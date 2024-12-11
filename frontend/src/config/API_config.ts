@@ -23,9 +23,14 @@ export const SHOP_API_ENDPOINTS = {
   REGISTER_SHOP: `${API_DOMAIN}api/v1/shop/register`,
 };
 
+export const ORDER_API_ENDPOINTS = {
+  ORDER: `${API_DOMAIN}api/v1/order/`,
+  ORDER_DETAIL: `${API_DOMAIN}api/v1/order/user/`,
+};
+
 export const ADMIN_API_ENDPOINTS = {
   REPORTS: `${API_DOMAIN}api/v1/report/`,
-}
+};
 
 export const CART_API_ENDPOINTS = {
   CART: `${API_DOMAIN}api/v1/cart`,

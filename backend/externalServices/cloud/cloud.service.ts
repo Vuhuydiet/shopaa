@@ -35,7 +35,7 @@ class CloudService {
   static async deleteImage(publicId: string) {
     const result = await cloudinary.uploader.destroy(publicId);
     if (result.result !== 'ok') {
-      throw new InternalServerError('Failed to delete image');
+      throw new InternalServerError('Failed to delete image', result);
     }
   }
 
