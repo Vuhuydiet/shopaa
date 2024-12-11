@@ -7,6 +7,7 @@ import {
   ShoppingCartOutlined,
   LogoutOutlined,
   SearchOutlined,
+  IdcardOutlined,
 } from '@ant-design/icons';
 import './HeaderStyle.css';
 import logo from '../../assets/images/logo.png';
@@ -19,9 +20,11 @@ const { Search } = Input;
 const HeaderComponent: React.FC = () => {
   const { isAuthenticated, logout } = useAuthContext();
   const { user, refreshUser, resetUser } = useUser();
+
   const {
     cart: { data: cartItems, refetch },
   } = useCart({ limit: 1, offset: 0 });
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -46,8 +49,21 @@ const HeaderComponent: React.FC = () => {
         </NavLink>
       ),
     },
+    user?.role && user?.role === 'ADMIN'
+      ? {
+          key: '2',
+          label: (
+            <NavLink to="/admin">
+              <IdcardOutlined
+                style={{ marginRight: '10px', color: '#0000CD' }}
+              />
+              Admin
+            </NavLink>
+          ),
+        }
+      : null,
     {
-      key: '2',
+      key: '3',
       label: (
         <div onClick={handleLogout}>
           <LogoutOutlined style={{ marginRight: '10px', color: '#B8860B' }} />{' '}

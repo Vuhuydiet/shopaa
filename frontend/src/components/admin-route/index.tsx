@@ -20,5 +20,5 @@ export const AdminRoute = () => {
     );
   }
 
-  return user && user.role === 'ADMIN' ? <Outlet /> : <Navigate to="/login" />;
+  return user && user.role === 'ADMIN' ? <Outlet /> : <Navigate to="/" />;
 };

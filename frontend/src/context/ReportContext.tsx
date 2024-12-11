@@ -1,4 +1,11 @@
-import { Key, ReactNode, createContext, useMemo, useState } from 'react';
+import {
+  Key,
+  ReactNode,
+  createContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useReports } from '../service/api/useReports';
 import { IReport } from '../interfaces/IReport';
 import {
@@ -77,8 +84,8 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
   const { data: shop, refetch: refetchShop } = useShop(shopId);
   const [reportId, setReportId] = useState<number | undefined>(undefined);
   const [modalApi, modalHolder] = modal.useModal();
-  const [reason, setReason] = useState<string>('');
   const [messageApi, messageHolder] = message.useMessage();
+  const reasonRef = useRef('');
 
   const handleReport = (result: 'accepted' | 'dismissed') => {
     modalApi.confirm({
@@ -87,16 +94,15 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         <TextArea
           placeholder="Reason"
           onChange={(event) => {
-            setReason(event.target.value);
+            reasonRef.current = event.target.value;
           }}
         />
       ),
       onOk: () => {
-        console.log('test', reason);
         postReportResult({
           reportId: reportId as number,
           result: result,
-          reason: reason,
+          reason: reasonRef.current,
         })
           .then(() => {
             messageApi.open({
@@ -311,7 +317,10 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         title: 'Report ID',
         dataIndex: 'id',
         key: 'id',
-        sorter: (a: ReportType, b: ReportType) => a.id - b.id,
+        sorter: {
+          compare: (a: ReportType, b: ReportType) => a.id - b.id,
+          multiple: 1,
+        },
       },
       {
         title: 'Shop ID',
@@ -349,14 +358,17 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
 
           return record.shopId == value;
         },
-        sorter: (a: ReportType, b: ReportType) => {
-          if (a.shopId === null) {
-            return -1;
-          }
-          if (b.shopId === null) {
-            return 1;
-          }
-          return a.shopId - b.shopId;
+        sorter: {
+          compare: (a: ReportType, b: ReportType) => {
+            if (a.shopId === null) {
+              return -1;
+            }
+            if (b.shopId === null) {
+              return 1;
+            }
+            return a.shopId - b.shopId;
+          },
+          multiple: 2,
         },
       },
       {
@@ -395,14 +407,17 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
 
           return record.productId == value;
         },
-        sorter: (a: ReportType, b: ReportType) => {
-          if (a?.productId === null) {
-            return -1;
-          }
-          if (b?.productId === null) {
-            return 1;
-          }
-          return a.productId - b.productId;
+        sorter: {
+          compare: (a: ReportType, b: ReportType) => {
+            if (a?.productId === null) {
+              return -1;
+            }
+            if (b?.productId === null) {
+              return 1;
+            }
+            return a.productId - b.productId;
+          },
+          multiple: 3,
         },
       },
       {
@@ -450,8 +465,12 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
 
           return recordDate >= createdAt[0] && recordDate <= createdAt[1];
         },
-        sorter: (a: ReportType, b: ReportType) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        defaultSortOrder: 'descend',
+        sorter: {
+          compare: (a: ReportType, b: ReportType) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+          multiple: 4,
+        },
       },
       {
         title: 'Description',
@@ -517,6 +536,19 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         title: 'Report Result',
         dataIndex: 'reportResult',
         render: (data: any) => data?.result,
+        sorter: {
+          compare: (a: ReportType, b: ReportType) => {
+            if (a.reportResult === null) {
+              return -1;
+            }
+            if (b.reportResult === null) {
+              return 1;
+            }
+            return a.reportResult.result.localeCompare(b.reportResult.result);
+          },
+          multiple: 5,
+        },
+        defaultSortOrder: 'ascend',
         filters: [
           {
             text: 'Accepted',
