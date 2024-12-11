@@ -6,7 +6,7 @@ import { ProductCatalog } from '../../components/product-catalog/product-catalog
 import { useDispatch } from 'react-redux';
 import { setFilter } from '../../service/state/slices/filter-slice';
 import { getUserProfile } from '../../service/userService';
-
+import { setPagination } from '../../service/state/slices/pagination-slice';
 
 const ShopPage: React.FC = () => {
   const { shopId } = useParams<{ shopId: string }>();
@@ -31,7 +31,11 @@ const ShopPage: React.FC = () => {
         try {
           const result = await getShop(parseInt(shopId ?? '0', 10));
           setShopInfo(result.metadata.shop);
-          dispatch(setFilter({ shopId: parseInt(shopId) }));
+          dispatch(
+            setFilter({
+              shopId: parseInt(shopId),
+            }),
+          );
           fetchShopManagerData();
         } catch (error) {
           console.error('Error fetching shop data', error);
