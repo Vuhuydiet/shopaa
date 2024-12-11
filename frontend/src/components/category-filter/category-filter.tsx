@@ -34,7 +34,7 @@ export const CategoryFilter = () => {
   }, [categories]);
 
   const handleCategoryChange = useCallback(
-    (key: number) => {
+    (key: number | undefined) => {
       dispatch(
         setFilter({
           category: key || undefined,
@@ -101,11 +101,18 @@ export const CategoryFilter = () => {
           key: 'all',
           label: 'All Categories',
           icon: <UnorderedListOutlined />,
-          children: categories?.map((category: ICategory) => ({
-            key: category?.id,
-            label: category?.name,
-            onClick: () => handleCategoryChange(category?.id),
-          })),
+          children: [
+            {
+              key: 'all-categories',
+              label: 'All',
+              onClick: () => handleCategoryChange(undefined),
+            },
+            ...(categories?.map((category: ICategory) => ({
+              key: category?.id,
+              label: category?.name,
+              onClick: () => handleCategoryChange(category?.id),
+            })) ?? []),
+          ],
         },
         {
           key: 'price-range',

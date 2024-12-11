@@ -5,11 +5,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
 import { useShop } from '../../service/api/useShop';
 import { useUser } from '../../service/api/useUser';
+import { useNavigate } from 'react-router-dom';
 
 export const StoreInfo = () => {
   const shopId = useSelector((state: RootState) => state.product?.sellerId);
   const { data: seller } = useUser(`${shopId}`);
   const { data: shop } = useShop(`${shopId}`);
+  const navigate = useNavigate();
 
   return (
     <Row
@@ -18,7 +20,7 @@ export const StoreInfo = () => {
         color: 'black',
         display: 'flex',
         alignItems: 'center',
-        padding: '20px',
+        padding: '15px 40px',
         borderTop: '1px solid lightgray',
       }}
     >
@@ -33,7 +35,11 @@ export const StoreInfo = () => {
         <Space direction="vertical">
           <span style={{ fontWeight: 'bold' }}>{shop?.name}</span>
           <Space direction="horizontal">
-            <Button icon={<ShopOutlined />} style={{ color: 'gray' }}>
+            <Button
+              icon={<ShopOutlined />}
+              style={{ color: 'gray' }}
+              onClick={() => navigate(`/shop/${shopId}`)}
+            >
               Xem Shop
             </Button>
           </Space>
