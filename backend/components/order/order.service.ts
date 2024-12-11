@@ -21,7 +21,7 @@ type OrderQueries = {
   shopId?: number;
   providerId?: number;
   product?: number;
-  status?: OrderStatus;
+  status?: OrderStatus[];
   createdAfter?: Date;
   createdBefore?: Date;
   minValue?: number;
@@ -160,9 +160,47 @@ class OrderService {
   }
 
   static async getOrderById(orderId: number) {
-    return await prisma.order.findUnique({
+    const order = await prisma.order.findUnique({
       where: { orderId: orderId },
+      include: {
+        orderProducts: {
+          select: {
+            productId: true,
+            quantity: true,
+            color: true,
+            size: true,
+            price: true,
+          },
+        },
+        customer: true,
+        transportationProvider: {
+          select: { providerId: true, providerName: true },
+        },
+      },
     });
+
+    if (!order) {
+      throw new NotFoundError('Order not found');
+    }
+
+    const orderWithDetails = await Promise.all(
+      order.orderProducts.map(async (product) => {
+        const productDetails = await prisma.product.findUnique({
+          where: { productId: product.productId },
+          select: { productName: true, productImages: true },
+        });
+        return {
+          ...product,
+          productName: productDetails?.productName,
+          productImages: productDetails?.productImages[0],
+        };
+      }),
+    );
+
+    return {
+      ...order,
+      orderProducts: orderWithDetails,
+    };
   }
 
   static async getOrders(queries: OrderQueries) {
@@ -170,7 +208,7 @@ class OrderService {
       customerId: queries.userId,
       shopId: queries.shopId,
       transProviderId: queries.providerId,
-      status: queries.status,
+      status: queries.status && { in: queries.status },
       createdAt: {
         gte: queries.createdAfter,
         lte: queries.createdBefore,

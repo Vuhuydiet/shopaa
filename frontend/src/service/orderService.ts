@@ -1,4 +1,4 @@
-import { OrderStatus } from './../../../node_modules/.prisma/client/index.d';
+import { OrderStatus } from '../interfaces/Order/OrderEnums';
 import { ORDER_API_ENDPOINTS } from '../config/API_config';
 import { IQueryOrder } from '../interfaces/Order/IQueryOrder';
 import { IOrder } from '../interfaces/Order/IOrder';
@@ -41,6 +41,7 @@ export const getOrders = async (params: IQueryOrder = { limit: 10 }) => {
       },
     });
     if (response.data?.metadata?.orders && response.data?.metadata?.count) {
+      console.log('GET ORDERS', response.data.metadata?.orders);
       const orders = response.data.metadata?.orders?.map(
         (order: any): IOrder => {
           return {
