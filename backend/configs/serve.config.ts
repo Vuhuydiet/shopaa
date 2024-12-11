@@ -13,7 +13,6 @@ const [servePath, indexPath] = (() => {
     return ['', ''];
 
   const servePath = path.join(import.meta.dirname, '../../frontend/dist');
-  console.log(servePath);
   const indexPath = path.join(servePath, 'index.html');
   return [servePath, indexPath];
 })();

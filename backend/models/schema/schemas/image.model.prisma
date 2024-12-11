@@ -3,6 +3,7 @@ model Image {
   url          String
   createdAt    DateTime      @default(now())
   imageId      Int           @id @default(autoincrement())
+  
   productImage ProductImage?
   userProfile  UserProfile?
 }
