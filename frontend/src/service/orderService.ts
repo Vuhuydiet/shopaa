@@ -4,6 +4,7 @@ import { IQueryOrder } from '../interfaces/Order/IQueryOrder';
 import { IOrder } from '../interfaces/Order/IOrder';
 import axios from 'axios';
 import { IOrderDetail } from '../interfaces/Order/IOrderDetail';
+import { IProductOrder } from '../interfaces/Order/IProductOrder';
 
 export const updateStatusOrder = async (
   orderId: number,
@@ -41,7 +42,6 @@ export const getOrders = async (params: IQueryOrder = { limit: 10 }) => {
       },
     });
     if (response.data?.metadata?.orders && response.data?.metadata?.count) {
-      console.log('GET ORDERS', response.data.metadata?.orders);
       const orders = response.data.metadata?.orders?.map(
         (order: any): IOrder => {
           return {
@@ -77,21 +77,35 @@ export const getOrderDetail = async (id: number) => {
         },
       },
     );
-    console.log('GET ORDER DETAIL', response);
     if (response.data?.metadata?.order) {
       const order = response.data.metadata?.order;
       const orderDetail: IOrderDetail = {
         orderId: order?.orderId,
         customerId: order?.customerId,
+        customerName: order?.customer?.fullname,
         customerNumber: order?.customerNumber,
         shopId: order?.shopId,
         shippingAddress: order?.shippingAddress,
-        transProviderId: order?.transProviderId,
         status: order?.status,
         createdAt: order?.createdAt,
         updatedAt: order?.updatedAt,
         shippingFee: order?.shippingFee,
         totalAmount: order?.totalAmount,
+        orderProducts: order?.orderProducts.map((product: IProductOrder) => {
+          return {
+            productId: product?.productId,
+            productName: product?.productName,
+            productImageUrl: product?.productImageUrl,
+            quantity: product?.quantity,
+            price: product?.price,
+            color: product?.color,
+            size: product?.size,
+          };
+        }),
+        transportationProvider: {
+          providerId: order?.transportationProvider?.providerId,
+          providerName: order?.transportationProvider?.providerName,
+        },
       };
       return orderDetail;
     }

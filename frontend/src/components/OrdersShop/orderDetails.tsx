@@ -8,6 +8,7 @@ import { OrderStatus } from '../../interfaces/Order/OrderEnums';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
 import { deserializeDate } from '../../utils/date-convert';
 import { IProduct } from '../../interfaces/IProduct';
+import { IProductOrder } from '../../interfaces/Order/IProductOrder';
 
 interface OrderDetail {
   productId: number;
@@ -56,7 +57,7 @@ const OrderShopDetail: React.FC = () => {
     console.log('ORDER ID: ', orderId);
     const fetchData = async () => {
       const res = await getOrderDetail(Number(orderId));
-      console.log('ORDER DETAIL: ', res);
+      console.log('ORDER DETAIL UI : ', res);
       if (res) setOrder(res);
     };
     fetchData();
@@ -80,13 +81,16 @@ const OrderShopDetail: React.FC = () => {
   const columns = [
     {
       title: '#',
-      render: (_: any, __: IProduct, index: number) => index + 1,
+      render: (_: any, __: IProductOrder, index: number) => index + 1,
       key: 'index',
     },
     {
       title: 'Product image',
-      dataIndex: 'productImage',
-      key: 'productImage',
+      dataIndex: 'productImageUrl',
+      key: 'productImageUrl',
+      render: (url: string) => (
+        <img src={url} alt="product" style={{ width: '50px' }} />
+      ),
     },
     {
       title: 'Product name',
@@ -147,7 +151,7 @@ const OrderShopDetail: React.FC = () => {
               >
                 Customer Name:
               </td>
-              <td style={{ padding: '8px' }}>{order.customerId}</td>
+              <td style={{ padding: '8px' }}>{order.customerName}</td>
             </tr>
             <tr>
               <td
@@ -244,15 +248,15 @@ const OrderShopDetail: React.FC = () => {
         </table>
       </div>
 
-      {/* <Table
-        dataSource={order.products}
+      <Table
+        dataSource={order.orderProducts}
         columns={columns}
         rowKey="productId"
         style={{ marginTop: '20px' }}
         onRow={(record) => ({
-            onClick: () => navigate(`/product-detail/${record.id}`),
+          onClick: () => navigate(`/product-detail/${record.productId}`),
         })}
-      /> */}
+      />
 
       <Button
         style={{ marginTop: '20px' }}

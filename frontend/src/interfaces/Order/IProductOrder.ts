@@ -5,5 +5,5 @@ export interface IProductOrder {
   size: string;
   quantity: number;
   price: number;
-  productImages: string;
+  productImageUrl: string;
 }

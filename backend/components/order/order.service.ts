@@ -187,12 +187,21 @@ class OrderService {
       order.orderProducts.map(async (product) => {
         const productDetails = await prisma.product.findUnique({
           where: { productId: product.productId },
-          select: { productName: true, productImages: true },
+          select: {
+            productName: true,
+            productImages: {
+              select: {
+                image: {
+                  select: { url: true },
+                },
+              },
+            },
+          },
         });
         return {
           ...product,
           productName: productDetails?.productName,
-          productImages: productDetails?.productImages[0],
+          productImageUrl: productDetails?.productImages[0].image.url,
         };
       }),
     );
