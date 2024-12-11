@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IFilterProduct } from '../../../interfaces/IFilterProduct';
 import CompareObject from 'lodash/isEqual';
+import { PRODUCTS_FILTER } from '../../../config/constants';
 
 export const filterSlice = createSlice({
   name: 'filters',
   initialState: {
-    limit: 12,
+    limit: PRODUCTS_FILTER.ITEMS_PER_PAGE,
   } as IFilterProduct,
   reducers: {
     setFilter: (state, action: PayloadAction<IFilterProduct>) => {

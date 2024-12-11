@@ -6,5 +6,6 @@ model Shop {
   bankingBalance  Int         @default(0)
   orders          Order[]
   products        Product[]
-  shopOwner       UserProfile @relation(fields: [shopOwnerId], references: [userId])
+  shopOwner       UserProfile @relation(fields: [shopOwnerId], references: [userId], onDelete: Restrict)
+  reports   Report[]
 }

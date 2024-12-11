@@ -112,11 +112,6 @@ class ProductService {
 
     if (!product) return false;
 
-    console.log('P color: ', product.colors);
-    console.log('color: ', color);
-    console.log('P size: ', product.colors);
-    console.log('size: ', size);
-
     if (color && !product.colors.includes(color)) return false;
     if (!color && product.colors.length > 0) return false;
     if (size && !product.sizes.includes(size)) return false;

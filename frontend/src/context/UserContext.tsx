@@ -21,6 +21,7 @@ interface UserContextType {
   setUser: (user: UserProfile) => void;
   refreshUser: () => Promise<void>;
   resetUser: () => void;
+  isLoading: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -29,8 +30,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(true);
 
   const fetchUserData = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const userID = localStorage.getItem('userId');
@@ -49,6 +52,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
+    setLoading(false);
   };
 
   const refreshUser = async () => {
@@ -64,7 +68,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, refreshUser, resetUser }}>
+    <UserContext.Provider
+      value={{ user, setUser, refreshUser, resetUser, isLoading }}
+    >
       {children}
     </UserContext.Provider>
   );

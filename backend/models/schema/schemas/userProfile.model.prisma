@@ -10,5 +10,8 @@ model UserProfile {
   orders        Order[]
   shop          Shop?
   userAccount   UserAccount?
-  avatarImage   Image?         @relation(fields: [avatarImageId], references: [imageId])
+  cart          CartItem[]
+  avatarImage   Image?  @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
+  reports       Report[]
+  handledReportsResult ReportResult[]
 }

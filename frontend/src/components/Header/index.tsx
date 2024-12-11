@@ -8,24 +8,30 @@ import {
   LogoutOutlined,
   SearchOutlined,
   ShopOutlined,
+  IdcardOutlined,
 } from '@ant-design/icons';
 import './HeaderStyle.css';
 import logo from '../../assets/images/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
+import { useCart } from '../../service/api/useCart';
 
 const { Search } = Input;
 
 const HeaderComponent: React.FC = () => {
   const { isAuthenticated, logout } = useAuthContext();
   const { user, refreshUser, resetUser } = useUser();
+
+  const {
+    cart: { data: cartItems, refetch },
+  } = useCart({ limit: 1, offset: 0 });
+
   useEffect(() => {
     if (isAuthenticated) {
       refreshUser();
     }
   }, [isAuthenticated]);
   const unreadNotifications = 5;
-  const cartItemCount = 3;
 
   const handleLogout = () => {
     resetUser();
@@ -58,8 +64,21 @@ const HeaderComponent: React.FC = () => {
           },
         ]
       : []),
+    user?.role && user?.role === 'ADMIN'
+      ? {
+          key: '3',
+          label: (
+            <NavLink to="/admin">
+              <IdcardOutlined
+                style={{ marginRight: '10px', color: '#0000CD' }}
+              />
+              Admin
+            </NavLink>
+          ),
+        }
+      : null,
     {
-      key: '3',
+      key: '4',
       label: (
         <div onClick={handleLogout}>
           <LogoutOutlined style={{ marginRight: '10px', color: '#B8860B' }} />{' '}
@@ -192,7 +211,7 @@ const HeaderComponent: React.FC = () => {
             </Col>
 
             <Col xs={5} sm={6} md={6} lg={3}>
-              <Badge count={cartItemCount} offset={[3, 0]}>
+              <Badge count={cartItems?.count} offset={[3, 0]}>
                 <NavLink
                   to="/cart"
                   className={location.pathname === '/cart' ? 'active-link' : ''}

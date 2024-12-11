@@ -1,19 +1,23 @@
 model Product {
-  productId          Int               @id @default(autoincrement())
-  productName        String
-  sellerId           Int
-  currentPrice       Int
-  originalPrice      Int
-  quantity           Int               @default(0)
-  publishedAt        DateTime          @default(now())
-  brand              String?
-  productDescription String?
-  numSoldProduct     Int               @default(0)
-  colors             String[]
-  material           String?
-  origin             String?
-  sizes              String[]
-  shop               Shop              @relation(fields: [sellerId], references: [shopOwnerId])
-  productImages      ProductImage[]
-  categories         ProductCategory[] @relation("ProductToProductCategory")
+    productId          Int      @id @default(autoincrement())
+    productName        String
+    sellerId           Int
+    currentPrice       Int
+    originalPrice      Int
+    quantity           Int      @default(0)
+    publishedAt        DateTime @default(now())
+    brand              String?
+    productDescription String?
+    material           String?
+    origin             String?
+    colors             String[]
+    sizes              String[]
+    numSoldProduct     Int      @default(0)
+
+    shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Cascade)
+    categories    ProductCategory[]
+    productImages ProductImage[]
+    reports       Report[]
+    cartProduct CartItem[]
+
 }

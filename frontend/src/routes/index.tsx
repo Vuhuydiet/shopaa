@@ -15,12 +15,38 @@ import { Home } from '../pages/Home/Home';
 import UploadProductForm from '../components/UpLoadProduct/UpLoadProductFrom';
 import ListProductShop from '../components/ListProductShop';
 import { ProductDetail } from '../pages/product-detail';
-import { ProductCatalog } from '../components/product-catalog/product-catalog';
 import UpdateProductForm from '../components/UpLoadProduct/UpdateProductForm';
 import OrderShop from '../components/OrdersShop';
 import OrderShopDetail from '../components/OrdersShop/orderDetails';
+import { ReportPage } from '../pages/admin/report';
+import { AdminRoute } from '../components/admin-route';
+import { LayoutAdmin } from '../layout/admin';
+import { ProductCart } from '../pages/product-cart';
 
 export const routes = [
+  {
+    path: '/admin',
+    element: <LayoutAdmin />,
+    children: [
+      {
+        element: <AdminRoute />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="dashboard" replace />,
+          },
+          {
+            path: 'dashboard',
+            // element:
+          },
+          {
+            path: 'report',
+            element: <ReportPage />,
+          },
+        ],
+      },
+    ],
+  },
   {
     path: '/',
     element: <LayoutBasic />,
@@ -71,6 +97,7 @@ export const routes = [
           },
           {
             path: 'cart',
+            element: <ProductCart />,
           },
           {
             path: '/manager-shop',
@@ -133,10 +160,6 @@ export const routes = [
   {
     path: '/reset-password',
     element: <ResetPassword />,
-  },
-  {
-    path: '/product-catalog',
-    element: <ProductCatalog />,
   },
   {
     path: '*',

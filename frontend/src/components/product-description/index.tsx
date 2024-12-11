@@ -10,7 +10,7 @@ export const ProductDescription = () => {
       style={{
         backgroundColor: 'white',
         color: 'black',
-        padding: '20px',
+        padding: '10px 40px',
         width: '100%',
       }}
       direction="vertical"
@@ -19,9 +19,8 @@ export const ProductDescription = () => {
       <Row>
         <Typography.Text
           style={{
-            backgroundColor: 'lightgray',
             padding: '5px 30px',
-            color: 'blue',
+            color: 'gray',
             fontWeight: 'bold',
           }}
         >
