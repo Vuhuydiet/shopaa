@@ -16,6 +16,8 @@ import { useShop } from '../service/api/useShop';
 import { Link } from 'react-router-dom';
 import modal from 'antd/es/modal';
 import TextArea from 'antd/es/input/TextArea';
+import GridListTile from '@mui/material/GridListTile';
+import ListSubheader from '@mui/material/ListSubheader';
 
 interface ReportContextType {
   reports: IReport[];
@@ -311,7 +313,10 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         title: 'Report ID',
         dataIndex: 'id',
         key: 'id',
-        sorter: (a: ReportType, b: ReportType) => a.id - b.id,
+        sorter: {
+          compare: (a: ReportType, b: ReportType) => a.id - b.id,
+          multiple: 1,
+        },
       },
       {
         title: 'Shop ID',
@@ -349,14 +354,17 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
 
           return record.shopId == value;
         },
-        sorter: (a: ReportType, b: ReportType) => {
-          if (a.shopId === null) {
-            return -1;
-          }
-          if (b.shopId === null) {
-            return 1;
-          }
-          return a.shopId - b.shopId;
+        sorter: {
+          compare: (a: ReportType, b: ReportType) => {
+            if (a.shopId === null) {
+              return -1;
+            }
+            if (b.shopId === null) {
+              return 1;
+            }
+            return a.shopId - b.shopId;
+          },
+          multiple: 2,
         },
       },
       {
@@ -395,14 +403,17 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
 
           return record.productId == value;
         },
-        sorter: (a: ReportType, b: ReportType) => {
-          if (a?.productId === null) {
-            return -1;
-          }
-          if (b?.productId === null) {
-            return 1;
-          }
-          return a.productId - b.productId;
+        sorter: {
+          compare: (a: ReportType, b: ReportType) => {
+            if (a?.productId === null) {
+              return -1;
+            }
+            if (b?.productId === null) {
+              return 1;
+            }
+            return a.productId - b.productId;
+          },
+          multiple: 3,
         },
       },
       {
@@ -450,8 +461,12 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
 
           return recordDate >= createdAt[0] && recordDate <= createdAt[1];
         },
-        sorter: (a: ReportType, b: ReportType) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        defaultSortOrder: 'descend',
+        sorter: {
+          compare: (a: ReportType, b: ReportType) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+          multiple: 4,
+        },
       },
       {
         title: 'Description',
@@ -517,6 +532,19 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         title: 'Report Result',
         dataIndex: 'reportResult',
         render: (data: any) => data?.result,
+        sorter: {
+          compare: (a: ReportType, b: ReportType) => {
+            if (a.reportResult === null) {
+              return -1;
+            }
+            if (b.reportResult === null) {
+              return 1;
+            }
+            return a.reportResult.result.localeCompare(b.reportResult.result);
+          },
+          multiple: 5,
+        },
+        defaultSortOrder: 'ascend',
         filters: [
           {
             text: 'Accepted',
