@@ -37,6 +37,8 @@ const queryValidator = () => {
         return false;
       }
       return true;
+    }).customSanitizer(value => {
+      return Array.isArray(value) ? value : [value];
     }),
     query('createdAfter').optional().isISO8601().toDate(),
     query('createdBefore').optional().isISO8601().toDate(),
