@@ -11,15 +11,15 @@ import { IOrder } from '../../interfaces/Order/IOrder';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
 
 const OrderShop: React.FC = () => {
-  const [currentStatus, setCurrentStatus] = useState<string>('');
+  const [currentStatus, setCurrentStatus] = useState<string[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(5);
   const [total, setTotal] = useState<number>(0);
   const { data, isLoading } = useOrders({
     shopId: parseInt(localStorage.getItem('userId') || '0'),
-    sortBy: 'createdAt',
-    order: 'asc',
+    sortBy: 'updatedAt',
+    order: 'desc',
     limit: pageSize,
     offset: (currentPage - 1) * pageSize,
     status: currentStatus,
@@ -28,18 +28,19 @@ const OrderShop: React.FC = () => {
   const { mutate: updateStatus } = useUpdateOrderStatus();
   const changeFilteredOrders = () => {
     if (filteredOrders === 'all') {
-      setCurrentStatus('');
+      setCurrentStatus([]);
     } else if (filteredOrders === 'pending') {
-      setCurrentStatus('PENDING');
+      setCurrentStatus(['PENDING']);
     } else if (filteredOrders === 'processing') {
-      setCurrentStatus('ACCEPTED');
+      setCurrentStatus(['ACCEPTED', 'DELIVERING', 'RECEIVED', 'DELIVERED']);
     } else if (filteredOrders === 'completed') {
-      setCurrentStatus('COMPLETED');
+      setCurrentStatus(['COMPLETED']);
     } else if (filteredOrders === 'rejected') {
-      setCurrentStatus('REJECTED');
+      setCurrentStatus(['REJECTED']);
     } else if (filteredOrders === 'returned') {
-      setCurrentStatus('RETURNED');
+      setCurrentStatus(['RETURNED']);
     }
+    console.log('Current Status: ', currentStatus);
   };
 
   useEffect(() => {

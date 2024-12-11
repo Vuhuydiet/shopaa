@@ -7,7 +7,6 @@ import { IOrderDetail } from '../../interfaces/Order/IOrderDetail';
 import { OrderStatus } from '../../interfaces/Order/OrderEnums';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
 import { deserializeDate } from '../../utils/date-convert';
-import { IProduct } from '../../interfaces/IProduct';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
 
 interface OrderDetail {
@@ -18,34 +17,6 @@ interface OrderDetail {
   quantity: number;
   price: number;
 }
-
-// const fetchedOrder: Order = {
-//   // orderId: Number(orderId),
-//   customerName: 'Nguyễn Văn A',
-//   phoneNumber: '0123456789',
-//   status: 'Pending',
-//   totalAmount: 200,
-//   createdAt: '2024-12-01 10:30',
-//   orderDetails: [
-//     {
-//       productId: 1,
-//       productName: 'Áo thun nam',
-//       color: 'Đỏ',
-//       size: 'M',
-//       quantity: 2,
-//       price: 50,
-//     },
-//     {
-//       productId: 2,
-//       productName: 'Quần jeans',
-//       color: 'Xanh',
-//       size: 'L',
-//       quantity: 1,
-//       price: 100,
-//     },
-//   ],
-// };
-// setOrder(fetchedOrder);
 
 const OrderShopDetail: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
@@ -69,12 +40,13 @@ const OrderShopDetail: React.FC = () => {
   ) => {
     try {
       const res = await updateStatusOrder(orderId, newStatus);
+      console.log('RES: ', res);
       if (res) {
         message.success('Change status successfully');
         setHasChangeStatus(!hasChangeStatus);
       }
-    } catch (error) {
-      message.error('Change status failed');
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
 

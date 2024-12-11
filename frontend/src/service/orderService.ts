@@ -22,20 +22,39 @@ export const updateStatusOrder = async (
       },
     );
     if (response.status >= 200 && response.status < 300) {
-      return response.data; // Trả về dữ liệu từ API
+      return response.data.message;
     } else {
-      throw new Error(`Error update status order: ${response.statusText}`);
+      throw new Error(`Error update status order: ${response.data.message}`);
     }
-  } catch (error) {
-    console.error('Error in updateStatusOrder: ', error);
-    throw error;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getOrders = async (params: IQueryOrder = { limit: 10 }) => {
+  console.log('Params : ', params);
   try {
     const response = await axios.get(ORDER_API_ENDPOINTS.ORDER, {
-      params: params,
+      params,
+      paramsSerializer: (params) => {
+        const serializedParams: any = [];
+        if (params.status && Array.isArray(params.status)) {
+          params.status.forEach((status) => {
+            serializedParams.push(`status=${encodeURIComponent(status)}`);
+          });
+          delete params.status;
+        }
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            serializedParams.push(
+              `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+            );
+          }
+        });
+        console.log('Serialized Params join: ', serializedParams.join('&'));
+        // Kết hợp tất cả thành chuỗi query string
+        return serializedParams.join('&');
+      },
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',

@@ -43,6 +43,9 @@ const queryValidator = () => {
           return false;
         }
         return true;
+      })
+      .customSanitizer((value) => {
+        return Array.isArray(value) ? value : [value];
       }),
     query('createdAfter').optional().isISO8601().toDate(),
     query('createdBefore').optional().isISO8601().toDate(),
@@ -50,7 +53,9 @@ const queryValidator = () => {
     query('maxValue').optional().isNumeric().toFloat(),
     query('sortBy')
       .optional()
-      .custom((value: string) => ['createdAt', 'totalAmount'].includes(value)),
+      .custom((value: string) =>
+        ['createdAt', 'totalAmount', 'updatedAt'].includes(value),
+      ),
     query('order')
       .optional()
       .custom((value: string) => ['asc', 'desc'].includes(value)),

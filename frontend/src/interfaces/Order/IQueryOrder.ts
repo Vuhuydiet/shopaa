@@ -3,7 +3,7 @@ export interface IQueryOrder {
   shopId?: number;
   providerId?: number;
   product?: number;
-  status?: string;
+  status?: string[];
   createdAfter?: string;
   createdBefore?: string;
   minValue?: number;

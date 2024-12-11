@@ -2,12 +2,14 @@ import { IQueryOrder } from '../../../interfaces/Order/IQueryOrder';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { getOrders, updateStatusOrder } from '../../orderService';
 import { OrderStatus } from '../../../interfaces/Order/OrderEnums';
-const cleanParams = (params: Record<string, any>) => {
-  return Object.fromEntries(
+import { message } from 'antd';
+const cleanParams = (params: IQueryOrder): IQueryOrder => {
+  const cleanedParams = Object.fromEntries(
     Object.entries(params).filter(
       ([_, value]) => value !== null && value !== undefined && value !== '',
     ),
   );
+  return cleanedParams as IQueryOrder;
 };
 
 export const useOrders = (params: IQueryOrder) => {
@@ -27,8 +29,12 @@ export const useUpdateOrderStatus = () => {
     ({ orderId, status }: { orderId: number; status: OrderStatus }) =>
       updateStatusOrder(orderId, status),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries(['orders']);
+        message.success(data.mes || 'Status updated successfully!');
+      },
+      onError: (error: any) => {
+        message.error(error.message || 'Failed to update status.');
       },
     },
   );

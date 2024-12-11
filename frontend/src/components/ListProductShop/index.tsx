@@ -27,6 +27,7 @@ interface DataType {
   price: number;
   quantity: number;
   image: string;
+  soldCount?: number;
 }
 
 const ListProductShop: React.FC = () => {
@@ -58,6 +59,7 @@ const ListProductShop: React.FC = () => {
       price: item.currentPrice,
       quantity: item.quantity,
       image: item.images[0]?.url || '',
+      soldCount: item.soldCount,
     }));
     setTableData(formattedData);
   };
@@ -119,6 +121,11 @@ const ListProductShop: React.FC = () => {
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
+    },
+    {
+      title: 'Sold Count',
+      dataIndex: 'soldCount',
+      key: 'soldCount',
     },
     {
       title: 'Actions',

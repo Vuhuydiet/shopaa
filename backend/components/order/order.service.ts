@@ -27,7 +27,7 @@ type OrderQueries = {
   minValue?: number;
   maxValue?: number;
 
-  orderBy?: 'createdAt' | 'totalAmount';
+  sortBy?: 'createdAt' | 'updatedAt' | 'totalAmount';
   order?: 'asc' | 'desc';
 
   limit?: number;
@@ -249,9 +249,9 @@ class OrderService {
 
         where: condition,
 
-        orderBy: queries.orderBy
+        orderBy: queries.sortBy
           ? {
-              [queries.orderBy]: queries.order,
+              [queries.sortBy]: queries.order,
             }
           : undefined,
       }),
@@ -365,13 +365,13 @@ class OrderService {
 
     switch (newStatus) {
       case OrderStatus.ACCEPTED:
-        this.handleStatusTrasitToAccepted(orderProducts);
+        await this.handleStatusTrasitToAccepted(orderProducts);
         break;
       case OrderStatus.RETURNED:
-        this.handleStatusTransitToReturned(orderProducts);
+        await this.handleStatusTransitToReturned(orderProducts);
         break;
       case OrderStatus.COMPLETED:
-        this.handleStatusTransitToCompleted(orderProducts);
+        await this.handleStatusTransitToCompleted(orderProducts);
         break;
     }
 
