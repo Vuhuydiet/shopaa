@@ -77,6 +77,8 @@ export const useReports = (params: IReportParams) => {
     report: useQuery({
       queryKey: ['reports', params],
       queryFn: () => getReports(params),
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }),
 
     postReportResult: postReportResult,
