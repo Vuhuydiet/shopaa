@@ -1,4 +1,11 @@
-import { Key, ReactNode, createContext, useMemo, useState } from 'react';
+import {
+  Key,
+  ReactNode,
+  createContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useReports } from '../service/api/useReports';
 import { IReport } from '../interfaces/IReport';
 import {
@@ -16,8 +23,6 @@ import { useShop } from '../service/api/useShop';
 import { Link } from 'react-router-dom';
 import modal from 'antd/es/modal';
 import TextArea from 'antd/es/input/TextArea';
-import GridListTile from '@mui/material/GridListTile';
-import ListSubheader from '@mui/material/ListSubheader';
 
 interface ReportContextType {
   reports: IReport[];
@@ -79,8 +84,8 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
   const { data: shop, refetch: refetchShop } = useShop(shopId);
   const [reportId, setReportId] = useState<number | undefined>(undefined);
   const [modalApi, modalHolder] = modal.useModal();
-  const [reason, setReason] = useState<string>('');
   const [messageApi, messageHolder] = message.useMessage();
+  const reasonRef = useRef('');
 
   const handleReport = (result: 'accepted' | 'dismissed') => {
     modalApi.confirm({
@@ -89,16 +94,15 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         <TextArea
           placeholder="Reason"
           onChange={(event) => {
-            setReason(event.target.value);
+            reasonRef.current = event.target.value;
           }}
         />
       ),
       onOk: () => {
-        console.log('test', reason);
         postReportResult({
           reportId: reportId as number,
           result: result,
-          reason: reason,
+          reason: reasonRef.current,
         })
           .then(() => {
             messageApi.open({
