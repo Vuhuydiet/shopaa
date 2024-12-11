@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { SHOP_API_ENDPOINTS } from '../../config/API_config';
 import { IShop } from '../../interfaces/IShop';
 
-export const useShop = (id: string) => {
+export const useShop = (id: string | undefined) => {
   return useQuery({
     queryKey: ['shop', id],
     queryFn: () => fetchShopDetail(id),
@@ -12,10 +12,9 @@ export const useShop = (id: string) => {
   });
 };
 
-async function fetchShopDetail(id: string) {
-  if (id == undefined) {
-    return {} as IShop;
-  }
+async function fetchShopDetail(id: string | undefined) {
+  if (!id) return {} as IShop;
+
   const res = await axios.get(`${SHOP_API_ENDPOINTS.SHOP}${id}`);
   const data = res?.data;
 

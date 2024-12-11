@@ -3,7 +3,7 @@ import { PRODUCT_API_ENDPOINTS } from '../../config/API_config';
 import axios from 'axios';
 import { IProduct } from '../../interfaces/IProduct';
 
-export const useProduct = (id: string) => {
+export const useProduct = (id: string | undefined) => {
   return useQuery({
     queryKey: ['product', id],
     queryFn: () => getProduct(id),
@@ -12,9 +12,8 @@ export const useProduct = (id: string) => {
   });
 };
 
-const getProduct = async (id: string) => {
+const getProduct = async (id: string | undefined) => {
   if (!id) return {} as IProduct;
-
   try {
     const res = await axios.get(`${PRODUCT_API_ENDPOINTS.PRODUCTS}/${id}`);
     if (res?.data?.metadata) {

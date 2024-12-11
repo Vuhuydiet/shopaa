@@ -1,0 +1,50 @@
+enum ReportType {
+  shop
+  product
+}
+
+model ProductReportReason {
+  categoryName String   @id
+  reports      Report[]
+}
+
+model ShopReportReason {
+  categoryName String   @id
+  reports      Report[]
+}
+
+model Report {
+  reportId        Int        @id @default(autoincrement())
+  reporterId      Int
+  createdAt       DateTime   @default(now())
+  description     String?
+  type            ReportType
+  shopCategory    String?
+  productCategory String?
+  shopId          Int?
+  productId       Int?
+
+  reporter        UserProfile   @relation(fields: [reporterId], references: [userId])
+  reportedShop    Shop?         @relation(fields: [shopId], references: [shopOwnerId])
+  reportedProduct Product?      @relation(fields: [productId], references: [productId])
+  reportResult    ReportResult?
+
+  shopReportReason    ShopReportReason?    @relation(fields: [shopCategory], references: [categoryName], onDelete: Restrict, map: "fk_shop_category")
+  productReportReason ProductReportReason? @relation(fields: [productCategory], references: [categoryName], onDelete: Restrict, map: "fk_product_category")
+}
+
+enum ReportResultState {
+  accepted
+  dismissed
+}
+
+model ReportResult {
+  reportId  Int               @id @default(autoincrement())
+  createdAt DateTime          @default(now())
+  handlerId Int
+  result    ReportResultState
+  reason    String?
+
+  report  Report      @relation(fields: [reportId], references: [reportId], onDelete: Cascade)
+  handler UserProfile @relation(fields: [handlerId], references: [userId], onDelete: Restrict)
+}

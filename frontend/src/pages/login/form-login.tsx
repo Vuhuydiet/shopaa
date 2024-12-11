@@ -13,7 +13,11 @@ export const FormLogin = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      navigate('/');
+      if (localStorage.getItem('isAdmin') === 'true') {
+        navigate('/admin/report');
+      } else {
+        navigate('/');
+      }
     }
   }, []);
 
@@ -21,10 +25,12 @@ export const FormLogin = () => {
 
   const login = async (values: any) => {
     try {
+      console.log(values);
       const res = await axios.post(AUTH_API_ENDPOINTS.SIGN_IN, values);
       // In ra message từ phản hồi trả về
       console.log(res.data.message);
       localStorage.setItem('token', res.data.metadata.token);
+      localStorage.setItem('isAdmin', res.data.metadata.isAdmin);
       const decoded = jwtDecode(res.data.metadata.token);
       if (!decoded.sub) {
         throw Error('token.sub is undefined');
@@ -32,11 +38,17 @@ export const FormLogin = () => {
       const { userId } = decoded.sub as any;
       localStorage.setItem('userId', userId);
       setStateAuthenticated();
-      navigate('/');
+
+      console.log('isAdmin', res.data.metadata.isAdmin);
+      if (res.data.metadata.isAdmin) {
+        navigate('/admin/report');
+      } else {
+        navigate('/');
+      }
     } catch (error: any) {
       console.log(error);
       Modal.confirm({
-        title: error?.response?.data?.message,
+        title: error?.response?.data?.message || 'Login failed',
         okText: 'Oke',
         okType: 'danger',
         cancelText: 'Cancel',
