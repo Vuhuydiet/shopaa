@@ -8,16 +8,16 @@ export function AutoLogout() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    console.log('token:', token);
+    // console.log('token:', token);
 
     try {
       const decoded = jwtDecode(token);
       const exp = decoded.exp as number;
 
       const timeUntilExpire = exp * 1000 - Date.now();
-      console.log(
-        `time until expire: ${(timeUntilExpire / 3600000).toFixed(2)} hours`,
-      );
+      // console.log(
+      //   `time until expire: ${(timeUntilExpire / 3600000).toFixed(2)} hours`,
+      // );
 
       if (timeUntilExpire <= 0) {
         localStorage.removeItem('token');

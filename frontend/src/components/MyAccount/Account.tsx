@@ -4,6 +4,49 @@ import './ProfileStyle.css';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../../context/AuthContext';
 import ChangePWForm from './ChangePWForm';
+import axios from 'axios';
+import { ORDER_API_ENDPOINTS } from '../../config/API_config';
+
+async function createOrder(orderData: Object, token: string) {
+  console.log('ORDER DATA: ', orderData);
+  try {
+    const res = await axios.post(ORDER_API_ENDPOINTS.ORDER, orderData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('ADD ORDER: ', res);
+  } catch (error) {
+    console.error(error);
+    //throw new Error('Error creating order');
+  }
+}
+const orderData = {
+  phone: '0123456789',
+  orderData: {
+    shippingAddress: 'HCM',
+    transProvider: 1,
+    products: [
+      {
+        productId: 4,
+        quantity: 1,
+      },
+      {
+        productId: 1,
+        quantity: 2,
+        color: 'red',
+        size: 'M',
+      },
+      {
+        productId: 2,
+        quantity: 2,
+        color: 'blue',
+        size: 'L',
+      },
+    ],
+  },
+};
 
 const { Title } = Typography;
 
@@ -17,6 +60,9 @@ const Account: React.FC = () => {
   useEffect(() => {
     setEmail(email || 'Username@gmail.com');
     setUsername(username || 'Username');
+
+    createOrder(orderData, localStorage.getItem('token') || '');
+    console.log('Đã gửi order');
   }, [form]);
 
   const handleChangePassword = () => {

@@ -21,9 +21,9 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+      imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
     },
-  })
+  }),
 );
 app.use(compression());
 

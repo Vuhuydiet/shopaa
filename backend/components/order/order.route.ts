@@ -22,8 +22,8 @@ const orderDataValidator = () => {
     body('orderData.products.*.quantity').isInt().toInt(),
     body('orderData.products.*.color').optional().isString(),
     body('orderData.products.*.size').optional().isString(),
-  ]
-}
+  ];
+};
 
 const queryValidator = () => {
   return [
@@ -31,47 +31,60 @@ const queryValidator = () => {
     query('shopId').optional().isInt().toInt(),
     query('providerId').optional().isInt().toInt(),
     query('product').optional().isInt().toInt(),
-    query('status').optional().custom((value: string | string[]) => {
-      const values = Array.isArray(value) ? value : [value];
-      if (values.some((v) => !Object.values(OrderStatus).includes(v as OrderStatus))) {
-        return false;
-      }
-      return true;
-    }).customSanitizer(value => {
-      return Array.isArray(value) ? value : [value];
-    }),
+    query('status')
+      .optional()
+      .custom((value: string | string[]) => {
+        const values = Array.isArray(value) ? value : [value];
+        if (
+          values.some(
+            (v) => !Object.values(OrderStatus).includes(v as OrderStatus),
+          )
+        ) {
+          return false;
+        }
+        return true;
+      })
+      .customSanitizer((value) => {
+        return Array.isArray(value) ? value : [value];
+      }),
     query('createdAfter').optional().isISO8601().toDate(),
     query('createdBefore').optional().isISO8601().toDate(),
     query('minValue').optional().isNumeric().toFloat(),
     query('maxValue').optional().isNumeric().toFloat(),
-    query('sortBy').optional().custom((value: string) => ['createdAt', 'totalAmount'].includes(value)),
-    query('order').optional().custom((value: string) => ['asc', 'desc'].includes(value)),
+    query('sortBy')
+      .optional()
+      .custom((value: string) =>
+        ['createdAt', 'totalAmount', 'updatedAt'].includes(value),
+      ),
+    query('order')
+      .optional()
+      .custom((value: string) => ['asc', 'desc'].includes(value)),
     query('offset').optional().isNumeric().toInt(),
     query('limit').optional().isNumeric().toInt(),
   ];
-}
+};
 
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
   orderPermissions.alterGetOrders,
-  
+
   queryValidator(),
   handleValidationErrors,
 
-  orderController.getOrders
-)
+  orderController.getOrders,
+);
 
 router.get(
   '/user/:orderId',
   passport.authenticate('jwt', { session: false }),
   orderPermissions.canGetOrder,
-  
+
   param('orderId').isInt().toInt(),
   handleValidationErrors,
 
-  orderController.getOrderById
-)
+  orderController.getOrderById,
+);
 
 router.post(
   '/',
@@ -81,8 +94,8 @@ router.post(
   orderDataValidator(),
   handleValidationErrors,
 
-  orderController.createOrder
-)
+  orderController.createOrder,
+);
 
 router.patch(
   '/:orderId',
@@ -90,12 +103,13 @@ router.patch(
   orderPermissions.canUpdateOrderStatus,
 
   param('orderId').isInt().toInt(),
-  body('status').custom((value: string) => Object.values(OrderStatus).includes(value as OrderStatus)),
+  body('status').custom((value: string) =>
+    Object.values(OrderStatus).includes(value as OrderStatus),
+  ),
   handleValidationErrors,
 
-  orderController.updateOrderStatus
-)
-
+  orderController.updateOrderStatus,
+);
 
 // FOR TRANSPORTATION PROVIDER
 
@@ -107,8 +121,8 @@ router.get(
   queryValidator(),
   handleValidationErrors,
 
-  orderController.getOrders
-)
+  orderController.getOrders,
+);
 
 router.patch(
   '/transportation/:orderId',
@@ -116,10 +130,12 @@ router.patch(
   orderPermissions.canUpdateDeliveryStatus,
 
   param('orderId').isInt().toInt(),
-  body('status').custom((value: string) => (Object.values(OrderStatus) as string[]).includes(value)),
+  body('status').custom((value: string) =>
+    (Object.values(OrderStatus) as string[]).includes(value),
+  ),
   handleValidationErrors,
 
-  orderController.updateOrderStatus
-)
+  orderController.updateOrderStatus,
+);
 
 export default router;

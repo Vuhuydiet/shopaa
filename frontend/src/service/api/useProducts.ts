@@ -23,6 +23,7 @@ async function getProducts(params: IFilterProduct = { limit: 24 }) {
     });
 
     if (response.data?.metadata?.count && response.data?.metadata?.products) {
+      console.log('response: ', response.data);
       const products = response.data.metadata?.products?.map(
         (product: any): IProduct => {
           return {

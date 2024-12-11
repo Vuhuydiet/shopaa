@@ -1,7 +1,7 @@
-import { OrderStatus } from "@prisma/client";
-import { BadRequestError, NotFoundError } from "../../core/ErrorResponse";
-import prisma from "../../models";
-import ProductService from "../product/product.service";
+import { OrderStatus } from '@prisma/client';
+import { BadRequestError, NotFoundError } from '../../core/ErrorResponse';
+import prisma from '../../models';
+import ProductService from '../product/product.service';
 
 type OrderData = {
   phone: string;
@@ -14,7 +14,7 @@ type OrderData = {
     color?: string;
     size?: string;
   }[];
-}
+};
 
 type OrderQueries = {
   userId?: number;
@@ -27,24 +27,25 @@ type OrderQueries = {
   minValue?: number;
   maxValue?: number;
 
-  orderBy?: 'createdAt' | 'totalAmount';
+  sortBy?: 'createdAt' | 'updatedAt' | 'totalAmount';
   order?: 'asc' | 'desc';
 
   limit?: number;
   offset?: number;
-}
-
+};
 
 class OrderService {
-
-  private static async calculateOrderValue(transportationProviderId: number, products: { quantity: number, currentPrice: number }[]) {
+  private static async calculateOrderValue(
+    transportationProviderId: number,
+    products: { quantity: number; currentPrice: number }[],
+  ) {
     const provider = await prisma.transportationProvider.findUnique({
       where: { providerId: transportationProviderId },
-      select: { shippingFee: true }
+      select: { shippingFee: true },
     });
 
     if (!provider) {
-      throw new NotFoundError("Invalid transportation provider");
+      throw new NotFoundError('Invalid transportation provider');
     }
 
     const totalProductCost = products.reduce((acc, product) => {
@@ -55,64 +56,82 @@ class OrderService {
   }
 
   private static async getOrderProducts(orderData: OrderData) {
-
     const products = await Promise.all(
-      orderData.products.map(({ productId }) => prisma.product.findUnique({
-        where: { productId: productId },
-      }))
+      orderData.products.map(({ productId }) =>
+        prisma.product.findUnique({
+          where: { productId: productId },
+        }),
+      ),
     );
 
-    if (products.some(product => product == null)) {
-      throw new NotFoundError("Invalid product");
+    if (products.some((product) => product == null)) {
+      throw new NotFoundError('Invalid product');
     }
 
-    const filteredProducts = products.filter(product => product != null);
+    const filteredProducts = products.filter((product) => product != null);
 
     return filteredProducts.map((product, index) => ({
       ...product,
       stock: product.quantity,
       quantity: orderData.products[index].quantity,
       color: orderData.products[index].color,
-      size: orderData.products[index].size
+      size: orderData.products[index].size,
     }));
   }
 
-  private static getTotalNoEachProduct(orderProducts: { productId: number, quantity: number, stock: number }[]): Map<number, { total: number, stock: number }> {
+  private static getTotalNoEachProduct(
+    orderProducts: { productId: number; quantity: number; stock: number }[],
+  ): Map<number, { total: number; stock: number }> {
     return orderProducts.reduce((acc, product) => {
-      const { stock, total } = acc.get(product.productId) || { stock: product.stock, total: 0 };
+      const { stock, total } = acc.get(product.productId) || {
+        stock: product.stock,
+        total: 0,
+      };
       acc.set(product.productId, {
         total: total + product.quantity,
-        stock: stock
+        stock: stock,
       });
       return acc;
-    }, new Map<number, { total: number, stock: number }>());
+    }, new Map<number, { total: number; stock: number }>());
   }
 
   static async createOrder(userid: number, productData: OrderData) {
     if (productData.products.length === 0) {
-      throw new BadRequestError("Order must contain at least one product");
+      throw new BadRequestError('Order must contain at least one product');
     }
 
     const orderProducts = await this.getOrderProducts(productData);
 
     const shopId = orderProducts[0].sellerId;
-    if (orderProducts.some(product => product.sellerId !== shopId)) {
-      throw new BadRequestError("All products must be from the same shop");
+    if (orderProducts.some((product) => product.sellerId !== shopId)) {
+      throw new BadRequestError('All products must be from the same shop');
     }
 
-    this.getTotalNoEachProduct(orderProducts)
-      .forEach(({ total, stock }, productId) => {
+    this.getTotalNoEachProduct(orderProducts).forEach(
+      ({ total, stock }, productId) => {
         if (total > stock) {
-          throw new BadRequestError(`Not enough stock for product ${productId}`);
+          throw new BadRequestError(
+            `Not enough stock for product ${productId}`,
+          );
         }
-      });
+      },
+    );
 
     orderProducts.forEach(async ({ productId, color, size }) => {
-      if (!(await ProductService.checkProductVariantExists(productId, color, size)))
+      if (
+        !(await ProductService.checkProductVariantExists(
+          productId,
+          color,
+          size,
+        ))
+      )
         throw new BadRequestError(`Invalid variant for product ${productId}`);
     });
 
-    const { totalProductCost, shippingFee } = await this.calculateOrderValue(productData.transProvider, orderProducts);
+    const { totalProductCost, shippingFee } = await this.calculateOrderValue(
+      productData.transProvider,
+      orderProducts,
+    );
 
     return await prisma.order.create({
       data: {
@@ -123,18 +142,20 @@ class OrderService {
 
         customer: { connect: { userId: userid } },
         shop: { connect: { shopOwnerId: shopId } },
-        transportationProvider: { connect: { providerId: productData.transProvider } },
+        transportationProvider: {
+          connect: { providerId: productData.transProvider },
+        },
         orderProducts: {
-          create: orderProducts.map(product => ({
+          create: orderProducts.map((product) => ({
             productId: product.productId,
             quantity: product.quantity,
             color: product.color,
             size: product.size,
             price: product.currentPrice,
-            orderDetailNumber: -1
+            orderDetailNumber: -1,
           })),
-        }
-      }
+        },
+      },
     });
   }
 
@@ -143,49 +164,51 @@ class OrderService {
       where: { orderId: orderId },
       include: {
         orderProducts: {
-          select: { 
-            productId: true, 
-            quantity: true, 
-            color: true, 
-            size: true, 
+          select: {
+            productId: true,
+            quantity: true,
+            color: true,
+            size: true,
             price: true,
-          }
+          },
         },
         customer: true,
         transportationProvider: {
-          select: { providerId: true, providerName: true }
-        }
-      }
+          select: { providerId: true, providerName: true },
+        },
+      },
     });
 
     if (!order) {
-      throw new NotFoundError("Order not found");
+      throw new NotFoundError('Order not found');
     }
 
-    const orderWithDetails = await Promise.all(order.orderProducts.map(async (product) => {
-      const productDetails = await prisma.product.findUnique({
-        where: { productId: product.productId },
-        select: { 
-          productName: true, 
-          productImages: {
-            select: {
-              image: {
-                select: { url: true }
+    const orderWithDetails = await Promise.all(
+      order.orderProducts.map(async (product) => {
+        const productDetails = await prisma.product.findUnique({
+          where: { productId: product.productId },
+          select: {
+            productName: true,
+            productImages: {
+              select: {
+                image: {
+                  select: { url: true },
+                },
               },
-            }
-          } 
-        }
-      });
-      return { 
-        ...product, 
-        productName: productDetails?.productName,
-        productImageUrl: productDetails?.productImages[0].image.url 
-      };
-    }));
+            },
+          },
+        });
+        return {
+          ...product,
+          productName: productDetails?.productName,
+          productImageUrl: productDetails?.productImages[0].image.url,
+        };
+      }),
+    );
 
     return {
       ...order,
-      orderProducts: orderWithDetails
+      orderProducts: orderWithDetails,
     };
   }
 
@@ -197,45 +220,54 @@ class OrderService {
       status: queries.status && { in: queries.status },
       createdAt: {
         gte: queries.createdAfter,
-        lte: queries.createdBefore
+        lte: queries.createdBefore,
       },
-      orderProducts: queries.product ? {
-        some: {
-          productId: queries.product,
-          price: {
-            gte: queries.minValue,
-            lte: queries.maxValue
+      orderProducts: queries.product
+        ? {
+            some: {
+              productId: queries.product,
+              price: {
+                gte: queries.minValue,
+                lte: queries.maxValue,
+              },
+            },
           }
-        }
-      } : undefined,
+        : undefined,
       totalAmount: {
         gte: queries.minValue,
-        lte: queries.maxValue
-      }
+        lte: queries.maxValue,
+      },
     };
-
 
     const [count, orders] = await prisma.$transaction([
       prisma.order.count({
-        where: condition
+        where: condition,
       }),
       prisma.order.findMany({
         take: queries.limit,
         skip: queries.offset,
 
-        where: condition, 
+        where: condition,
 
-        orderBy: queries.orderBy ? {
-          [queries.orderBy]: queries.order
-        } : undefined,
-      })
+        orderBy: queries.sortBy
+          ? {
+              [queries.sortBy]: queries.order,
+            }
+          : undefined,
+      }),
     ]);
-    return {count, orders}
+    return { count, orders };
   }
 
-  private static canUpdateOrderStatus(currentStatus: OrderStatus, newStatus: OrderStatus) {
+  private static canUpdateOrderStatus(
+    currentStatus: OrderStatus,
+    newStatus: OrderStatus,
+  ) {
     const ORDER_MAP = new Map<OrderStatus, OrderStatus[]>([
-      [OrderStatus.PENDING, [OrderStatus.CANCELED, OrderStatus.ACCEPTED, OrderStatus.REJECTED]],
+      [
+        OrderStatus.PENDING,
+        [OrderStatus.CANCELED, OrderStatus.ACCEPTED, OrderStatus.REJECTED],
+      ],
       [OrderStatus.CANCELED, []],
       [OrderStatus.REJECTED, []],
       [OrderStatus.ACCEPTED, [OrderStatus.DELIVERING]],
@@ -243,14 +275,14 @@ class OrderService {
       [OrderStatus.DELIVERED, [OrderStatus.RECEIVED]],
       [OrderStatus.RECEIVED, [OrderStatus.COMPLETED, OrderStatus.RETURNED]],
       [OrderStatus.RETURNED, []],
-      [OrderStatus.COMPLETED, []]
+      [OrderStatus.COMPLETED, []],
     ]);
 
     return ORDER_MAP.get(currentStatus)?.includes(newStatus);
   }
 
   private static async getOrderProductQuantity(orderId: number) {
-    return await prisma.$queryRaw`
+    return (await prisma.$queryRaw`
     SELECT 
       od."productId" as "productId",
       od."quantity" as "quantity",
@@ -258,86 +290,96 @@ class OrderService {
     FROM "OrderDetail" od
     JOIN "Product" p ON od."productId" = p."productId"
     WHERE od."orderId" = ${orderId}
-  ` as {
-      productId: number,
-      quantity: number,
-      stock: number
+  `) as {
+      productId: number;
+      quantity: number;
+      stock: number;
     }[];
-  } 
+  }
 
-  private static async handleStatusTrasitToAccepted(orderProducts: { productId: number, quantity: number, stock: number }[]) {
-    this.getTotalNoEachProduct(orderProducts)
-      .forEach(({ total, stock }, productId) => {
+  private static async handleStatusTrasitToAccepted(
+    orderProducts: { productId: number; quantity: number; stock: number }[],
+  ) {
+    this.getTotalNoEachProduct(orderProducts).forEach(
+      ({ total, stock }, productId) => {
         if (total > stock) {
-          throw new BadRequestError(`Not enough stock for product ${productId}`);
+          throw new BadRequestError(
+            `Not enough stock for product ${productId}`,
+          );
         }
-      });
+      },
+    );
 
     orderProducts.forEach(async ({ productId, quantity }) => {
       await prisma.product.update({
         where: { productId: productId },
         data: {
           quantity: { decrement: quantity },
-        }
+        },
       });
     });
   }
 
-  private static handleStatusTransitToCompleted(orderProducts: { productId: number, quantity: number }[]) {
+  private static handleStatusTransitToCompleted(
+    orderProducts: { productId: number; quantity: number }[],
+  ) {
     orderProducts.forEach(async ({ productId, quantity }) => {
       await prisma.product.update({
         where: { productId: productId },
         data: {
-          numSoldProduct: { increment: quantity }
-        }
+          numSoldProduct: { increment: quantity },
+        },
       });
     });
   }
 
-  private static async handleStatusTransitToReturned(orderProducts: { productId: number, quantity: number }[]) {
+  private static async handleStatusTransitToReturned(
+    orderProducts: { productId: number; quantity: number }[],
+  ) {
     orderProducts.forEach(async ({ productId, quantity }) => {
       await prisma.product.update({
         where: { productId: productId },
         data: {
           quantity: { increment: quantity },
-        }
+        },
       });
     });
   }
 
   static async updateOrderStatus(orderId: number, newStatus: OrderStatus) {
-
-    const order = await prisma.order.findUnique({ where: { orderId: orderId } });
+    const order = await prisma.order.findUnique({
+      where: { orderId: orderId },
+    });
 
     if (!order) {
-      throw new NotFoundError("Order not found");
+      throw new NotFoundError('Order not found');
     }
 
     if (!this.canUpdateOrderStatus(order.status, newStatus)) {
-      throw new BadRequestError(`Invalid status transition: transit from ${order.status} to ${newStatus}`);
+      throw new BadRequestError(
+        `Invalid status transition: transit from ${order.status} to ${newStatus}`,
+      );
     }
 
     const orderProducts = await this.getOrderProductQuantity(orderId);
 
     switch (newStatus) {
       case OrderStatus.ACCEPTED:
-        this.handleStatusTrasitToAccepted(orderProducts);
+        await this.handleStatusTrasitToAccepted(orderProducts);
         break;
       case OrderStatus.RETURNED:
-        this.handleStatusTransitToReturned(orderProducts);
+        await this.handleStatusTransitToReturned(orderProducts);
         break;
       case OrderStatus.COMPLETED:
-        this.handleStatusTransitToCompleted(orderProducts);
+        await this.handleStatusTransitToCompleted(orderProducts);
         break;
     }
 
     return await prisma.order.update({
       where: { orderId: orderId },
-      data: { status: newStatus }
+      data: { status: newStatus },
     });
   }
-
 }
-
 
 export default OrderService;

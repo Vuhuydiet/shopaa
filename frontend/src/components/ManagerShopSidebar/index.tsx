@@ -1,4 +1,8 @@
-import { ProfileOutlined, ProfileFilled } from '@ant-design/icons';
+import {
+  ProfileOutlined,
+  ProfileFilled,
+  OrderedListOutlined,
+} from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -22,6 +26,12 @@ const ManagerShopSidebar: React.FC = () => {
       icon: <ProfileFilled style={{ color: '#EE4000' }} />,
       title: 'List product',
       label: <NavLink to="/manager-shop/list-product">List product</NavLink>,
+    },
+    {
+      key: '/manager-shop/list-order',
+      icon: <OrderedListOutlined style={{ color: '#33CC00' }} />,
+      title: 'List order',
+      label: <NavLink to="/manager-shop/list-order">List order</NavLink>,
     },
   ];
 

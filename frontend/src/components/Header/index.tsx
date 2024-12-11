@@ -7,6 +7,7 @@ import {
   ShoppingCartOutlined,
   LogoutOutlined,
   SearchOutlined,
+  ShopOutlined,
 } from '@ant-design/icons';
 import './HeaderStyle.css';
 import logo from '../../assets/images/logo.png';
@@ -42,8 +43,23 @@ const HeaderComponent: React.FC = () => {
         </NavLink>
       ),
     },
+    ...(user?.role === 'SHOP_MANAGER'
+      ? [
+          {
+            key: '2',
+            label: (
+              <NavLink to="/manager-shop">
+                <ShopOutlined
+                  style={{ marginRight: '10px', color: '#FF6600' }}
+                />
+                My shop
+              </NavLink>
+            ),
+          },
+        ]
+      : []),
     {
-      key: '2',
+      key: '3',
       label: (
         <div onClick={handleLogout}>
           <LogoutOutlined style={{ marginRight: '10px', color: '#B8860B' }} />{' '}
