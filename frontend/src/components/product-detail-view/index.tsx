@@ -7,7 +7,7 @@ export const ProductDetailView = () => {
   return (
     <Row
       style={{
-        padding: '25px',
+        padding: '15px 40px',
         backgroundColor: 'white',
       }}
     >

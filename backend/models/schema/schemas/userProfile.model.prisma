@@ -10,6 +10,8 @@ model UserProfile {
   oAuthProvider OAuthProvider?
   userAccount   UserAccount?
   shop Shop?
+  cart CartItem[]
+  
   avatarImage   Image?  @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
   
   reports Report[]
