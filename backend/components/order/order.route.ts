@@ -31,7 +31,13 @@ const queryValidator = () => {
     query('shopId').optional().isInt().toInt(),
     query('providerId').optional().isInt().toInt(),
     query('product').optional().isInt().toInt(),
-    query('status').optional().custom((value: string) => Object.values(OrderStatus).includes(value as OrderStatus)),
+    query('status').optional().custom((value: string | string[]) => {
+      const values = Array.isArray(value) ? value : [value];
+      if (values.some((v) => !Object.values(OrderStatus).includes(v as OrderStatus))) {
+        return false;
+      }
+      return true;
+    }),
     query('createdAfter').optional().isISO8601().toDate(),
     query('createdBefore').optional().isISO8601().toDate(),
     query('minValue').optional().isNumeric().toFloat(),
