@@ -13,6 +13,8 @@ export const useProduct = (id: string) => {
 };
 
 const getProduct = async (id: string) => {
+  if (!id) return {} as IProduct;
+
   try {
     const res = await axios.get(`${PRODUCT_API_ENDPOINTS.PRODUCTS}/${id}`);
     if (res?.data?.metadata) {

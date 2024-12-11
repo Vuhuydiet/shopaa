@@ -4,8 +4,9 @@ import { IProductCard } from '../../interfaces/IProductCard';
 import { ShoppingCartOutlined, StarFilled } from '@ant-design/icons';
 import numberAbbreviation from '../../utils/number-abbreviation';
 import { useNavigate } from 'react-router-dom';
+import { memo } from 'react';
 
-export const ProductCard = (product: IProductCard) => {
+export const ProductCard = memo((product: IProductCard) => {
   const navigate = useNavigate();
 
   const handleClickCard = () => {
@@ -64,17 +65,7 @@ export const ProductCard = (product: IProductCard) => {
         <Typography.Text italic strong style={{ fontSize: '0.7rem' }}>
           {numberAbbreviation(product.soldCount)} sales
         </Typography.Text>
-        <Button
-          style={{
-            backgroundColor: 'red',
-            borderRadius: '50%',
-            color: 'white',
-            padding: '20px',
-            fontSize: '1rem',
-          }}
-          icon={<ShoppingCartOutlined style={{ fontSize: '1rem' }} />}
-        />
       </Space>
     </Card>
   );
-};
+});
