@@ -4,8 +4,9 @@ model Shop {
   shopDescription String?
   address         String?
   bankingBalance  Int         @default(0)
+  
+  shopOwner       UserProfile @relation(fields: [shopOwnerId], references: [userId], onDelete: Restrict)
   orders          Order[]
   products        Product[]
-  shopOwner       UserProfile @relation(fields: [shopOwnerId], references: [userId], onDelete: Restrict)
-  reports   Report[]
+  reports         Report[]
 }

@@ -1,17 +1,30 @@
+enum Gender {
+  male
+  female
+  other
+}
+
+enum Role {
+  ADMIN
+  SHOP_MANAGER
+  USER
+}
+
 model UserProfile {
-  userId        Int            @id @default(autoincrement())
-  role          Role           @default(USER)
+  userId        Int       @id @default(autoincrement())
+  role          Role      @default(USER)
   fullname      String?
-  dateOfBirth   DateTime?      @db.Date
+  dateOfBirth   DateTime? @db.Date
   phoneNumber   String?
   gender        Gender?
-  avatarImageId Int?           @unique
-  oAuthProvider OAuthProvider?
-  orders        Order[]
-  shop          Shop?
-  userAccount   UserAccount?
-  cart          CartItem[]
-  avatarImage   Image?  @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
-  reports       Report[]
+  avatarImageId Int?      @unique
+
+  avatarImage          Image?         @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
+  oAuthProvider        OAuthProvider?
+  orders               Order[]
+  shop                 Shop?
+  userAccount          UserAccount?
+  cart                 CartItem[]
+  reports              Report[]
   handledReportsResult ReportResult[]
 }

@@ -1,6 +1,7 @@
 model ProductCategory {
-  categoryId   Int       @id @default(autoincrement())
-  categoryName String    @unique
+  categoryId   Int     @id @default(autoincrement())
+  categoryName String  @unique
   description  String?
-  products     Product[] 
+
+  products Product[]
 }

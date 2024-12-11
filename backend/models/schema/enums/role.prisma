@@ -1,5 +1,0 @@
-enum Role {
-  ADMIN
-  SHOP_MANAGER
-  USER
-}

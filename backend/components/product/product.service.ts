@@ -308,7 +308,6 @@ class ProductService {
           imageId: { in: productData.images?.remove || [] },
         },
       });
-      console.log(deletingImages);
       await Promise.all(
         deletingImages.map(({ imageId }) =>
           ImageService.deleteImage(imageId, tx),

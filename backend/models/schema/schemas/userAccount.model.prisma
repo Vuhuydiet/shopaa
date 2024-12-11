@@ -1,7 +1,8 @@
 model UserAccount {
-  userId   Int         @id
-  username String      @unique
+  userId   Int    @id
+  username String @unique
   password String
-  email    String      @unique
-  profile  UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  email    String @unique
+
+  profile UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }

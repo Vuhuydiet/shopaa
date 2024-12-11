@@ -1,7 +1,8 @@
 model ProductImage {
   productId Int
-  order     Int     @default(autoincrement())
-  imageId   Int     @id
-  image     Image   @relation(fields: [imageId], references: [imageId], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [productId])
+  order     Int @default(autoincrement())
+  imageId   Int @id
+
+  image   Image   @relation(fields: [imageId], references: [imageId], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [productId], onDelete: Restrict)
 }

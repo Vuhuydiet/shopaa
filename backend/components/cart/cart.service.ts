@@ -80,8 +80,6 @@ class CartService {
         OFFSET ${offset ?? 0}
       ` as any[];
 
-      console.log(cartItems);
-
       const cartItemsGroups = cartItems.reduce((groups: any[], item: any) => {
         if (groups.length === 0 || groups[groups.length - 1].sellerId !== item.sellerId) {
           groups.push({
