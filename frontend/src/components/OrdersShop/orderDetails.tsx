@@ -7,6 +7,7 @@ import { IOrderDetail } from '../../interfaces/Order/IOrderDetail';
 import { OrderStatus } from '../../interfaces/Order/OrderEnums';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
 import { deserializeDate } from '../../utils/date-convert';
+import { IProduct } from '../../interfaces/IProduct';
 
 interface OrderDetail {
   productId: number;
@@ -77,6 +78,16 @@ const OrderShopDetail: React.FC = () => {
   };
 
   const columns = [
+    {
+      title: '#',
+      render: (_: any, __: IProduct, index: number) => index + 1,
+      key: 'index',
+    },
+    {
+      title: 'Product image',
+      dataIndex: 'productImage',
+      key: 'productImage',
+    },
     {
       title: 'Product name',
       dataIndex: 'productName',
@@ -161,7 +172,7 @@ const OrderShopDetail: React.FC = () => {
                 Total amount:
               </td>
               <td style={{ padding: '8px' }}>
-                ${order.totalAmount.toFixed(2)}
+                $ {order.totalAmount.toFixed(2)}
               </td>
             </tr>
             <tr>
@@ -238,6 +249,9 @@ const OrderShopDetail: React.FC = () => {
         columns={columns}
         rowKey="productId"
         style={{ marginTop: '20px' }}
+        onRow={(record) => ({
+            onClick: () => navigate(`/product-detail/${record.id}`),
+        })}
       /> */}
 
       <Button
