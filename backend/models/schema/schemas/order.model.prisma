@@ -1,42 +1,3 @@
-model Order {
-  orderId                Int                     @id @default(autoincrement())
-  customerId             Int?
-  shopId                 Int?
-  shippingAddress        String
-  transProviderId        Int?
-  status                 OrderStatus             @default(PENDING)
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
-  shippingFee            Float
-  totalAmount            Float
-  customer               UserProfile?            @relation(fields: [customerId], references: [userId])
-  shop                   Shop?                   @relation(fields: [shopId], references: [shopOwnerId])
-  transportationProvider TransportationProvider? @relation(fields: [transProviderId], references: [providerId])
-  orderProducts          OrderDetail[]
-  returnSlip             ReturnSlip[]
-}
-
-model OrderDetail {
-  orderId   Int
-  productId Int
-  color     String?
-  size      String?
-  quantity  Int
-  price     Float
-  order     Order   @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
-
-  @@id([orderId, productId])
-}
-
-model ReturnSlip {
-  returnId  Int           @id @default(autoincrement())
-  orderId   Int
-  createdAt DateTime      @default(now())
-  status    ReturnStatus?
-  reason    String?
-  order     Order         @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
-}
-
 enum OrderStatus {
   PENDING
   CANCELED
@@ -49,7 +10,53 @@ enum OrderStatus {
   RETURNED
 }
 
+model Order {
+  orderId         Int         @id @default(autoincrement())
+  customerId      Int?
+  shopId          Int?
+  customerNumber  String?
+  shippingAddress String
+  transProviderId Int?
+  status          OrderStatus @default(PENDING)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  shippingFee Float
+  totalAmount Float
+
+  customer               UserProfile?            @relation(fields: [customerId], references: [userId], onDelete: SetNull)
+  shop                   Shop?                   @relation(fields: [shopId], references: [shopOwnerId], onDelete: SetNull)
+  transportationProvider TransportationProvider? @relation(fields: [transProviderId], references: [providerId], onDelete: SetNull)
+  orderProducts          OrderDetail[]
+  returnSlip             ReturnSlip[]
+}
+
+model OrderDetail {
+  orderId           Int
+  orderDetailNumber Int 
+  productId         Int // no FK because it's a key attribute and the referenced product could be deleted while order still exists
+  color             String?
+  size              String?
+  quantity          Int
+  price             Float
+
+  order Order @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+
+  @@id([orderId, orderDetailNumber])
+  @@unique([orderId, productId, color, size])
+}
+
 enum ReturnStatus {
   ACCEPTED
   REJECTED
+}
+
+model ReturnSlip {
+  returnId  Int           @id @default(autoincrement())
+  orderId   Int
+  createdAt DateTime      @default(now())
+  status    ReturnStatus?
+  reason    String?
+
+  order Order @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
 }

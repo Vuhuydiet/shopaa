@@ -1,44 +1,35 @@
-import { ORDER_API_ENDPOINTS } from '../../../config/API_config';
-import { useQuery } from 'react-query';
-import axios from 'axios';
 import { IQueryOrder } from '../../../interfaces/Order/IQueryOrder';
-import { IOrder } from '../../../interfaces/Order/IOrder';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { getOrders, updateStatusOrder } from '../../orderService';
+import { OrderStatus } from '../../../interfaces/Order/OrderEnums';
+const cleanParams = (params: Record<string, any>) => {
+  return Object.fromEntries(
+    Object.entries(params).filter(
+      ([_, value]) => value !== null && value !== undefined && value !== '',
+    ),
+  );
+};
 
 export const useOrders = (params: IQueryOrder) => {
+  const filteredParams = cleanParams(params);
   return useQuery({
-    queryKey: ['orders', params],
-    queryFn: () => getOrders(params),
+    queryKey: ['orders', filteredParams],
+    queryFn: () => getOrders(filteredParams),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
 };
 
-async function getOrders(params: IQueryOrder = { limit: 10 }) {
-  try {
-    const response = await axios.get(ORDER_API_ENDPOINTS.ORDER, {
-      params: params,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    if(response.data?.metadata?.orders) {
-      const orders = response.data.metadata?.orders?.map((order: any) : IOrder => {
-        return {
-          orderId: order?.orderId,
-          // // customerName: order?.customerName,
-          // phoneNumber: order?.phoneNumber,
-          // status: order?.status,
-          // totalAmount: order?.totalAmount,
-          // createdAt: order?.createdAt,
-        };
-      }
-    }
+export const useUpdateOrderStatus = () => {
+  const queryClient = useQueryClient();
 
-    console.log(response);
-    return { count: 2 };
-  } catch (error) {
-    console.error('Error fetching products:', error);
-  }
-  return { count: 0, items: [] };
-}
+  return useMutation(
+    ({ orderId, status }: { orderId: number; status: OrderStatus }) =>
+      updateStatusOrder(orderId, status),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['orders']);
+      },
+    },
+  );
+};

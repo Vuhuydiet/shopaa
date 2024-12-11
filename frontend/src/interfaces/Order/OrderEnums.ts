@@ -11,8 +11,16 @@ export enum OrderStatus {
   RETURNED = 'RETURNED',
 }
 
-// Enums for Return
-export enum ReturnStatus {
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED',
-}
+// Group: PENDING
+//  - PENDING
+// Group: PROCESSING
+//  - ACCEPTED
+//  - DELIVERING
+//  - DELIVERED
+// Group: COMPLETED
+//  - RECEIVED
+//  - COMPLETED
+// Group: REJECTED
+//  - REJECTED
+// Group: RETURNED
+//  - RETURNED

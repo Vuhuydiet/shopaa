@@ -4,6 +4,7 @@ import prisma from '../../models';
 import ProductService from '../product/product.service';
 
 type OrderData = {
+  phone: string;
   shippingAddress: string;
   transProvider: number;
 
@@ -134,6 +135,7 @@ class OrderService {
 
     return await prisma.order.create({
       data: {
+        customerNumber: productData.phone,
         shippingAddress: productData.shippingAddress,
         shippingFee: shippingFee,
         totalAmount: totalProductCost + shippingFee,
@@ -150,6 +152,7 @@ class OrderService {
             color: product.color,
             size: product.size,
             price: product.currentPrice,
+            orderDetailNumber: -1,
           })),
         },
       },
@@ -163,42 +166,50 @@ class OrderService {
   }
 
   static async getOrders(queries: OrderQueries) {
-    return await prisma.order.findMany({
-      take: queries.limit,
-      skip: queries.offset,
-
-      where: {
-        customerId: queries.userId,
-        shopId: queries.shopId,
-        transProviderId: queries.providerId,
-        status: queries.status,
-        createdAt: {
-          gte: queries.createdAfter,
-          lte: queries.createdBefore,
-        },
-        orderProducts: queries.product
-          ? {
-              some: {
-                productId: queries.product,
-                price: {
-                  gte: queries.minValue,
-                  lte: queries.maxValue,
-                },
-              },
-            }
-          : undefined,
-        totalAmount: {
-          gte: queries.minValue,
-          lte: queries.maxValue,
-        },
+    const condition = {
+      customerId: queries.userId,
+      shopId: queries.shopId,
+      transProviderId: queries.providerId,
+      status: queries.status,
+      createdAt: {
+        gte: queries.createdAfter,
+        lte: queries.createdBefore,
       },
-
-      orderBy: queries.orderBy
+      orderProducts: queries.product
         ? {
-            [queries.orderBy]: queries.order,
+            some: {
+              productId: queries.product,
+              price: {
+                gte: queries.minValue,
+                lte: queries.maxValue,
+              },
+            },
           }
         : undefined,
-    });
+      totalAmount: {
+        gte: queries.minValue,
+        lte: queries.maxValue,
+      },
+    };
+
+    const [count, orders] = await prisma.$transaction([
+      prisma.order.count({
+        where: condition,
+      }),
+      prisma.order.findMany({
+        take: queries.limit,
+        skip: queries.offset,
+
+        where: condition,
+
+        orderBy: queries.orderBy
+          ? {
+              [queries.orderBy]: queries.order,
+            }
+          : undefined,
+      }),
+    ]);
+    return { count, orders };
   }
 
   private static canUpdateOrderStatus(

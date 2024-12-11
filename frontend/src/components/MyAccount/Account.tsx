@@ -23,17 +23,26 @@ async function createOrder(orderData: Object, token: string) {
   }
 }
 const orderData = {
+  phone: '0123456789',
   orderData: {
     shippingAddress: 'HCM',
     transProvider: 1,
     products: [
       {
-        productId: 9,
+        productId: 4,
         quantity: 1,
       },
       {
-        productId: 10,
+        productId: 1,
         quantity: 2,
+        color: 'red',
+        size: 'M',
+      },
+      {
+        productId: 2,
+        quantity: 2,
+        color: 'blue',
+        size: 'L',
       },
     ],
   },
@@ -52,7 +61,8 @@ const Account: React.FC = () => {
     setEmail(email || 'Username@gmail.com');
     setUsername(username || 'Username');
 
-    // createOrder(orderData, localStorage.getItem('token') || '');
+    createOrder(orderData, localStorage.getItem('token') || '');
+    console.log('Đã gửi order');
   }, [form]);
 
   const handleChangePassword = () => {

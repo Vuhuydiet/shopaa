@@ -34,7 +34,7 @@ const ListProductShop: React.FC = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(5);
-  const [totalPage, setTotalPage] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [tableData, setTableData] = useState<DataType[]>([]);
   const [action, setAction] = useState<string>('all');
@@ -80,7 +80,7 @@ const ListProductShop: React.FC = () => {
         sessionStorage.clear();
       }
 
-      setTotalPage(data?.count);
+      setTotal(data?.count);
       await refreshDataTable(data?.items);
     };
     fetchData();
@@ -242,7 +242,7 @@ const ListProductShop: React.FC = () => {
                   setSearchValue('');
                   setCurrentPage(1);
                   refreshDataTable(data?.items);
-                  setTotalPage(data?.count);
+                  setTotal(data?.count);
                   message.info('Showing all products');
                 }}
               />
@@ -288,7 +288,7 @@ const ListProductShop: React.FC = () => {
             pagination={{
               current: currentPage,
               pageSize: pageSize,
-              total: totalPage,
+              total: total,
               onChange: async (page, size) => {
                 setCurrentPage(page);
                 setPageSize(size);

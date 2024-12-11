@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Table, Tag, Dropdown, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import { getOrderDetail, updateStatusOrder } from '../../service/orderService';
+import { IOrderDetail } from '../../interfaces/Order/IOrderDetail';
+import { OrderStatus } from '../../interfaces/Order/OrderEnums';
+import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
+import { deserializeDate } from '../../utils/date-convert';
 
 interface OrderDetail {
   productId: number;
@@ -12,76 +17,62 @@ interface OrderDetail {
   price: number;
 }
 
-interface Order {
-  orderId: number;
-  customerName: string;
-  phoneNumber: string;
-  status: string;
-  totalAmount: number;
-  createdAt: string;
-  orderDetails: OrderDetail[];
-}
+// const fetchedOrder: Order = {
+//   // orderId: Number(orderId),
+//   customerName: 'Nguyễn Văn A',
+//   phoneNumber: '0123456789',
+//   status: 'Pending',
+//   totalAmount: 200,
+//   createdAt: '2024-12-01 10:30',
+//   orderDetails: [
+//     {
+//       productId: 1,
+//       productName: 'Áo thun nam',
+//       color: 'Đỏ',
+//       size: 'M',
+//       quantity: 2,
+//       price: 50,
+//     },
+//     {
+//       productId: 2,
+//       productName: 'Quần jeans',
+//       color: 'Xanh',
+//       size: 'L',
+//       quantity: 1,
+//       price: 100,
+//     },
+//   ],
+// };
+// setOrder(fetchedOrder);
 
 const OrderShopDetail: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<IOrderDetail | null>(null);
+  const [hasChangeStatus, setHasChangeStatus] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchedOrder: Order = {
-      orderId: Number(orderId),
-      customerName: 'Nguyễn Văn A',
-      phoneNumber: '0123456789',
-      status: 'Pending',
-      totalAmount: 200,
-      createdAt: '2024-12-01 10:30',
-      orderDetails: [
-        {
-          productId: 1,
-          productName: 'Áo thun nam',
-          color: 'Đỏ',
-          size: 'M',
-          quantity: 2,
-          price: 50,
-        },
-        {
-          productId: 2,
-          productName: 'Quần jeans',
-          color: 'Xanh',
-          size: 'L',
-          quantity: 1,
-          price: 100,
-        },
-      ],
+    console.log('ORDER ID: ', orderId);
+    const fetchData = async () => {
+      const res = await getOrderDetail(Number(orderId));
+      console.log('ORDER DETAIL: ', res);
+      if (res) setOrder(res);
     };
-    setOrder(fetchedOrder);
-  }, [orderId]);
+    fetchData();
+  }, [orderId, hasChangeStatus]);
 
-  const handleStatusChange = (newStatus: string) => {
-    if (order) {
-      setOrder({
-        ...order,
-        status: newStatus,
-      });
-      message.success(`Update status successful: ${newStatus}`);
-    }
-  };
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Pending':
-        return 'orange';
-      case 'Cancelled':
-        return 'red';
-      case 'Confirmed':
-        return 'blue';
-      case 'Shipping':
-        return 'cyan';
-      case 'Delivered':
-        return 'green';
-      case 'Returned':
-        return 'magenta';
-      default:
-        return 'gray';
+  const handleStatusChange = async (
+    orderId: number,
+    newStatus: OrderStatus,
+  ) => {
+    try {
+      const res = await updateStatusOrder(orderId, newStatus);
+      if (res) {
+        message.success('Change status successfully');
+        setHasChangeStatus(!hasChangeStatus);
+      }
+    } catch (error) {
+      message.error('Change status failed');
     }
   };
 
@@ -135,9 +126,17 @@ const OrderShopDetail: React.FC = () => {
               <td
                 style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
               >
-                Customer:
+                Order ID:
               </td>
-              <td style={{ padding: '8px' }}>{order.customerName}</td>
+              <td style={{ padding: '8px' }}>{order.orderId}</td>
+            </tr>
+            <tr>
+              <td
+                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+              >
+                Customer Name:
+              </td>
+              <td style={{ padding: '8px' }}>{order.customerId}</td>
             </tr>
             <tr>
               <td
@@ -145,7 +144,15 @@ const OrderShopDetail: React.FC = () => {
               >
                 Phone:
               </td>
-              <td style={{ padding: '8px' }}>{order.phoneNumber}</td>
+              <td style={{ padding: '8px' }}>{order.customerNumber}</td>
+            </tr>
+            <tr>
+              <td
+                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+              >
+                Address:
+              </td>
+              <td style={{ padding: '8px' }}>{order.shippingAddress}</td>
             </tr>
             <tr>
               <td
@@ -163,7 +170,9 @@ const OrderShopDetail: React.FC = () => {
               >
                 Time:
               </td>
-              <td style={{ padding: '8px' }}>{order.createdAt}</td>
+              <td style={{ padding: '8px' }}>
+                {deserializeDate(order.createdAt).toLocaleString()}
+              </td>
             </tr>
             <tr>
               <td
@@ -172,19 +181,27 @@ const OrderShopDetail: React.FC = () => {
                 Status:
               </td>
               <td style={{ padding: '8px' }}>
-                {order.status === 'Pending' ? (
+                {order.status === OrderStatus.PENDING ? (
                   <Dropdown
                     menu={{
                       items: [
                         {
-                          key: 'confirm',
-                          label: 'Confirm',
-                          onClick: () => handleStatusChange('Confirmed'),
+                          key: 'CONFIRM',
+                          label: 'CONFIRM',
+                          onClick: () =>
+                            handleStatusChange(
+                              order.orderId,
+                              OrderStatus.ACCEPTED,
+                            ),
                         },
                         {
-                          key: 'cancel',
-                          label: 'Cancel',
-                          onClick: () => handleStatusChange('Cancelled'),
+                          key: 'REJECTED',
+                          label: 'REJECT',
+                          onClick: () =>
+                            handleStatusChange(
+                              order.orderId,
+                              OrderStatus.REJECTED,
+                            ),
                         },
                       ],
                     }}
@@ -195,18 +212,20 @@ const OrderShopDetail: React.FC = () => {
                         padding: 0,
                         border: 'none',
                         background: 'none',
-                        display: 'inline-block',
                         cursor: 'pointer',
+                        display: 'inline-block',
                       }}
                     >
-                      <Tag color={getStatusColor(order.status)}>
+                      <Tag color={getOrderStatusColor(order.status)}>
                         {order.status}
                       </Tag>
                       <EditOutlined style={{ marginLeft: '3px' }} />
                     </span>
                   </Dropdown>
                 ) : (
-                  <Tag color={getStatusColor(order.status)}>{order.status}</Tag>
+                  <Tag color={getOrderStatusColor(order.status)}>
+                    {order.status}
+                  </Tag>
                 )}
               </td>
             </tr>
@@ -214,12 +233,12 @@ const OrderShopDetail: React.FC = () => {
         </table>
       </div>
 
-      <Table
-        dataSource={order.orderDetails}
+      {/* <Table
+        dataSource={order.products}
         columns={columns}
         rowKey="productId"
         style={{ marginTop: '20px' }}
-      />
+      /> */}
 
       <Button
         style={{ marginTop: '20px' }}

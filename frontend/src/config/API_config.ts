@@ -25,5 +25,5 @@ export const SHOP_API_ENDPOINTS = {
 
 export const ORDER_API_ENDPOINTS = {
   ORDER: `${API_DOMAIN}api/v1/order/`,
-  ORDER_DETAIL: `${API_DOMAIN}api/v1/order/`,
+  ORDER_DETAIL: `${API_DOMAIN}api/v1/order/user/`,
 };
