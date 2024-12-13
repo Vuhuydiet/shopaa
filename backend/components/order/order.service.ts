@@ -138,7 +138,7 @@ class OrderService {
         customerNumber: productData.phone,
         shippingAddress: productData.shippingAddress,
         shippingFee: shippingFee,
-        totalAmount: totalProductCost + shippingFee,
+        totalAmount: totalProductCost,
 
         customer: { connect: { userId: userid } },
         shop: { connect: { shopOwnerId: shopId } },
@@ -320,19 +320,6 @@ class OrderService {
     });
   }
 
-  private static handleStatusTransitToCompleted(
-    orderProducts: { productId: number; quantity: number }[],
-  ) {
-    orderProducts.forEach(async ({ productId, quantity }) => {
-      await prisma.product.update({
-        where: { productId: productId },
-        data: {
-          numSoldProduct: { increment: quantity },
-        },
-      });
-    });
-  }
-
   private static async handleStatusTransitToReturned(
     orderProducts: { productId: number; quantity: number }[],
   ) {
@@ -369,9 +356,6 @@ class OrderService {
         break;
       case OrderStatus.RETURNED:
         await this.handleStatusTransitToReturned(orderProducts);
-        break;
-      case OrderStatus.COMPLETED:
-        await this.handleStatusTransitToCompleted(orderProducts);
         break;
     }
 
