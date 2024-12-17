@@ -8,7 +8,7 @@ export default {
   createReturnSlip: async (req: Request, res: Response) => {
     const returnData = matchedData(req) as any;
     const returnSlip = await ReturnService.createReturnSlip(returnData);
-    new CreatedResponse({ message: "Missing or Unreceived Return Slip created successfully", metadata: { returnSlip } }).send(res);
+    new CreatedResponse({ message: "Return Slip created successfully", metadata: { returnSlip } }).send(res);
   },
 
   getReturnSlips: async (req: Request, res: Response) => {

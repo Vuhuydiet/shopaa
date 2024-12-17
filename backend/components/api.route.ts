@@ -10,6 +10,7 @@ import orderRouter from './order/order.route';
 import transportationRouter from './order/transportation/transportation.route';
 import reportRouter from './report/report.route';
 import cartRouter from './cart/cart.route';
+import returnRouter from './return/return.route';
 
 router.use('/v1/access', accessRouter);
 router.use('/v1/user', userRouter);
@@ -20,5 +21,6 @@ router.use('/v1/order', orderRouter);
 router.use('/v1/transportation', transportationRouter);
 router.use('/v1/report', reportRouter);
 router.use('/v1/cart', cartRouter);
+router.use('/v1/return',returnRouter);
 
 export default router;
