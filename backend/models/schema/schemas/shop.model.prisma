@@ -7,6 +7,8 @@ model Shop {
   numProducts    Int @default(0)
   bankingBalance Int @default(0)
   numSoldOrders  Int @default(0)
+  numReviews     Int @default(0)
+  totalRating    Int @default(0)
 
   shopOwner UserProfile @relation(fields: [shopOwnerId], references: [userId], onDelete: Restrict)
   orders    Order[]

@@ -35,6 +35,60 @@ type OrderQueries = {
 };
 
 class OrderService {
+  static async checkOrderExists(orderId: number) {
+    const order = await prisma.order.findUnique({
+      where: { orderId: orderId },
+    });
+
+    if (!order) {
+      throw new NotFoundError('Order not found');
+    }
+
+    return order;
+  }
+
+  static async checkOrderDetailExists(orderId: number, orderDetailNumber: number) {
+    const orderDetail = await prisma.orderDetail.findUnique({
+      where: { orderId_orderDetailNumber: { orderId: orderId, orderDetailNumber: orderDetailNumber } },
+    });
+
+    if (!orderDetail) {
+      throw new NotFoundError('Order detail not found');
+    }
+
+    return orderDetail;
+  }
+
+  static async checkOrderBelongsToShop(orderId: number, shopId: number) {
+    const order = await prisma.order.findUnique({
+      where: { orderId: orderId },
+      select: { shopId: true },
+    });
+
+    if (!order) {
+      throw new NotFoundError('Order not found');
+    }
+
+    if (order.shopId !== shopId) {
+      throw new BadRequestError('Order does not belong to shop');
+    }
+  }
+
+  static async checkOrderBelongsToUser(orderId: number, userId: number) {
+    const order = await prisma.order.findUnique({
+      where: { orderId: orderId },
+      select: { customerId: true },
+    });
+
+    if (!order) {
+      throw new NotFoundError('Order not found');
+    }
+
+    if (order.customerId !== userId) {
+      throw new BadRequestError('Order does not belong to user');
+    }
+  }
+
   private static async calculateOrderValue(
     transportationProviderId: number,
     products: { quantity: number; currentPrice: number }[],
@@ -201,7 +255,7 @@ class OrderService {
         return {
           ...product,
           productName: productDetails?.productName,
-          productImageUrl: productDetails?.productImages[0].image.url,
+          productImageUrl: productDetails?.productImages[0]?.image.url,
         };
       }),
     );
@@ -283,14 +337,14 @@ class OrderService {
 
   private static async getOrderProductQuantity(orderId: number) {
     return (await prisma.$queryRaw`
-    SELECT 
-      od."productId" as "productId",
-      od."quantity" as "quantity",
-      p."quantity" as "stock"
-    FROM "OrderDetail" od
-    JOIN "Product" p ON od."productId" = p."productId"
-    WHERE od."orderId" = ${orderId}
-  `) as {
+      SELECT 
+        od."productId" as "productId",
+        od."quantity" as "quantity",
+        p."quantity" as "stock"
+      FROM "OrderDetail" od
+      JOIN "Product" p ON od."productId" = p."productId"
+      WHERE od."orderId" = ${orderId}
+    `) as {
       productId: number;
       quantity: number;
       stock: number;
