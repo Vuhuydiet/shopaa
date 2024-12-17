@@ -255,7 +255,7 @@ class OrderService {
         return {
           ...product,
           productName: productDetails?.productName,
-          productImageUrl: productDetails?.productImages[0].image.url,
+          productImageUrl: productDetails?.productImages[0]?.image.url,
         };
       }),
     );
