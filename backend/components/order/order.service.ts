@@ -217,15 +217,7 @@ class OrderService {
     const order = await prisma.order.findUnique({
       where: { orderId: orderId },
       include: {
-        orderProducts: {
-          select: {
-            productId: true,
-            quantity: true,
-            color: true,
-            size: true,
-            price: true,
-          },
-        },
+        orderProducts: true,
         customer: true,
         transportationProvider: {
           select: { providerId: true, providerName: true },
