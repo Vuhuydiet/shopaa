@@ -1,0 +1,139 @@
+import { ReturnStatus } from "@prisma/client";
+import prisma from "../../models";
+import { NotFoundError, BadRequestError } from "../../core/ErrorResponse";
+
+type ReturnSlipData = {
+  orderId: number;
+  reason: string;
+  customerId: number;
+	description: string;
+};
+
+type ReturnQuey = {
+  orderId: number;
+  status?: ReturnStatus;
+  postAfter?: Date;
+  postBefore?: Date;
+  //reason?: string;
+  sortBy?: 'createdAt';
+  order?: 'asc' | 'desc';
+  shopId?: number;
+  customerId?: number;
+  offset?: number;
+  limit?: number;
+};
+
+type UpdateReturnSlipData = {
+  status?: ReturnStatus;
+  reason?: string;
+};
+
+class ReturnService {
+  static async createReturnSlip(returnData: ReturnSlipData) {
+    const order = await prisma.order.findUnique({
+      where: { orderId: returnData.orderId },
+      include: { customer: true, shop: true },
+    });
+  
+
+    if (!order) throw new NotFoundError(`Order not found`);
+    if (!order.customer) throw new NotFoundError(`Customer not found for this order`);
+    if (!order.shop) {
+      throw new NotFoundError(`Shop not found for this order`);
+    }
+
+    
+    const reason = await prisma.returnReason.findUnique({
+      where: { categoryName: returnData.reason },
+    });
+    if (!reason) throw new NotFoundError(`Reason not found`);
+
+    const existingReturnSlip = await prisma.returnSlip.findFirst({
+      where: {
+        orderId: returnData.orderId,
+      },
+    });
+
+    if (existingReturnSlip) {
+      throw new BadRequestError(`A return slip for this order already exists`);
+    }
+
+    return await prisma.returnSlip.create({
+      data: {
+        orderId: returnData.orderId,
+        description: returnData.description, 
+        status: ReturnStatus.PENDING, 
+        reason: returnData.reason,
+      },
+    });
+  }
+
+  static async getReturnSlips(query: ReturnQuey) {
+    return await prisma.returnSlip.findMany({
+      where: {
+        orderId: query.orderId,
+        status: query.status,
+        createdAt: {
+          gte: query.postAfter,
+          lte: query.postBefore,
+        },
+        order:{shopId: query.shopId, customerId: query.customerId},
+      },
+      orderBy: query.sortBy
+        ? {
+            [query.sortBy]: query.order,
+          }
+        : undefined,
+      take: query.limit,
+      skip: query.offset,
+      include: {
+        returnCategory: true, 
+        order: true,
+      },
+    });
+  }
+
+  // get return slip by id
+  static async getReturnSlipById(returnId: number) {
+    const returnSlip = await prisma.returnSlip.findUnique({
+      where: { returnId },
+      include: {
+        returnCategory: true, 
+        order: true,
+      },
+    });
+
+    if (!returnSlip) throw new NotFoundError("Return slip not found");
+
+    return returnSlip;
+  }
+
+  // update return slip
+  static async updateReturnSlip(returnId: number, data: UpdateReturnSlipData) {
+    const returnSlip = await prisma.returnSlip.findUnique({
+      where: { returnId },
+    });
+
+    if (!returnSlip) throw new NotFoundError("Return slip not found");
+
+    return await prisma.returnSlip.update({
+      where: { returnId },
+      data,
+    });
+  }
+
+  // delete return slip
+  static async deleteReturnSlip(returnId: number) {
+    const returnSlip = await prisma.returnSlip.findUnique({
+      where: { returnId },
+    });
+
+    if (!returnSlip) throw new NotFoundError("Return slip not found");
+
+    return await prisma.returnSlip.delete({
+      where: { returnId },
+    });
+  }
+}
+
+export default ReturnService;

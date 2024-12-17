@@ -46,18 +46,26 @@ model OrderDetail {
   order Order @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
 }
 
-
 enum ReturnStatus {
+  PENDING
   ACCEPTED
-  REJECTED
+  DISMISSED
+}
+model ReturnReason {
+  categoryName String @id
+  returns ReturnSlip[]
 }
 
 model ReturnSlip {
   returnId  Int           @id @default(autoincrement())
   orderId   Int
   createdAt DateTime      @default(now())
-  status    ReturnStatus?
-  reason    String?
+  status    ReturnStatus? @default(PENDING)
+  description    String?
+  reason String?
+
 
   order Order @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
+  returnCategory ReturnReason? @relation(fields: [reason],references: [categoryName], onDelete: Cascade)
 }
+
