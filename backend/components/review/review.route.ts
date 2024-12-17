@@ -4,7 +4,7 @@ const router = express.Router();
 import passport from '../../libraries/auth/authentication.middleware';
 import auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 import reviewController from './review.controller';
 
@@ -53,7 +53,7 @@ router.delete(
   passport.authenticate('jwt', { session: false }),
   auth.authorize([Role.USER]),
 
-  body('reviewId').isInt().toInt(),
+  param('reviewId').isInt().toInt(),
   handleValidationErrors,
 
   reviewController.deleteReview
