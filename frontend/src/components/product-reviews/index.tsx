@@ -82,7 +82,7 @@ const CommentList = () => {
       <Card style={{ backgroundColor: '#FBF8F8', padding: '0.5rem' }}>
         <Flex gap={16}>
           <Flex style={{ flexDirection: 'column' }}>
-            <Typography.Title level={3} style={{ color: 'blue' }}>
+            <Typography.Title level={3}>
               {averageRate.toFixed(1)}{' '}
               <span style={{ fontSize: '0.8rem' }}>out of 5</span>
             </Typography.Title>

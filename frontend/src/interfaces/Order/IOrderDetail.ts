@@ -3,7 +3,6 @@ import { OrderStatus } from './OrderEnums';
 
 export interface IOrderDetail {
   orderId: number;
-  orderDetailNumber?: number;
   customerId: number;
   customerName: string;
   customerNumber: string;

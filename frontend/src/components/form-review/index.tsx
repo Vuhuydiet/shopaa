@@ -1,12 +1,40 @@
 import { memo, useState } from 'react';
-import { IOrderDetail } from '../../interfaces/Order/IOrderDetail';
-import { Button, Card, Flex, Rate, Space, Tooltip, Typography } from 'antd';
+import { Button, Card, Rate, Space, Tooltip, Typography, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import { capitalizeWords } from '../../utils/capitalizeWords';
+import { formatDateString } from '../../utils/formatDateString';
+import { IProductOrder } from '../../interfaces/Order/IProductOrder';
+import axios from 'axios';
+import { REVIEW_API_ENDPOINTS } from '../../config/API_config';
 
 const desc = ['Very bad', 'Bad', 'Normal', 'Good', 'Very good'];
 
-export const FormReview = memo(() => {
-  const [value, setValue] = useState(3);
+export const FormReview = memo(({ order }: { order: IProductOrder }) => {
+  const [star, setStar] = useState(5);
+  const [content, setContent] = useState('');
+
+  const handleSubmitReview = () => {
+    if (!star) {
+      message.error('Please rate the product');
+      return;
+    }
+
+    if (!content) {
+      message.error('Please write a review');
+      return;
+    }
+
+    try {
+      axios.post(REVIEW_API_ENDPOINTS.REVIEW, {
+        orderId: order?.orderId,
+        orderDetailId: order?.orderDetailNumber,
+        rating: star,
+        content: content,
+      });
+    } catch (error: any) {
+      message.error(error?.message);
+    }
+  };
 
   return (
     <Card
@@ -15,12 +43,15 @@ export const FormReview = memo(() => {
     >
       <Space direction="vertical">
         <Space direction="vertical">
-          <Typography.Text italic>Delivered on 07 Dec 2024</Typography.Text>
+          <Typography.Text italic>
+            {`${capitalizeWords(order?.status)} `} on
+            {` ${formatDateString(order?.updatedAt)}`}
+          </Typography.Text>
           <Typography.Text>Rate and review purchased product:</Typography.Text>
           <Space direction="horizontal" size={16} align="start">
             <Space>
               <img
-                src="https://res.cloudinary.com/dwkunsgly/image/upload/v1734425447/ay8aqbecxow8iy7vnuod.webp"
+                src={order?.productImageUrl}
                 alt="Product thumbnail"
                 width={100}
                 height={100}
@@ -29,8 +60,7 @@ export const FormReview = memo(() => {
             <Space direction="vertical">
               <Space direction="vertical" size={0}>
                 <Typography.Title level={4} ellipsis={{ rows: 2 }}>
-                  Chai nước rửa mặt kinh chuyên dụng - Nước Xịt Rửa Mặt Kinh
-                  Chuyên Dụng
+                  {order?.productName}
                 </Typography.Title>
                 <Space
                   direction="horizontal"
@@ -47,7 +77,7 @@ export const FormReview = memo(() => {
                     >
                       Quantity:
                     </span>
-                    10
+                    {order?.quantity}
                   </Typography.Text>
                   <Typography.Text>
                     <span
@@ -59,7 +89,7 @@ export const FormReview = memo(() => {
                     >
                       Color:
                     </span>
-                    White
+                    {order?.color}
                   </Typography.Text>
                   <Typography.Text>
                     <span
@@ -71,18 +101,18 @@ export const FormReview = memo(() => {
                     >
                       Size:
                     </span>
-                    XXL
+                    {order?.size}
                   </Typography.Text>
                 </Space>
                 <Space direction="horizontal">
                   <Rate
                     allowClear={false}
                     tooltips={desc}
-                    onChange={setValue}
-                    value={value}
+                    onChange={setStar}
+                    value={star}
                     style={{ fontSize: '2rem' }}
                   />
-                  {value ? <span>{desc[value - 1]}</span> : null}
+                  {star ? <span>{desc[star - 1]}</span> : null}
                 </Space>
               </Space>
 
@@ -136,7 +166,7 @@ export const FormReview = memo(() => {
                     What do you think of this product?
                   </Typography.Text>
                 </Tooltip>
-                <TextArea rows={5} size="large" />
+                <TextArea rows={5} size="large" value={content} />
                 <Space
                   direction="horizontal"
                   style={{
@@ -145,7 +175,9 @@ export const FormReview = memo(() => {
                     marginTop: '10px',
                   }}
                 >
-                  <Button type="primary">Submit</Button>
+                  <Button type="primary" onClick={handleSubmitReview}>
+                    Submit
+                  </Button>
                 </Space>
               </Space>
             </Space>
