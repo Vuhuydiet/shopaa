@@ -22,6 +22,8 @@ import { ReportPage } from '../pages/admin/report';
 import { AdminRoute } from '../components/admin-route';
 import { LayoutAdmin } from '../layout/admin';
 import { ProductCart } from '../pages/product-cart';
+import { FormReview } from '../components/form-review';
+import CommentsList from '../components/product-reviews';
 
 export const routes = [
   {
@@ -160,6 +162,14 @@ export const routes = [
   {
     path: '/reset-password',
     element: <ResetPassword />,
+  },
+  {
+    path: '/form-review',
+    element: <FormReview />,
+  },
+  {
+    path: '/reviews',
+    element: <CommentsList />,
   },
   {
     path: '*',
