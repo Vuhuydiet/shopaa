@@ -14,7 +14,7 @@ import transportationPermissions from './transportation/transportation.permissio
 const orderDataValidator = () => {
   return [
     body('orderData').isObject(),
-    body('phone').isMobilePhone('any'),
+    body('ordreData.phone').isMobilePhone('any'),
     body('orderData.shippingAddress').isString(),
     body('orderData.transProvider').isInt().toInt(),
     body('orderData.products').isArray(),
