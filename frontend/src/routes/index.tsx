@@ -23,8 +23,8 @@ import { AdminRoute } from '../components/admin-route';
 import { LayoutAdmin } from '../layout/admin';
 import { ProductCart } from '../pages/product-cart';
 import OrderUser from '../components/OrderUser';
-import path from 'path';
 import OrderUserDetail from '../components/OrderUser/orderDetails';
+import CheckoutPage from '../pages/Checkout';
 
 export const routes = [
   {
@@ -98,6 +98,10 @@ export const routes = [
                 element: <MyShop />,
               },
             ],
+          },
+          {
+            path: 'checkout',
+            element: <CheckoutPage />,
           },
           {
             path: 'notifications',

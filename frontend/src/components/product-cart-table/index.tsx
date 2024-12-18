@@ -1,18 +1,8 @@
-import { DeleteFilled } from '@ant-design/icons';
-import {
-  Button,
-  Col,
-  InputNumber,
-  Row,
-  Select,
-  Space,
-  Table,
-  Tooltip,
-  Typography,
-} from 'antd';
+import { Button, Col, Row, Table, Typography } from 'antd';
 import { CartContext } from '../../context/CartContext';
 import { useContext } from 'react';
 import { CART_PRODUCTS_FILTER } from '../../config/constants';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductCartTable = () => {
   const {
@@ -23,7 +13,9 @@ export const ProductCartTable = () => {
     totalPrice,
     totalItems,
     setCartParams,
+    selectedProducts,
   } = useContext(CartContext);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -58,7 +50,14 @@ export const ProductCartTable = () => {
           <Typography.Text strong style={{ color: 'red' }}>
             Total ({totalItems} items): ${totalPrice}
           </Typography.Text>
-          <Button style={{ backgroundColor: 'purple', color: 'white' }}>
+          <Button
+            style={{ backgroundColor: 'purple', color: 'white' }}
+            onClick={() => {
+              navigate('/checkout', {
+                state: { products: selectedProducts },
+              });
+            }}
+          >
             Checkout
           </Button>
         </Row>

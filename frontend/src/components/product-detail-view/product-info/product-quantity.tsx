@@ -2,7 +2,13 @@ import { Col, InputNumber, Row, Typography } from 'antd';
 import React from 'react';
 
 export const ProductQuantity = React.memo(
-  ({ quantity }: { quantity: number }) => {
+  ({
+    quantity,
+    onQuantityChange,
+  }: {
+    quantity: number;
+    onQuantityChange: (value: number) => void;
+  }) => {
     return (
       <Row style={{ marginTop: '30px', display: 'flex', alignItems: 'center' }}>
         <Col
@@ -24,6 +30,9 @@ export const ProductQuantity = React.memo(
                 onChange={(value) => {
                   if (!value) return;
                   quantity = value;
+                  if (value) {
+                    onQuantityChange(value);
+                  }
                 }}
               />
             </Col>

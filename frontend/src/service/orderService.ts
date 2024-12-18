@@ -134,3 +134,56 @@ export const getOrderDetail = async (id: number) => {
 
   return null;
 };
+
+export const getTransportationInfo = async () => {
+  try {
+    const response = await axios.get(ORDER_API_ENDPOINTS.TRANSPORTATION);
+    console.log('Response:', response);
+    if (response.data?.metadata) {
+      console.log('Transportation Providers:', response.data.metadata);
+      return response.data.metadata;
+    }
+  } catch (error) {
+    console.error('Error fetching transportation providers:', error);
+  }
+  return [];
+};
+
+export const createOrder = async (orderData: any) => {
+  try {
+    console.log('Data:', orderData);
+    const response = await axios.post(ORDER_API_ENDPOINTS.ORDER, orderData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('Response:', response);
+    if (response.status >= 200 && response.status < 300) {
+      return response.data.message;
+    } else {
+      throw new Error(`Error create order: ${response.data.message}`);
+    }
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      // Nếu lỗi đến từ Axios
+      console.error('Axios error:', error.response?.data || error.message);
+      if (error.response) {
+        // Lỗi từ phản hồi của server
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        // Không nhận được phản hồi từ server
+        console.error('Request data:', error.request);
+      } else {
+        // Lỗi khác
+        console.error('Error message:', error.message);
+      }
+    } else {
+      // Lỗi không phải Axios
+      console.error('Unexpected error:', error);
+    }
+    throw error; // Ném lại lỗi nếu cần
+  }
+};

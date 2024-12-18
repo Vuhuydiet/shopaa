@@ -23,6 +23,15 @@ interface CartContextType {
   totalPrice: number;
   totalItems: number;
   setCartParams: (params: any) => void;
+  selectedProducts: {
+    key: number;
+    id: number;
+    size: string;
+    color: string;
+    currentPrice: number;
+    quantity: number;
+    name: string;
+  }[];
 }
 
 export const CartContext = createContext<CartContextType>({
@@ -36,6 +45,7 @@ export const CartContext = createContext<CartContextType>({
   expandTable: {},
   totalPrice: 0,
   totalItems: 0,
+  selectedProducts: [],
   setCartParams: () => {},
 });
 
@@ -63,6 +73,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       color: string;
       currentPrice: number;
       quantity: number;
+      name: string;
     }[]
   >([]);
   const [selectedRowProductKeys, setSelectedRowProductKeys] = useState<
@@ -84,6 +95,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       dataIndex: 'shopName',
     },
   ];
+  console.log('selectedProducts: ', selectedProducts);
 
   const productColumns = [
     {
@@ -255,6 +267,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
               defaultValue={1}
               onChange={(value) => {
                 if (!value) return;
+                setSelectedProducts((products) => {
+                  const newProducts = [...products];
+                  const productIndex = newProducts.findIndex(
+                    (product) => product.key === record.key,
+                  );
+                  newProducts[productIndex].quantity = value;
+                  return newProducts;
+                });
 
                 setShopDataState((data: any) => {
                   const newData = [...data?.cart];
@@ -402,6 +422,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                       color: product.color,
                       currentPrice: product.currentPrice,
                       quantity: product.quantity,
+                      name: product.name,
                     };
                   });
                 });
@@ -451,6 +472,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     totalPrice: totalPrice,
     totalItems: totalItems,
     expandTable: expandTable,
+    selectedProducts: selectedProducts,
     setCartParams,
   };
 
