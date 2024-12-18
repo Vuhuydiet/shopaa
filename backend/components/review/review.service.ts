@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../core/ErrorResponse";
 import prisma from "../../models";
 import OrderService from "../order/order.service";
 import UserService from "../user/user.service";
@@ -39,21 +40,48 @@ class Review {
   }
 
   static async getReviewById(reviewId: number) {
-    return await prisma.review.findUnique({
-      where: { reviewId: reviewId }
+    const review =  await prisma.review.findUnique({
+      where: { reviewId: reviewId },
+      include: {
+        orderDetail: true,
+        order: {
+          include: {
+            customer: {
+              include: {
+                avatarImage: {
+                  select: { url: true }
+                }
+              }
+            }
+          }
+        }
+      }
     });
+    if (!review)
+      throw new NotFoundError("Review not found");
+    let reviewData: any = review;
+    let customer: any = review?.order.customer;
+    customer.avatar = customer.avatarImage?.url;
+    delete customer.avatarImage;
+    reviewData.customer = review?.order.customer;
+    delete reviewData.order;
+    return reviewData;
   }
 
   static async getReviews(query: ReviewQuery) {
     return await prisma.$queryRaw`
       SELECT 
         r.*,
-        od."productId", 
-        o."customerId", 
+        od.*,
+        u."userId" as "customerId",
+        u."fullname",
+        i."url" as "customerAvatarUrl",
         o."shopId"
       FROM "Review" r
       JOIN "OrderDetail" od ON od."orderId" = r."orderId" AND od."orderDetailNumber" = r."orderDetailNumber"
       JOIN "Order" o ON o."orderId" = r."orderId"
+      JOIN "UserProfile" u ON u."userId" = o."customerId"
+      JOIN "Image" i ON i."imageId" = u."avatarImageId"
       WHERE (${query.userId}::INTEGER IS NULL OR o."customerId" = ${query.userId}::INTEGER)
       AND (${query.shopId}::INTEGER IS NULL OR o."shopId" = ${query.shopId}::INTEGER)
       AND (${query.productId}::INTEGER IS NULL OR od."productId" = ${query.productId}::INTEGER)
