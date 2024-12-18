@@ -20,8 +20,8 @@ export default {
 
   getReviews: async (req: Request, res: Response) => {
     const query = matchedData(req) as any;
-    const reviews = await ReviewService.getReviews(query);
-    new OKResponse({ message: 'Reviews found', metadata: reviews }).send(res);
+    const { count, reviews } = await ReviewService.getReviews(query);
+    new OKResponse({ message: 'Reviews found', metadata: { reviews, count } }).send(res);
   },
 
   deleteReview: async (req: Request, res: Response) => {
