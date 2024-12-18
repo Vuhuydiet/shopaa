@@ -149,41 +149,35 @@ export const getTransportationInfo = async () => {
   return [];
 };
 
-export const createOrder = async (orderData: any) => {
+export const createOrder = async (orderData: Object) => {
   try {
-    console.log('Data:', orderData);
     const response = await axios.post(ORDER_API_ENDPOINTS.ORDER, orderData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
       },
     });
-    console.log('Response:', response);
+
     if (response.status >= 200 && response.status < 300) {
       return response.data.message;
     } else {
-      throw new Error(`Error create order: ${response.data.message}`);
+      throw new Error(response.data.message || 'Unknown error occurred');
     }
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      // Nếu lỗi đến từ Axios
-      console.error('Axios error:', error.response?.data || error.message);
       if (error.response) {
-        // Lỗi từ phản hồi của server
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
-      } else if (error.request) {
-        // Không nhận được phản hồi từ server
-        console.error('Request data:', error.request);
-      } else {
-        // Lỗi khác
-        console.error('Error message:', error.message);
+        throw new Error(
+          error.response.data.message || 'Server responded with an error',
+        );
       }
+      if (error.request) {
+        throw new Error(
+          'No response from server. Please check your network connection.',
+        );
+      }
+      throw new Error(error.message || 'Unexpected Axios error occurred');
     } else {
-      // Lỗi không phải Axios
-      console.error('Unexpected error:', error);
+      throw new Error(error.message || 'An unexpected error occurred');
     }
-    throw error; // Ném lại lỗi nếu cần
   }
 };

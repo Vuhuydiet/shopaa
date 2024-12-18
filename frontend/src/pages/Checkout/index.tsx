@@ -2,7 +2,7 @@ import { Row, Col, Button, message } from 'antd';
 import { CheckoutForm } from '../../components/Checkout/FormCheckout';
 import { OrderSummary } from '../../components/Checkout/OrderSummary';
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { createOrder } from '../../service/orderService';
 
 interface Product {
@@ -19,8 +19,8 @@ const CheckoutPage = () => {
   const formRef = useRef<any>(null);
   const [shippingFee, setShippingFee] = useState(0);
   const location = useLocation();
-  const productsData = location.state?.products || []; // Lấy danh sách sản phẩm từ state
-
+  const productsData = location.state?.products || [];
+  const navigate = useNavigate();
   useEffect(() => {
     console.log('Products in CheckoutPage:', products);
   }, [productsData]);
@@ -78,13 +78,8 @@ const CheckoutPage = () => {
     console.log('Address:', shippingAddress);
 
     const filteredProducts = products?.filter((product: any) => {
-      return (
-        product.productId != null &&
-        product.size != null &&
-        product.color != null &&
-        product.currentPrice != null &&
-        product.quantity != null &&
-        product.name != null
+      return Object.values(product).every(
+        (value) => value !== null && value !== '',
       );
     });
 
@@ -103,7 +98,7 @@ const CheckoutPage = () => {
       console.log('Response:', response);
       if (response) {
         message.success('Order created successfully');
-        // navigate('/order');
+        navigate('/user/orders');
       }
     } catch (error: any) {
       console.error('Error creating order:', error);
