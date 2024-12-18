@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Menu, Table, Tag, Button, Space, Dropdown, Spin } from 'antd';
+import { Menu, Table, Tag, Button, Space, Dropdown, Spin, Modal } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { EditOutlined } from '@ant-design/icons';
 import {
@@ -10,14 +10,14 @@ import { OrderStatus } from '../../interfaces/Order/OrderEnums';
 import { IOrder } from '../../interfaces/Order/IOrder';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
 
-const OrderShop: React.FC = () => {
+const OrderUser: React.FC = () => {
   const [currentStatus, setCurrentStatus] = useState<string[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(5);
+  const [pageSize, setPageSize] = useState<number>(7);
   const [total, setTotal] = useState<number>(0);
   const { data, isLoading } = useOrders({
-    shopId: parseInt(localStorage.getItem('userId') || '0'),
+    userId: parseInt(localStorage.getItem('userId') || '0'),
     sortBy: 'updatedAt',
     order: 'desc',
     limit: pageSize,
@@ -32,13 +32,15 @@ const OrderShop: React.FC = () => {
     } else if (filteredOrders === 'pending') {
       setCurrentStatus(['PENDING']);
     } else if (filteredOrders === 'processing') {
-      setCurrentStatus(['ACCEPTED', 'DELIVERING', 'RECEIVED', 'DELIVERED']);
+      setCurrentStatus(['ACCEPTED', 'DELIVERING', 'RECEIVED']);
+    } else if (filteredOrders === 'delivered') {
+      setCurrentStatus(['DELIVERED']);
     } else if (filteredOrders === 'completed') {
       setCurrentStatus(['COMPLETED']);
-    } else if (filteredOrders === 'rejected') {
-      setCurrentStatus(['REJECTED']);
+    } else if (filteredOrders === 'canceled') {
+      setCurrentStatus(['CANCELED']);
     } else if (filteredOrders === 'returned') {
-      setCurrentStatus(['RETURNED']);
+      setCurrentStatus(['RETURNED', 'REJECTED']);
     }
     console.log('Current Status: ', currentStatus);
   };
@@ -60,9 +62,10 @@ const OrderShop: React.FC = () => {
     { key: 'all', label: 'All' },
     { key: 'pending', label: 'Pending' },
     { key: 'processing', label: 'Processing' },
+    { key: 'delivered', label: 'Delivered' },
     { key: 'completed', label: 'Completed' },
-    { key: 'rejected', label: 'Rejected' },
-    { key: 'returned', label: 'Returned' },
+    { key: 'canceled', label: 'Canceled' },
+    { key: 'returned', label: 'Returned/Rejected' },
   ];
 
   const handleStatusChange = (orderId: number, newStatus: OrderStatus) => {
@@ -80,12 +83,6 @@ const OrderShop: React.FC = () => {
       dataIndex: 'orderId',
       key: 'orderId',
     },
-    {
-      title: 'Customer phone',
-      dataIndex: 'customerNumber',
-      key: 'customerNumber',
-    },
-
     {
       title: 'Total amount',
       dataIndex: 'totalAmount',
@@ -105,28 +102,78 @@ const OrderShop: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: OrderStatus, record: IOrder) =>
-        status === 'PENDING' ? (
+      render: (status: OrderStatus, record: IOrder) => {
+        const confirmStatusChange = (newStatus: OrderStatus) => {
+          let message: string;
+          switch (newStatus) {
+            case OrderStatus.CANCELED:
+              message = 'Are you sure you want to cancel this order?';
+              break;
+            case OrderStatus.RECEIVED:
+              message = 'Confirmation of successful receipt of goods.';
+              break;
+            case OrderStatus.COMPLETED:
+              message = 'Confirmation of completion of order.';
+              break;
+            case OrderStatus.RETURNED:
+              message = 'Are you sure you want to return this order?';
+              break;
+            default:
+              message = '';
+          }
+          Modal.confirm({
+            title: `${message}`,
+            onOk: () => {
+              console.log(`Changing order ${record.orderId} to ${newStatus}`);
+              handleStatusChange(record.orderId, newStatus);
+            },
+          });
+        };
+        const getMenuItems = () => {
+          switch (status) {
+            case OrderStatus.PENDING:
+              return [
+                {
+                  key: 'CANCELED',
+                  label: 'Cancel',
+                  onClick: () => confirmStatusChange(OrderStatus.CANCELED),
+                },
+              ];
+            case OrderStatus.DELIVERED:
+              return [
+                {
+                  key: 'RECEIVED',
+                  label: 'Mark as Received',
+                  onClick: () => confirmStatusChange(OrderStatus.RECEIVED),
+                },
+              ];
+            case OrderStatus.RECEIVED:
+              return [
+                {
+                  key: 'COMPLETED',
+                  label: 'Mark as Completed',
+                  onClick: () => confirmStatusChange(OrderStatus.COMPLETED),
+                },
+                {
+                  key: 'RETURNED',
+                  label: 'Return Order',
+                  onClick: () => confirmStatusChange(OrderStatus.RETURNED),
+                },
+              ];
+            default:
+              return [];
+          }
+        };
+
+        const menuItems = getMenuItems();
+
+        return menuItems.length > 0 ? (
           <Dropdown
             menu={{
-              items: [
-                {
-                  key: 'CONFIRM',
-                  label: 'CONFIRM',
-                  onClick: () =>
-                    handleStatusChange(record.orderId, OrderStatus.ACCEPTED),
-                },
-                {
-                  key: 'REJECTED',
-                  label: 'REJECT',
-                  onClick: () =>
-                    handleStatusChange(record.orderId, OrderStatus.REJECTED),
-                },
-              ],
+              items: menuItems,
             }}
           >
             <span
-              onClick={() => {}}
               style={{
                 padding: 0,
                 border: 'none',
@@ -144,7 +191,8 @@ const OrderShop: React.FC = () => {
           </Dropdown>
         ) : (
           <Tag color={getOrderStatusColor(status)}>{status}</Tag>
-        ),
+        );
+      },
     },
     {
       title: 'Action',
@@ -158,9 +206,7 @@ const OrderShop: React.FC = () => {
               sessionStorage.setItem('CurrentPage', currentPage.toString());
             }}
           >
-            <NavLink to={`/manager-shop/list-order/${record.orderId}`}>
-              Detail
-            </NavLink>
+            <NavLink to={`/user/orders/${record.orderId}`}>Detail</NavLink>
           </Button>
         </Space>
       ),
@@ -199,6 +245,7 @@ const OrderShop: React.FC = () => {
               pagination={{
                 current: currentPage,
                 pageSize: pageSize,
+                showLessItems: true,
                 total: total,
                 onChange: async (page, size) => {
                   setCurrentPage(page);
@@ -213,4 +260,4 @@ const OrderShop: React.FC = () => {
   );
 };
 
-export default OrderShop;
+export default OrderUser;

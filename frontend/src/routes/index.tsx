@@ -22,6 +22,9 @@ import { ReportPage } from '../pages/admin/report';
 import { AdminRoute } from '../components/admin-route';
 import { LayoutAdmin } from '../layout/admin';
 import { ProductCart } from '../pages/product-cart';
+import OrderUser from '../components/OrderUser';
+import path from 'path';
+import OrderUserDetail from '../components/OrderUser/orderDetails';
 
 export const routes = [
   {
@@ -84,7 +87,11 @@ export const routes = [
               },
               {
                 path: 'orders',
-                // element: <Order />, // Component Order
+                element: <OrderUser />,
+              },
+              {
+                path: '/user/orders/:orderId',
+                element: <OrderUserDetail />,
               },
               {
                 path: 'myshop',
