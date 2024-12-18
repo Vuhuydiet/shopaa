@@ -5,16 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { createOrder } from '../../service/orderService';
 
-interface Product {
-  id: number;
-  name: string;
-  currentPrice: number;
-  quantity: number;
-  color: string;
-  size: string;
-  key: string;
-}
-
 const CheckoutPage = () => {
   const formRef = useRef<any>(null);
   const [shippingFee, setShippingFee] = useState(0);
@@ -24,34 +14,10 @@ const CheckoutPage = () => {
   useEffect(() => {
     console.log('Products in CheckoutPage:', products);
   }, [productsData]);
-  //   const Data = {
-  //     products: [
-  //       {
-  //         name: 'Product 1',
-  //         quantity: 2,
-  //         price: 100,
-  //         color: 'Red',
-  //         size: 'M',
-  //       },
-  //       {
-  //         name: 'Product 2',
-  //         quantity: 1,
-  //         price: 200,
-  //         color: 'Blue',
-  //         size: 'L',
-  //       },
-  //     ],
-  //     shippingFee: 50,
-  //   };
+
   const handleShippingFeeChange = (fee: number) => {
     setShippingFee(fee);
   };
-
-  //   products?.forEach((product: Product) => {
-  //     if ('key' in product) {
-  //       delete product.key;
-  //     }
-  //   });
 
   const products = productsData?.map((product: any) => ({
     productId: product.id,
@@ -75,11 +41,11 @@ const CheckoutPage = () => {
       formValues.city +
       ', ' +
       formValues.country;
-    console.log('Address:', shippingAddress);
-
-    const filteredProducts = products?.filter((product: any) => {
-      return Object.values(product).every(
-        (value) => value !== null && value !== '',
+    const filteredProducts = products?.map((product: any) => {
+      return Object.fromEntries(
+        Object.entries(product).filter(
+          ([_, value]) => value !== null && value !== '',
+        ),
       );
     });
 
