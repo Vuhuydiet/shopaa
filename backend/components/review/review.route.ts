@@ -4,7 +4,7 @@ const router = express.Router();
 import passport from '../../libraries/auth/authentication.middleware';
 import auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 import reviewController from './review.controller';
 
@@ -25,7 +25,7 @@ router.post(
 router.get(
   '/:reviewId',
 
-  body('reviewId').isInt().toInt(),
+  param('reviewId').isInt().toInt(),
   handleValidationErrors,
 
   reviewController.getReviewById
@@ -34,15 +34,15 @@ router.get(
 router.get(
   '/',
 
-  body('orderId').optional().isInt().toInt(),
-  body('userId').optional().isInt().toInt(),
-  body('shopId').optional().isInt().toInt(),
-  body('productId').optional().isInt().toInt(),
-  body('rating').optional().isInt({ min: 1, max: 5 }).toInt(),
-  body('offset').optional().isInt().toInt(),
-  body('limit').optional().isInt().toInt(),
-  body('sortBy').optional().isString().isIn(['createdAt']),
-  body('order').optional().isString().isIn(['asc', 'desc']),
+  query('orderId').optional().isInt().toInt(),
+  query('userId').optional().isInt().toInt(),
+  query('shopId').optional().isInt().toInt(),
+  query('productId').optional().isInt().toInt(),
+  query('rating').optional().isInt({ min: 1, max: 5 }).toInt(),
+  query('offset').optional().isInt().toInt(),
+  query('limit').optional().isInt().toInt(),
+  query('sortBy').optional().isString().isIn(['createdAt']),
+  query('order').optional().isString().isIn(['asc', 'desc']),
   handleValidationErrors,
 
   reviewController.getReviews
