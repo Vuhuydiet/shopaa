@@ -14,12 +14,16 @@ const cleanParams = (params: IQueryOrder): IQueryOrder => {
 
 export const useOrders = (params: IQueryOrder) => {
   const filteredParams = cleanParams(params);
-  return useQuery({
+  const queryResult = useQuery({
     queryKey: ['orders', filteredParams],
     queryFn: () => getOrders(filteredParams),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
+  return {
+    ...queryResult,
+    refetch: queryResult.refetch,
+  };
 };
 
 export const useUpdateOrderStatus = () => {

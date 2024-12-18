@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Table, Tag, Dropdown, message, Modal } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Button, Table, Tag, Dropdown, message, Modal, Spin } from 'antd';
+import {
+  EditOutlined,
+  RightCircleOutlined,
+  ShopOutlined,
+} from '@ant-design/icons';
 import { getOrderDetail, updateStatusOrder } from '../../service/orderService';
 import { IOrderDetail } from '../../interfaces/Order/IOrderDetail';
 import { OrderStatus } from '../../interfaces/Order/OrderEnums';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
 import { deserializeDate } from '../../utils/date-convert';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
+import { NavLink } from 'react-router-dom';
+import { useOrders } from '../../service/api/order/useOrders';
 
 interface OrderDetail {
   productId: number;
@@ -23,12 +29,11 @@ const OrderUserDetail: React.FC = () => {
   const [order, setOrder] = useState<IOrderDetail | null>(null);
   const [hasChangeStatus, setHasChangeStatus] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { refetch } = useOrders({ status: [] });
 
   useEffect(() => {
-    console.log('ORDER ID: ', orderId);
     const fetchData = async () => {
       const res = await getOrderDetail(Number(orderId));
-      console.log('ORDER DETAIL UI : ', res);
       if (res) setOrder(res);
     };
     fetchData();
@@ -40,9 +45,9 @@ const OrderUserDetail: React.FC = () => {
   ) => {
     try {
       const res = await updateStatusOrder(orderId, newStatus);
-      console.log('RES: ', res);
       if (res) {
         message.success('Change status successfully');
+        refetch();
         setHasChangeStatus(!hasChangeStatus);
       }
     } catch (error: any) {
@@ -83,14 +88,9 @@ const OrderUserDetail: React.FC = () => {
       case OrderStatus.PENDING:
         return [
           {
-            key: 'CONFIRM',
-            label: 'Confirm',
-            onClick: () => confirmStatusChange(orderId, OrderStatus.ACCEPTED),
-          },
-          {
-            key: 'REJECTED',
-            label: 'Reject',
-            onClick: () => confirmStatusChange(orderId, OrderStatus.REJECTED),
+            key: 'CANCELED',
+            label: 'Cancel Order',
+            onClick: () => confirmStatusChange(orderId, OrderStatus.CANCELED),
           },
         ];
       case OrderStatus.DELIVERED:
@@ -139,14 +139,14 @@ const OrderUserDetail: React.FC = () => {
       key: 'productName',
     },
     {
-      title: 'Colors',
-      dataIndex: 'color',
-      key: 'color',
-    },
-    {
-      title: 'Sizes',
-      dataIndex: 'size',
-      key: 'size',
+      title: 'Type',
+      key: 'type',
+      render: (_: any, record: IProductOrder) => (
+        <div>
+          {record.color && <>Color: {record.color}</>}
+          {record.size && <>Size: {record.size}</>}
+        </div>
+      ),
     },
     {
       title: 'Quantity',
@@ -165,137 +165,189 @@ const OrderUserDetail: React.FC = () => {
       render: (_: any, record: OrderDetail) =>
         `$${(record.price * record.quantity).toFixed(2)}`,
     },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_: any, record: IProductOrder) => {
+        if (record.status === 'COMPLETED') {
+          return (
+            <button
+              // onClick={() => handleReview(record)}
+              style={{
+                background: '#4CAF50',
+                color: '#fff',
+                border: 'none',
+                padding: '5px 10px',
+                cursor: 'pointer',
+              }}
+            >
+              Review
+            </button>
+          );
+        }
+        return (
+          <Button type="default">
+            <NavLink to={`/product-detail/${record.productId}`}>View</NavLink>
+          </Button>
+        );
+      },
+    },
   ];
 
   if (!order) {
-    return <div>Loading...</div>;
+    return (
+      <Spin
+        spinning={!order}
+        style={{
+          width: '100%',
+          height: '400px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        tip="Loading order detail ..."
+      />
+    );
   }
 
   const menuItems = getMenuItems(order?.status, order.orderId);
 
   return (
-    <div style={{ padding: '50px', color: 'black' }}>
-      <h1>Order detail {order.orderId}</h1>
-      <hr />
-      <div style={{ marginTop: '40px' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <tbody>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
-                Order ID:
-              </td>
-              <td style={{ padding: '8px' }}>{order.orderId}</td>
-            </tr>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
-                Name buyer:
-              </td>
-              <td style={{ padding: '8px' }}>{order.customerName}</td>
-            </tr>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
-                Phone:
-              </td>
-              <td style={{ padding: '8px' }}>{order.customerNumber}</td>
-            </tr>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
-                Address:
-              </td>
-              <td style={{ padding: '8px' }}>{order.shippingAddress}</td>
-            </tr>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
-                Shipping fee:
-              </td>
-              <td style={{ padding: '8px' }}>$ {order.shippingFee}</td>
-            </tr>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
-                Total amount:
-              </td>
-              <td style={{ padding: '8px' }}>
-                $ {order.totalAmount.toFixed(2)}
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
-                Time:
-              </td>
-              <td style={{ padding: '8px' }}>
-                {deserializeDate(order.createdAt).toLocaleString()}
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
-              >
-                Status:
-              </td>
-              <td style={{ padding: '8px' }}>
-                {menuItems.length > 0 ? (
-                  <Dropdown
-                    menu={{
-                      items: menuItems,
-                    }}
-                  >
-                    <span
-                      style={{
-                        padding: 0,
-                        border: 'none',
-                        background: 'none',
-                        cursor: 'pointer',
-                        display: 'inline-block',
+    <Spin spinning={!order} tip="Loading...">
+      <div style={{ padding: '50px', color: 'black' }}>
+        <h1>Order detail {order.orderId}</h1>
+        <hr />
+        <div style={{ marginTop: '40px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <tbody>
+              <tr>
+                <td
+                  style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+                >
+                  Order ID:
+                </td>
+                <td style={{ padding: '8px' }}>{order.orderId}</td>
+              </tr>
+              <tr>
+                <td
+                  style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+                >
+                  Name buyer:
+                </td>
+                <td style={{ padding: '8px' }}>{order.customerName}</td>
+              </tr>
+              <tr>
+                <td
+                  style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+                >
+                  Phone:
+                </td>
+                <td style={{ padding: '8px' }}>{order.customerNumber}</td>
+              </tr>
+              <tr>
+                <td
+                  style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+                >
+                  Address:
+                </td>
+                <td style={{ padding: '8px' }}>{order.shippingAddress}</td>
+              </tr>
+              <tr>
+                <td
+                  style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+                >
+                  Shipping fee:
+                </td>
+                <td style={{ padding: '8px' }}>$ {order.shippingFee}</td>
+              </tr>
+              <tr>
+                <td
+                  style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+                >
+                  Total amount:
+                </td>
+                <td style={{ padding: '8px', fontWeight: 'bold' }}>
+                  $ {order.totalAmount.toFixed(2)}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+                >
+                  Time:
+                </td>
+                <td style={{ padding: '8px' }}>
+                  {deserializeDate(order.createdAt).toLocaleString()}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style={{ padding: '8px', fontWeight: 'bold', width: '150px' }}
+                >
+                  Status:
+                </td>
+                <td style={{ padding: '8px' }}>
+                  {menuItems.length > 0 ? (
+                    <Dropdown
+                      menu={{
+                        items: menuItems,
                       }}
                     >
-                      <Tag color={getOrderStatusColor(order.status)}>
-                        {order.status}
-                      </Tag>
-                      <EditOutlined style={{ marginLeft: '3px' }} />
-                    </span>
-                  </Dropdown>
-                ) : (
-                  <Tag color={getOrderStatusColor(order.status)}>
-                    {order.status}
-                  </Tag>
-                )}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                      <span
+                        style={{
+                          padding: 0,
+                          border: 'none',
+                          background: 'none',
+                          cursor: 'pointer',
+                          display: 'inline-block',
+                        }}
+                      >
+                        <Tag color={getOrderStatusColor(order.status)}>
+                          {order.status}
+                        </Tag>
+                        <EditOutlined style={{ marginLeft: '3px' }} />
+                      </span>
+                    </Dropdown>
+                  ) : (
+                    <Tag color={getOrderStatusColor(order.status)}>
+                      {order.status}
+                    </Tag>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style={{ marginTop: '40px' }}>
+          <ShopOutlined
+            style={{ fontSize: '20px', marginRight: '10px', color: 'orange' }}
+          />
+          <NavLink to={`/shop/${order.shopId}`} style={{ fontSize: '1.1rem' }}>
+            {order.shopName}
+            <RightCircleOutlined
+              style={{ marginLeft: '5px', color: 'purple' }}
+            />
+          </NavLink>
+        </div>
+        <Table
+          dataSource={order.orderProducts}
+          columns={columns}
+          rowKey="productId"
+          style={{ marginTop: '20px' }}
+          onRow={(record) => ({
+            onClick: () => navigate(`/product-detail/${record.productId}`),
+          })}
+        />
+
+        <Button
+          style={{ marginTop: '20px' }}
+          onClick={() => navigate('/user/orders')}
+        >
+          Back
+        </Button>
       </div>
-
-      <Table
-        dataSource={order.orderProducts}
-        columns={columns}
-        rowKey="productId"
-        style={{ marginTop: '20px' }}
-        onRow={(record) => ({
-          onClick: () => navigate(`/product-detail/${record.productId}`),
-        })}
-      />
-
-      <Button
-        style={{ marginTop: '20px' }}
-        onClick={() => navigate('/user/orders')}
-      >
-        Back
-      </Button>
-    </div>
+    </Spin>
   );
 };
 

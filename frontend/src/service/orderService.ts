@@ -13,7 +13,7 @@ export const updateStatusOrder = async (
   try {
     const response = await axios.patch(
       `${ORDER_API_ENDPOINTS.ORDER}${orderId}`,
-      { status }, // Truyền đối tượng với status
+      { status },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -32,7 +32,6 @@ export const updateStatusOrder = async (
 };
 
 export const getOrders = async (params: IQueryOrder = { limit: 10 }) => {
-  console.log('Params : ', params);
   try {
     const response = await axios.get(ORDER_API_ENDPOINTS.ORDER, {
       params,
@@ -51,8 +50,6 @@ export const getOrders = async (params: IQueryOrder = { limit: 10 }) => {
             );
           }
         });
-        console.log('Serialized Params join: ', serializedParams.join('&'));
-        // Kết hợp tất cả thành chuỗi query string
         return serializedParams.join('&');
       },
       headers: {
@@ -97,6 +94,7 @@ export const getOrderDetail = async (id: number) => {
       },
     );
     if (response.data?.metadata?.order) {
+      console.log('Order Detail == service:', response.data.metadata.order);
       const order = response.data.metadata?.order;
       const orderDetail: IOrderDetail = {
         orderId: order?.orderId,
@@ -104,6 +102,7 @@ export const getOrderDetail = async (id: number) => {
         customerName: order?.customer?.fullname,
         customerNumber: order?.customerNumber,
         shopId: order?.shopId,
+        shopName: order?.shop?.shopName,
         shippingAddress: order?.shippingAddress,
         status: order?.status,
         createdAt: order?.createdAt,
@@ -112,6 +111,8 @@ export const getOrderDetail = async (id: number) => {
         totalAmount: order?.totalAmount,
         orderProducts: order?.orderProducts.map((product: IProductOrder) => {
           return {
+            orderId: order?.orderId,
+            orderDetailNumber: order?.orderDetailNumber,
             productId: product?.productId,
             productName: product?.productName,
             productImageUrl: product?.productImageUrl,
@@ -119,6 +120,8 @@ export const getOrderDetail = async (id: number) => {
             price: product?.price,
             color: product?.color,
             size: product?.size,
+            status: order?.status,
+            updatedAt: order?.updatedAt,
           };
         }),
         transportationProvider: {
@@ -138,9 +141,7 @@ export const getOrderDetail = async (id: number) => {
 export const getTransportationInfo = async () => {
   try {
     const response = await axios.get(ORDER_API_ENDPOINTS.TRANSPORTATION);
-    console.log('Response:', response);
     if (response.data?.metadata) {
-      console.log('Transportation Providers:', response.data.metadata);
       return response.data.metadata;
     }
   } catch (error) {

@@ -208,6 +208,11 @@ const OrderUser: React.FC = () => {
           >
             <NavLink to={`/user/orders/${record.orderId}`}>Detail</NavLink>
           </Button>
+          {record.status === OrderStatus.COMPLETED ? (
+            <Button type="link">
+              <NavLink to={`/user/orders/${record.orderId}`}>Review</NavLink>
+            </Button>
+          ) : null}
         </Space>
       ),
     },

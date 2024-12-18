@@ -95,8 +95,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       dataIndex: 'shopName',
     },
   ];
-  console.log('selectedProducts: ', selectedProducts);
-
   const productColumns = [
     {
       key: 'image',

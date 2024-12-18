@@ -9,6 +9,7 @@ export interface IOrderDetail {
   shippingAddress: string;
   shippingFee: number;
   shopId: number;
+  shopName: string;
   status: OrderStatus;
   totalAmount: number;
   createdAt: string;

@@ -160,7 +160,7 @@ class OrderService {
   }
 
   static async getOrderById(orderId: number) {
-    const order = await prisma.order.findUnique({
+    let order: any = await prisma.order.findUnique({
       where: { orderId: orderId },
       include: {
         orderProducts: {
@@ -173,18 +173,27 @@ class OrderService {
           },
         },
         customer: true,
+        shop: {
+          select: { 
+            shopOwnerId: true, 
+            shopName: true,
+            shopOwner: { select: { avatarImage: true } }
+          },
+        },
         transportationProvider: {
           select: { providerId: true, providerName: true },
         },
       },
     });
+    order.shop.avatarUrl = order.shop.shopOwner.avatarImage.url;
+    delete order.shop.shopOwner;
 
     if (!order) {
       throw new NotFoundError('Order not found');
     }
 
     const orderWithDetails = await Promise.all(
-      order.orderProducts.map(async (product) => {
+      order.orderProducts.map(async (product: any) => {
         const productDetails = await prisma.product.findUnique({
           where: { productId: product.productId },
           select: {
