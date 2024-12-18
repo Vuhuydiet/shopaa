@@ -1,4 +1,4 @@
-import { Carousel, Col, Row } from 'antd';
+import { Image, Carousel, Col, Row, Card } from 'antd';
 import { CustomPrevArrow } from './custom-prev-arrow';
 import { CustomNextArrow } from './custom-next-arrow';
 import { chunkArray } from '../../../utils/chunk-array';
@@ -20,45 +20,46 @@ export const ProductImage = () => {
 
   return (
     <Col xs={24} sm={24} md={8}>
-      <div>
-        <img
+      <Card style={{ padding: '10px', border: 'none', width: '100%' }}>
+        <Image
           src={image}
           alt="product image"
           style={{
             width: '100%',
             height: '350px',
             objectFit: 'cover',
+            marginBottom: '10px',
           }}
         />
-      </div>
 
-      <Carousel
-        arrows={true}
-        infinite={true}
-        prevArrow={product?.images?.length ? <CustomPrevArrow /> : <></>}
-        nextArrow={product?.images?.length ? <CustomNextArrow /> : <></>}
-      >
-        {chunkArray(product?.images, 4).map((chunk: any, index: number) => {
-          return (
-            <div key={index}>
-              <Row gutter={[8, 8]} justify="start">
-                {chunk?.map((img: any, ind: number) => {
-                  return (
-                    <Col key={ind} xs={6}>
-                      <img
-                        src={img?.url}
-                        alt="product image"
-                        style={{ width: '100%', objectFit: 'contain' }}
-                        onClick={() => setImage(img?.url)}
-                      />
-                    </Col>
-                  );
-                })}
-              </Row>
-            </div>
-          );
-        })}
-      </Carousel>
+        <Carousel
+          arrows={true}
+          infinite={true}
+          prevArrow={product?.images?.length ? <CustomPrevArrow /> : <></>}
+          nextArrow={product?.images?.length ? <CustomNextArrow /> : <></>}
+        >
+          {chunkArray(product?.images, 4).map((chunk: any, index: number) => {
+            return (
+              <div key={index}>
+                <Row gutter={[4, 4]} justify="start">
+                  {chunk?.map((img: any, ind: number) => {
+                    return (
+                      <Col key={ind} xs={6}>
+                        <Image
+                          src={img?.url}
+                          alt="product image"
+                          style={{ width: '100%', objectFit: 'contain' }}
+                          onClick={() => setImage(img?.url)}
+                        />
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </div>
+            );
+          })}
+        </Carousel>
+      </Card>
     </Col>
   );
 };

@@ -23,7 +23,7 @@ export const ProductColor = React.memo(
             alignItems: 'center',
           }}
         >
-          <Typography.Text>Color</Typography.Text>
+          <Typography.Text strong>Color</Typography.Text>
         </Col>
         <Col xs={24} sm={20}>
           <Row gutter={[16, 8]} wrap>

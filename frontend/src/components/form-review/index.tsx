@@ -166,7 +166,12 @@ export const FormReview = memo(({ order }: { order: IProductOrder }) => {
                     What do you think of this product?
                   </Typography.Text>
                 </Tooltip>
-                <TextArea rows={5} size="large" value={content} />
+                <TextArea
+                  rows={5}
+                  size="large"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                />
                 <Space
                   direction="horizontal"
                   style={{

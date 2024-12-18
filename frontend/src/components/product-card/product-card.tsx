@@ -15,7 +15,10 @@ export const ProductCard = memo((product: IProductCard) => {
 
   return (
     <Card
-      style={{ maxWidth: '230px', margin: 'auto' }}
+      style={{
+        maxWidth: '230px',
+        margin: 'auto',
+      }}
       hoverable
       onClick={handleClickCard}
       className="product-card"

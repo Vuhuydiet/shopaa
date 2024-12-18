@@ -21,12 +21,19 @@ async function fetchShopDetail(id: string | undefined) {
   try {
     if (data?.metadata?.shop) {
       const shop = data.metadata.shop;
-      return {
+      const result = {
         shopOwnerId: shop.shopOwnerId,
         name: shop.shopName,
         description: shop.shopDescription,
         address: shop.address,
+        numProducts: shop.numProducts,
+        numSoldOrders: shop.numSoldOrders,
+        numReviews: shop.numReviews,
+        totalRating: shop.totalRating,
       } as IShop;
+
+      console.log(result);
+      return result;
     }
   } catch (error) {
     console.log(error);

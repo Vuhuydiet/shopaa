@@ -23,7 +23,7 @@ export const ProductSize = memo(
             alignItems: 'center',
           }}
         >
-          <Typography.Text>Size</Typography.Text>
+          <Typography.Text strong>Size</Typography.Text>
         </Col>
         <Col xs={24} sm={20}>
           <Row gutter={[16, 8]} wrap>

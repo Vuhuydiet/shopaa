@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   List,
   Avatar,
@@ -8,150 +8,134 @@ import {
   Typography,
   Button,
   Flex,
+  Spin,
 } from 'antd';
+import { useReviews } from '../../service/api/useReviews';
+import { formatDateString } from '../../utils/formatDateString';
+import { IFilterReview } from '../../interfaces/IFilterReview';
+import { IProduct } from '../../interfaces/IProduct';
 
-const commentsData = [
-  {
-    id: 1,
-    username: 'ktov0gjad3',
-    date: '2023-01-31 14:13',
-    rating: 5,
-    color: 'Bạch kim',
-    size: 'XL',
-    correct: 'Đúng',
-    content:
-      'Sản phẩm tuyệt vời bóng loáng, giao hàng nhanh, đặt hôm sau giao tới tận tay.',
-    images: [
-      'http://ts1.mm.bing.net/th?id=OIP.jQvFuRlmVesA7K6ArjfyrAHaH9&pid=15.1', // Replace with actual image URLs
-      'http://ts1.mm.bing.net/th?id=OIP.jQvFuRlmVesA7K6ArjfyrAHaH9&pid=15.1',
-    ],
-  },
-  {
-    id: 2,
-    username: 'user123',
-    date: '2023-02-01 10:00',
-    rating: 4,
-    color: 'Vàng',
-    size: 'XL',
-    correct: 'Đúng',
-    content: 'Hàng đẹp nhưng hơi lớn so với tay mình.',
-    images: [
-      'http://ts1.mm.bing.net/th?id=OIP.jQvFuRlmVesA7K6ArjfyrAHaH9&pid=15.1',
-    ],
-  },
-];
+const PAGE_SIZE = 5;
 
-const PAGE_SIZE = 2;
-
-const CommentList = () => {
+const CommentList = ({ product }: { product: IProduct }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [rateFilter, setRateFilter] = useState(0);
-  const [starFilters, setStarFilters] = useState([1, 2, 3, 4, 5]);
+  const [filter, setFilter] = useState<IFilterReview>({
+    limit: PAGE_SIZE,
+    sortBy: 'createdAt',
+    order: 'desc',
+    productId: product.id,
+  });
 
-  const averageRate =
-    commentsData.reduce((sum: any, comment: any) => sum + comment.rating, 0) /
-    commentsData.length;
+  const { data: commentsData, isLoading } = useReviews(filter);
 
-  const handleRateFilterChange = (value: any) => {
-    setRateFilter(value);
+  const handleRateFilterChange = (value: number | undefined) => {
+    console.log(value);
+
+    setFilter((prev) => ({
+      ...prev,
+      rating: value,
+    }));
   };
 
-  const handleStarFilterChange = (checkedValues: any) => {
-    setStarFilters(checkedValues);
+  const onPageChange = (e: any) => {
+    setCurrentPage(e.target.value);
+    setFilter((prev) => ({
+      ...prev,
+      offset: (e.target.value - 1) * PAGE_SIZE,
+    }));
   };
 
-  const filteredComments = commentsData.filter(
-    (comment) =>
-      comment.rating >= rateFilter && starFilters.includes(comment.rating),
-  );
+  const averageRate = useMemo((): number => {
+    return product.numReviews
+      ? Number((product.totalRating / product.numReviews).toFixed(1))
+      : 0;
+  }, [product]);
 
-  const paginatedComments = commentsData.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
-
-  const onPageChange = (page: any) => {
-    setCurrentPage(page);
-  };
+  if (isLoading) {
+    return (
+      <Spin
+        style={{
+          margin: '100px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      />
+    );
+  }
 
   return (
     <Card
       title="Review Products"
-      style={{ maxWidth: 800, margin: 'auto', padding: '1rem' }}
+      style={{ maxWidth: 1200, margin: '20px auto', padding: '1rem' }}
     >
       <Card style={{ backgroundColor: '#FBF8F8', padding: '0.5rem' }}>
         <Flex gap={16}>
           <Flex style={{ flexDirection: 'column' }}>
             <Typography.Title level={3}>
-              {averageRate.toFixed(1)}{' '}
+              {averageRate}
               <span style={{ fontSize: '0.8rem' }}>out of 5</span>
             </Typography.Title>
-            <Rate
-              // value={rateFilter}
-              defaultValue={4.5}
-              disabled
-              allowHalf
-              onChange={handleRateFilterChange}
-            />
+            <Rate defaultValue={averageRate} disabled allowHalf />
           </Flex>
           <Flex wrap="wrap" gap={12}>
             <Button
               type="primary"
               style={{
-                backgroundColor: rateFilter === 0 ? 'blue' : '#ACABAB',
+                backgroundColor: !filter.rating ? 'blue' : '#ACABAB',
                 width: '80px',
               }}
-              onClick={() => setRateFilter(0)}
+              onClick={() => handleRateFilterChange(undefined)}
             >
               All
             </Button>
             <Button
               type="primary"
               style={{
-                backgroundColor: rateFilter === 5 ? 'blue' : '#ACABAB',
+                backgroundColor: filter.rating === 5 ? 'blue' : '#ACABAB',
                 width: '80px',
               }}
-              onClick={() => setRateFilter(5)}
+              onClick={() => handleRateFilterChange(5)}
             >
               5
             </Button>
             <Button
               type="primary"
               style={{
-                backgroundColor: rateFilter === 4 ? 'blue' : '#ACABAB',
+                backgroundColor: filter.rating === 4 ? 'blue' : '#ACABAB',
                 width: '80px',
               }}
-              onClick={() => setRateFilter(4)}
+              onClick={() => handleRateFilterChange(4)}
             >
               4
             </Button>
             <Button
               type="primary"
               style={{
-                backgroundColor: rateFilter === 3 ? 'blue' : '#ACABAB',
+                backgroundColor: filter.rating === 3 ? 'blue' : '#ACABAB',
                 width: '80px',
               }}
-              onClick={() => setRateFilter(3)}
+              onClick={() => handleRateFilterChange(3)}
             >
               3
             </Button>
             <Button
               type="primary"
               style={{
-                backgroundColor: rateFilter === 2 ? 'blue' : '#ACABAB',
+                backgroundColor: filter.rating === 2 ? 'blue' : '#ACABAB',
                 width: '80px',
               }}
-              onClick={() => setRateFilter(2)}
+              onClick={() => handleRateFilterChange(2)}
             >
               2
             </Button>
             <Button
               type="primary"
               style={{
-                backgroundColor: rateFilter === 1 ? 'blue' : '#ACABAB',
+                backgroundColor: filter.rating === 1 ? 'blue' : '#ACABAB',
                 width: '80px',
               }}
-              onClick={() => setRateFilter(1)}
+              onClick={() => handleRateFilterChange(1)}
             >
               1
             </Button>
@@ -160,25 +144,28 @@ const CommentList = () => {
       </Card>
       <List
         itemLayout="vertical"
-        dataSource={paginatedComments}
+        dataSource={commentsData}
         renderItem={(comment) => (
-          <List.Item key={comment.id}>
+          <List.Item key={comment.reviewId}>
             <List.Item.Meta
               avatar={
                 <Avatar
                   icon={
                     <img
-                      src="https://res.cloudinary.com/dwkunsgly/image/upload/v1734454130/wuaksskoistfbukfjap6.png"
+                      src={
+                        comment.customerAvatar ??
+                        'https://res.cloudinary.com/dwkunsgly/image/upload/v1734524362/tfnsj3lungllyymy3u0t.jpg'
+                      }
                       width={200}
                       height={200}
-                      alt="avatar"
+                      alt={comment.customerName}
                     />
                   }
                 />
               }
               title={
                 <>
-                  {comment.username}
+                  {comment.customerName}
                   <span
                     style={{
                       marginLeft: '0.5rem',
@@ -186,7 +173,7 @@ const CommentList = () => {
                       color: '#999',
                     }}
                   >
-                    {comment.date}
+                    {formatDateString(comment.createdAt)}
                   </span>
                 </>
               }
@@ -199,7 +186,7 @@ const CommentList = () => {
                 </>
               }
             />
-            <p>{comment.content}</p>
+            <p>{comment.reviewContent}</p>
           </List.Item>
         )}
       />
@@ -207,7 +194,7 @@ const CommentList = () => {
       <Pagination
         current={currentPage}
         pageSize={PAGE_SIZE}
-        total={commentsData.length}
+        total={commentsData?.length ?? 10}
         onChange={onPageChange}
         style={{ textAlign: 'center', marginTop: '20px' }}
       />

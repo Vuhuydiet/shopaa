@@ -61,6 +61,7 @@ export const useReports = (params: IReportParams) => {
               : null,
           };
 
+          console.log(temp);
           return temp;
         },
       );

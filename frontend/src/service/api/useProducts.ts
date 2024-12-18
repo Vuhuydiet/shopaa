@@ -36,6 +36,8 @@ async function getProducts(params: IFilterProduct = { limit: 24 }) {
             quantity: product?.quantity,
             sellerId: product?.sellerId,
             soldCount: product?.numSoldProduct,
+            numReviews: product?.numReviews,
+            totalRating: product?.totalRating,
             material: product?.material,
             origin: product?.origin,
             colors: product?.colors,
