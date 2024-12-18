@@ -8,7 +8,7 @@ export function AutoLogout() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    // console.log('token:', token);
+    console.log('token:', token);
 
     try {
       const decoded = jwtDecode(token);
