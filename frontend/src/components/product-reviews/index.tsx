@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react';
 import {
   List,
   Avatar,
@@ -12,44 +11,18 @@ import {
 } from 'antd';
 import { useReviews } from '../../service/api/useReviews';
 import { formatDateString } from '../../utils/formatDateString';
-import { IFilterReview } from '../../interfaces/IFilterReview';
 import { IProduct } from '../../interfaces/IProduct';
-
-const PAGE_SIZE = 5;
+import { REVIEWS_FILTER } from '../../config/constants';
 
 const CommentList = ({ product }: { product: IProduct }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState<IFilterReview>({
-    limit: PAGE_SIZE,
-    sortBy: 'createdAt',
-    order: 'desc',
-    productId: product.id,
-  });
-
-  const { data: commentsData, isLoading } = useReviews(filter);
-
-  const handleRateFilterChange = (value: number | undefined) => {
-    console.log(value);
-
-    setFilter((prev) => ({
-      ...prev,
-      rating: value,
-    }));
-  };
-
-  const onPageChange = (e: any) => {
-    setCurrentPage(e.target.value);
-    setFilter((prev) => ({
-      ...prev,
-      offset: (e.target.value - 1) * PAGE_SIZE,
-    }));
-  };
-
-  const averageRate = useMemo((): number => {
-    return product.numReviews
-      ? Number((product.totalRating / product.numReviews).toFixed(1))
-      : 0;
-  }, [product]);
+  const {
+    averageRate,
+    currentPage,
+    filter,
+    onPageChange,
+    handleRateFilterChange,
+    query: { data: commentsData, isLoading },
+  } = useReviews(product);
 
   if (isLoading) {
     return (
@@ -74,7 +47,9 @@ const CommentList = ({ product }: { product: IProduct }) => {
           <Flex style={{ flexDirection: 'column' }}>
             <Typography.Title level={3}>
               {averageRate}
-              <span style={{ fontSize: '0.8rem' }}>out of 5</span>
+              <span style={{ fontSize: '0.8rem', marginLeft: '4px' }}>
+                out of 5
+              </span>
             </Typography.Title>
             <Rate defaultValue={averageRate} disabled allowHalf />
           </Flex>
@@ -144,7 +119,7 @@ const CommentList = ({ product }: { product: IProduct }) => {
       </Card>
       <List
         itemLayout="vertical"
-        dataSource={commentsData}
+        dataSource={commentsData?.reviews}
         renderItem={(comment) => (
           <List.Item key={comment.reviewId}>
             <List.Item.Meta
@@ -193,8 +168,8 @@ const CommentList = ({ product }: { product: IProduct }) => {
 
       <Pagination
         current={currentPage}
-        pageSize={PAGE_SIZE}
-        total={commentsData?.length ?? 10}
+        pageSize={REVIEWS_FILTER.ITEMS_PER_PAGE}
+        total={commentsData?.count}
         onChange={onPageChange}
         style={{ textAlign: 'center', marginTop: '20px' }}
       />

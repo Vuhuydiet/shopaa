@@ -1,49 +1,14 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { Button, Card, Rate, Space, Tooltip, Typography, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { capitalizeWords } from '../../utils/capitalizeWords';
 import { formatDateString } from '../../utils/formatDateString';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
-import axios from 'axios';
-import { REVIEW_API_ENDPOINTS } from '../../config/API_config';
-
-const desc = ['Very bad', 'Bad', 'Normal', 'Good', 'Very good'];
+import { useFormReview } from '../../service/api/useFormReview';
 
 export const FormReview = memo(({ order }: { order: IProductOrder }) => {
-  const [star, setStar] = useState(5);
-  const [content, setContent] = useState('');
-
-  const handleSubmitReview = () => {
-    if (!star) {
-      message.error('Please rate the product');
-      return;
-    }
-
-    if (!content) {
-      message.error('Please write a review');
-      return;
-    }
-
-    try {
-      axios.post(
-        REVIEW_API_ENDPOINTS.REVIEW,
-        {
-          orderId: order?.orderId,
-          orderDetailNumber: order?.orderDetailNumber,
-          rating: star,
-          content: content,
-        },
-        {
-          headers: {
-            'Content-type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        },
-      );
-    } catch (error: any) {
-      message.error(error?.message);
-    }
-  };
+  const { desc, star, setStar, content, setContent, handleSubmitReview } =
+    useFormReview(order);
 
   return (
     <Card
