@@ -69,7 +69,20 @@ class Review {
   }
 
   static async getReviews(query: ReviewQuery) {
-    return await prisma.$queryRaw`
+    const count = await prisma.review.count({
+      where: {
+        order: (query.shopId || query.userId) ? {
+          customerId: query.userId,
+          shopId: query.shopId
+        } : undefined,
+        orderDetail: query.productId ? {
+          productId: query.productId
+        } : undefined,
+        orderId: query.orderId,
+        rating: query.rating
+      }
+    })
+    const reviews = await prisma.$queryRaw`
       SELECT 
         r.*,
         od.*,
@@ -91,6 +104,7 @@ class Review {
       LIMIT ${query.limit ?? 100}::INTEGER
       OFFSET ${query.offset ?? 0}::INTEGER
     `;
+    return { count, reviews };
   }
 
   static async deleteReview(reviewId: number) {
