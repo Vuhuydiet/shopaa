@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const { TextArea } = Input;
 
-const ReturnForm = ({ orderId }: number) => {
+export const FormReturn = (orderId: number) => {
   const [form] = Form.useForm();
 
   const handleSubmit = (values: any) => {
@@ -65,5 +65,3 @@ const ReturnForm = ({ orderId }: number) => {
     </Card>
   );
 };
-
-export default ReturnForm;

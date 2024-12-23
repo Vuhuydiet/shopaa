@@ -22,7 +22,6 @@ import { ReportPage } from '../pages/admin/report';
 import { AdminRoute } from '../components/admin-route';
 import { LayoutAdmin } from '../layout/admin';
 import { ProductCart } from '../pages/product-cart';
-import FormReturn from '../components/form-return';
 
 export const routes = [
   {
@@ -161,10 +160,6 @@ export const routes = [
   {
     path: '/reset-password',
     element: <ResetPassword />,
-  },
-  {
-    path: '/form-return',
-    element: <FormReturn />,
   },
   {
     path: '*',
