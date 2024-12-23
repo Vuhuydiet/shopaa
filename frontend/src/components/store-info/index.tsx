@@ -16,7 +16,7 @@ export const StoreInfo = () => {
 
   const averageRate = useMemo(() => {
     return shop?.totalRating && shop?.numReviews
-      ? shop?.totalRating / shop?.numReviews
+      ? parseFloat(Number(shop?.totalRating / shop?.numReviews).toFixed(1))
       : 0;
   }, [shop]);
 

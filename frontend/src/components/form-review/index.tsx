@@ -25,12 +25,21 @@ export const FormReview = memo(({ order }: { order: IProductOrder }) => {
     }
 
     try {
-      axios.post(REVIEW_API_ENDPOINTS.REVIEW, {
-        orderId: order?.orderId,
-        orderDetailId: order?.orderDetailNumber,
-        rating: star,
-        content: content,
-      });
+      axios.post(
+        REVIEW_API_ENDPOINTS.REVIEW,
+        {
+          orderId: order?.orderId,
+          orderDetailNumber: order?.orderDetailNumber,
+          rating: star,
+          content: content,
+        },
+        {
+          headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        },
+      );
     } catch (error: any) {
       message.error(error?.message);
     }
