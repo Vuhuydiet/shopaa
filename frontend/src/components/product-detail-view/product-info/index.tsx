@@ -10,6 +10,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useCart } from '../../../service/api/useCart';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../service/state/store';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductInfo = () => {
   const [size, setSize] = useState<string>('');
@@ -54,6 +55,28 @@ export const ProductInfo = () => {
     },
     [product, color, size],
   );
+  const navigate = useNavigate();
+
+  const handleCheckout = useCallback(
+    (e: any) => {
+      const productData = [
+        {
+          name: product.name,
+          id: product.id,
+          currentPrice: product.currentPrice,
+          size: size || undefined,
+          color: color || undefined,
+          quantity,
+        },
+      ];
+      console.log('Product Data = buy now: ', productData);
+
+      navigate('/checkout', {
+        state: { products: productData },
+      });
+    },
+    [product, size, color, quantity],
+  );
 
   const colorMemo = useMemo(() => color, [color]);
   const sizeMemo = useMemo(() => size, [size]);
@@ -68,8 +91,11 @@ export const ProductInfo = () => {
         <ProductPrice />
         <ProductColor currentColor={colorMemo} onClick={handleChooseColor} />
         <ProductSize currentSize={sizeMemo} onClick={handleChooseSize} />
-        <ProductQuantity quantity={quantityMemo} />
-        <ProductButton addCart={handleAddToCart} />
+        <ProductQuantity
+          quantity={quantityMemo}
+          onQuantityChange={(value) => setQuantity(value)}
+        />
+        <ProductButton addCart={handleAddToCart} checkout={handleCheckout} />
       </Col>
     </>
   );

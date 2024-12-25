@@ -293,8 +293,7 @@ const Profile: React.FC = () => {
                 </Button>
               ) : loading ? (
                 <>
-                  <Spin />
-                  <div>Updating profile ...</div>
+                  <Spin spinning={loading} tip="Updating product..."></Spin>
                 </>
               ) : (
                 <>
