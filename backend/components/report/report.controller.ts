@@ -5,6 +5,12 @@ import { CreatedResponse, OKResponse } from "../../core/SuccessResponse";
 
 
 export default {
+  // get reason
+  getReason: async (req: Request, res: Response) => {
+      const {type} = req.query as any
+      const reasons = await ReportService.getReason(type);
+      new OKResponse({ message: "Reason fetched sucessfully", metadata: {reasons} }).send(res);
+  },
   // create shop report
   createShopReport: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
