@@ -6,9 +6,20 @@ import { formatDateString } from '../../utils/formatDateString';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
 import { useFormReview } from '../../service/api/useFormReview';
 
-export const FormReview = memo(({ order }: { order: IProductOrder }) => {
-  const { desc, star, setStar, content, setContent, handleSubmitReview } =
-    useFormReview(order);
+export const FormReview = memo(({ order }: { order: IProductOrder | null }) => {
+  if (!order) {
+    return null;
+  }
+
+  const {
+    isSubmitting,
+    desc,
+    star,
+    setStar,
+    content,
+    setContent,
+    handleSubmitReview,
+  } = useFormReview(order);
 
   return (
     <Card
@@ -154,7 +165,11 @@ export const FormReview = memo(({ order }: { order: IProductOrder }) => {
                     marginTop: '10px',
                   }}
                 >
-                  <Button type="primary" onClick={handleSubmitReview}>
+                  <Button
+                    loading={isSubmitting}
+                    type="primary"
+                    onClick={handleSubmitReview}
+                  >
                     Submit
                   </Button>
                 </Space>

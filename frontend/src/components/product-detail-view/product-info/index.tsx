@@ -1,4 +1,4 @@
-import { Card, Col, message } from 'antd';
+import { Card, message } from 'antd';
 import { ProductTitle } from './product-title';
 import { ProductReview } from './product-review';
 import { ProductPrice } from './product-price';
@@ -10,10 +10,12 @@ import { useCart } from '../../../service/api/useCart';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../service/state/store';
 import { useNavigate } from 'react-router-dom';
+import { ProductQuantity } from './product-quantity';
 
 export const ProductInfo = () => {
   const [size, setSize] = useState<string>('');
   const [color, setColor] = useState<string>('');
+  const [quantity, setQuantity] = useState<number>(1);
   const { addItem } = useCart(undefined);
   const product = useSelector((state: RootState) => state.product);
   const [messageApi, messageHolder] = message.useMessage();
@@ -78,6 +80,7 @@ export const ProductInfo = () => {
 
   const colorMemo = useMemo(() => color, [color]);
   const sizeMemo = useMemo(() => size, [size]);
+  const quantityMemo = useMemo(() => quantity, [quantity]);
 
   return (
     <Card

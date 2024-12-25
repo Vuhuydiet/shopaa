@@ -47,9 +47,17 @@ class OrderService {
     return order;
   }
 
-  static async checkOrderDetailExists(orderId: number, orderDetailNumber: number) {
+  static async checkOrderDetailExists(
+    orderId: number,
+    orderDetailNumber: number,
+  ) {
     const orderDetail = await prisma.orderDetail.findUnique({
-      where: { orderId_orderDetailNumber: { orderId: orderId, orderDetailNumber: orderDetailNumber } },
+      where: {
+        orderId_orderDetailNumber: {
+          orderId: orderId,
+          orderDetailNumber: orderDetailNumber,
+        },
+      },
     });
 
     if (!orderDetail) {
@@ -219,15 +227,15 @@ class OrderService {
       include: {
         orderProducts: {
           include: {
-            review: true
-          }
+            review: true,
+          },
         },
         customer: true,
         shop: {
-          select: { 
-            shopOwnerId: true, 
+          select: {
+            shopOwnerId: true,
             shopName: true,
-            shopOwner: { select: { avatarImage: true } }
+            shopOwner: { select: { avatarImage: true } },
           },
         },
         transportationProvider: {
@@ -238,10 +246,10 @@ class OrderService {
     if (!order) {
       throw new NotFoundError('Order not found');
     }
-    
-    order.shop.avatarUrl = order.shop.shopOwner.avatarImage.url;
+
+    order.shop.avatarUrl = order.shop.shopOwner.avatarImage?.url;
     delete order.shop.shopOwner;
-    
+
     order.orderProducts.forEach((product: any) => {
       product.isReviewed = product.review ? true : false;
       delete product.review;
@@ -337,7 +345,10 @@ class OrderService {
       [OrderStatus.ACCEPTED, [OrderStatus.DELIVERING]],
       [OrderStatus.DELIVERING, [OrderStatus.DELIVERED]],
       [OrderStatus.DELIVERED, [OrderStatus.RECEIVED]],
-      [OrderStatus.RECEIVED, [OrderStatus.COMPLETED, OrderStatus.RETURN_REQUESTED]],
+      [
+        OrderStatus.RECEIVED,
+        [OrderStatus.COMPLETED, OrderStatus.RETURN_REQUESTED],
+      ],
       [OrderStatus.RETURN_REQUESTED, [OrderStatus.RETURNED]],
       [OrderStatus.RETURNED, []],
       [OrderStatus.COMPLETED, []],
