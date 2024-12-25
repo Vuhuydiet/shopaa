@@ -9,6 +9,7 @@ import {
   SearchOutlined,
   ShopOutlined,
   IdcardOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons';
 import './HeaderStyle.css';
 import logo from '../../assets/images/logo.png';
@@ -23,7 +24,7 @@ const HeaderComponent: React.FC = () => {
   const { user, refreshUser, resetUser } = useUser();
 
   const {
-    cart: { data: cartItems, refetch },
+    cart: { data: cartItems },
   } = useCart({ limit: 1, offset: 0 });
 
   useEffect(() => {
@@ -77,8 +78,15 @@ const HeaderComponent: React.FC = () => {
           ),
         }
       : null,
+    user?.role && user?.role === 'USER'
+      ? {
+          key: '/user/orders',
+          icon: <FileTextOutlined style={{ color: '#FFD700' }} />,
+          label: <NavLink to="/user/orders">Order</NavLink>,
+        }
+      : null,
     {
-      key: '4',
+      key: 'logout',
       label: (
         <div onClick={handleLogout}>
           <LogoutOutlined style={{ marginRight: '10px', color: '#B8860B' }} />{' '}

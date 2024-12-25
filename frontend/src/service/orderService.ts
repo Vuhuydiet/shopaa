@@ -57,6 +57,7 @@ export const getOrders = async (params: IQueryOrder = { limit: 10 }) => {
         'Content-Type': 'application/json',
       },
     });
+    console.log('Orders == service:', response.data.metadata.orders);
     if (response.data?.metadata?.orders && response.data?.metadata?.count) {
       const orders = response.data.metadata?.orders?.map(
         (order: any): IOrder => {
@@ -122,6 +123,7 @@ export const getOrderDetail = async (id: number) => {
             size: product?.size,
             status: order?.status,
             updatedAt: order?.updatedAt,
+            isReviewed: product?.isReviewed,
           };
         }),
         transportationProvider: {

@@ -88,9 +88,9 @@ const OrderShop: React.FC = () => {
 
     {
       title: 'Total amount',
-      dataIndex: 'totalAmount',
       key: 'totalAmount',
-      render: (amount: number) => `$${amount.toFixed(2)}`,
+      render: (amount: IOrder) =>
+        `$${(amount.shippingFee + amount.totalAmount).toFixed(2)}`,
     },
     {
       title: 'Time',

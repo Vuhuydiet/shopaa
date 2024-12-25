@@ -12,4 +12,5 @@ export interface IProductOrder {
   productImageUrl: string;
   status?: OrderStatus;
   updatedAt?: string;
+  isReviewed?: boolean;
 }

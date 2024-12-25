@@ -6,8 +6,6 @@ import { ProductCatalog } from '../../components/product-catalog/product-catalog
 import { useDispatch } from 'react-redux';
 import { setFilter } from '../../service/state/slices/filter-slice';
 import { getUserProfile } from '../../service/userService';
-import { setPagination } from '../../service/state/slices/pagination-slice';
-
 const ShopPage: React.FC = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const [shopInfo, setShopInfo] = useState({});

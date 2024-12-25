@@ -9,6 +9,7 @@ export enum OrderStatus {
   RECEIVED = 'RECEIVED',
   COMPLETED = 'COMPLETED',
   RETURNED = 'RETURNED',
+  RETURN_REQUESTED = 'RETURN_REQUESTED',
 }
 
 // Group: PENDING

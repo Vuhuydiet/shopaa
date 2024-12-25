@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Button,
   Table,
@@ -73,7 +73,7 @@ const OrderUserDetail: React.FC = () => {
       if (res) setOrder(res);
     };
     fetchData();
-  }, [orderId, hasChangeStatus]);
+  }, [orderId, hasChangeStatus, orderProduct]);
 
   const handleStatusChange = async (
     orderId: number,
@@ -103,7 +103,7 @@ const OrderUserDetail: React.FC = () => {
       case OrderStatus.COMPLETED:
         message = 'Confirmation of completion of order.';
         break;
-      case OrderStatus.RETURNED:
+      case OrderStatus.RETURN_REQUESTED:
         message = 'Are you sure you want to return this order?';
         break;
       default:
@@ -113,7 +113,7 @@ const OrderUserDetail: React.FC = () => {
     Modal.confirm({
       title: message,
       content:
-        newStatus === OrderStatus.RETURNED ? (
+        newStatus === OrderStatus.RETURN_REQUESTED ? (
           <QueryClientProvider client={new QueryClient()}>
             <FormReturn form={form} handleSubmitReturn={handleSubmitReturn} />
           </QueryClientProvider>
@@ -154,9 +154,10 @@ const OrderUserDetail: React.FC = () => {
             onClick: () => confirmStatusChange(orderId, OrderStatus.COMPLETED),
           },
           {
-            key: 'RETURNED',
+            key: 'RETURN_REQUESTED',
             label: 'Return Order',
-            onClick: () => confirmStatusChange(orderId, OrderStatus.RETURNED),
+            onClick: () =>
+              confirmStatusChange(orderId, OrderStatus.RETURN_REQUESTED),
           },
         ];
       default:
@@ -168,7 +169,6 @@ const OrderUserDetail: React.FC = () => {
     e.stopPropagation();
 
     console.log('detail', record);
-
     setOrderProduct(record);
   };
 
@@ -222,7 +222,7 @@ const OrderUserDetail: React.FC = () => {
       title: 'Action',
       key: 'action',
       render: (_: any, record: IProductOrder) => {
-        if (record.status === 'COMPLETED') {
+        if (record.status === 'COMPLETED' && !record.isReviewed) {
           return (
             <button
               onClick={(e) => handleReview(e, record)}
@@ -266,7 +266,7 @@ const OrderUserDetail: React.FC = () => {
   const menuItems = getMenuItems(order?.status, order.orderId);
 
   return orderProduct ? (
-    <FormReview order={orderProduct} />
+    <FormReview order={orderProduct} setOrderProduct={setOrderProduct} />
   ) : (
     <Spin spinning={!order} tip="Loading...">
       <div style={{ padding: '50px', color: 'black' }}>
@@ -322,7 +322,7 @@ const OrderUserDetail: React.FC = () => {
                   Total amount:
                 </td>
                 <td style={{ padding: '8px', fontWeight: 'bold' }}>
-                  $ {order.totalAmount.toFixed(2)}
+                  $ {(order.totalAmount + order.shippingFee).toFixed(2)}
                 </td>
               </tr>
               <tr>

@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Menu, Table, Tag, Button, Space, Dropdown, Spin, Modal } from 'antd';
+import {
+  Menu,
+  Table,
+  Tag,
+  Button,
+  Space,
+  Dropdown,
+  Spin,
+  Modal,
+  Form as FormAntd,
+  message,
+} from 'antd';
 import { NavLink } from 'react-router-dom';
 import { EditOutlined } from '@ant-design/icons';
 import {
@@ -9,6 +20,10 @@ import {
 import { OrderStatus } from '../../interfaces/Order/OrderEnums';
 import { IOrder } from '../../interfaces/Order/IOrder';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
+import { RETURN_API_ENDPOINTS } from '../../config/API_config';
+import axios from 'axios';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { FormReturn } from '../form-return';
 
 const OrderUser: React.FC = () => {
   const [currentStatus, setCurrentStatus] = useState<string[]>([]);
@@ -16,7 +31,28 @@ const OrderUser: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(7);
   const [total, setTotal] = useState<number>(0);
-  const { data, isLoading } = useOrders({
+  const [form] = FormAntd.useForm();
+
+  const handleSubmitReturn = (orderId: any, values: any) => {
+    const request = {
+      orderId: orderId,
+      ...values,
+    };
+
+    console.log('return', request);
+
+    try {
+      axios.post(RETURN_API_ENDPOINTS.RETURN, request, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+    } catch (error: any) {
+      message.error(error?.message);
+    }
+  };
+  const { data, isLoading, refetch } = useOrders({
     userId: parseInt(localStorage.getItem('userId') || '0'),
     sortBy: 'updatedAt',
     order: 'desc',
@@ -32,15 +68,17 @@ const OrderUser: React.FC = () => {
     } else if (filteredOrders === 'pending') {
       setCurrentStatus(['PENDING']);
     } else if (filteredOrders === 'processing') {
-      setCurrentStatus(['ACCEPTED', 'DELIVERING', 'RECEIVED']);
+      setCurrentStatus(['ACCEPTED', 'DELIVERING']);
     } else if (filteredOrders === 'delivered') {
       setCurrentStatus(['DELIVERED']);
+    } else if (filteredOrders === 'received') {
+      setCurrentStatus(['RECEIVED']);
     } else if (filteredOrders === 'completed') {
       setCurrentStatus(['COMPLETED']);
-    } else if (filteredOrders === 'canceled') {
-      setCurrentStatus(['CANCELED']);
+    } else if (filteredOrders === 'return') {
+      setCurrentStatus(['RETURN_REQUESTED']);
     } else if (filteredOrders === 'returned') {
-      setCurrentStatus(['RETURNED', 'REJECTED']);
+      setCurrentStatus(['RETURNED', 'REJECTED', 'CANCELED']);
     }
     console.log('Current Status: ', currentStatus);
   };
@@ -63,12 +101,17 @@ const OrderUser: React.FC = () => {
     { key: 'pending', label: 'Pending' },
     { key: 'processing', label: 'Processing' },
     { key: 'delivered', label: 'Delivered' },
+    { key: 'received', label: 'Received' },
     { key: 'completed', label: 'Completed' },
-    { key: 'canceled', label: 'Canceled' },
-    { key: 'returned', label: 'Returned/Rejected' },
+    { key: 'return', label: 'Return request' },
+    { key: 'returned', label: 'Other' },
   ];
 
   const handleStatusChange = (orderId: number, newStatus: OrderStatus) => {
+    if (newStatus === OrderStatus.RETURN_REQUESTED) {
+      refetch();
+      return;
+    }
     updateStatus({ orderId, status: newStatus });
   };
 
@@ -85,9 +128,9 @@ const OrderUser: React.FC = () => {
     },
     {
       title: 'Total amount',
-      dataIndex: 'totalAmount',
       key: 'totalAmount',
-      render: (amount: number) => `$${amount.toFixed(2)}`,
+      render: (amount: IOrder) =>
+        `$${(amount.shippingFee + amount.totalAmount).toFixed(2)}`,
     },
     {
       title: 'Time',
@@ -115,16 +158,30 @@ const OrderUser: React.FC = () => {
             case OrderStatus.COMPLETED:
               message = 'Confirmation of completion of order.';
               break;
-            case OrderStatus.RETURNED:
+            case OrderStatus.RETURN_REQUESTED:
               message = 'Are you sure you want to return this order?';
               break;
             default:
               message = '';
           }
           Modal.confirm({
-            title: `${message}`,
+            title: message,
+            content:
+              newStatus === OrderStatus.RETURN_REQUESTED ? (
+                <QueryClientProvider client={new QueryClient()}>
+                  <FormReturn
+                    form={form}
+                    handleSubmitReturn={(values: any) =>
+                      handleSubmitReturn(record.orderId, values)
+                    }
+                  />
+                </QueryClientProvider>
+              ) : (
+                ''
+              ),
             onOk: () => {
               console.log(`Changing order ${record.orderId} to ${newStatus}`);
+              form.submit();
               handleStatusChange(record.orderId, newStatus);
             },
           });
@@ -155,9 +212,10 @@ const OrderUser: React.FC = () => {
                   onClick: () => confirmStatusChange(OrderStatus.COMPLETED),
                 },
                 {
-                  key: 'RETURNED',
+                  key: 'RETURN_REQUESTED',
                   label: 'Return Order',
-                  onClick: () => confirmStatusChange(OrderStatus.RETURNED),
+                  onClick: () =>
+                    confirmStatusChange(OrderStatus.RETURN_REQUESTED),
                 },
               ];
             default:
@@ -190,7 +248,11 @@ const OrderUser: React.FC = () => {
             </span>
           </Dropdown>
         ) : (
-          <Tag color={getOrderStatusColor(status)}>{status}</Tag>
+          <Tag color={getOrderStatusColor(status)}>
+            {status === OrderStatus.RETURN_REQUESTED
+              ? 'WAITING RETURN'
+              : status}
+          </Tag>
         );
       },
     },
@@ -208,11 +270,6 @@ const OrderUser: React.FC = () => {
           >
             <NavLink to={`/user/orders/${record.orderId}`}>Detail</NavLink>
           </Button>
-          {record.status === OrderStatus.COMPLETED ? (
-            <Button type="link">
-              <NavLink to={`/user/orders/${record.orderId}`}>Review</NavLink>
-            </Button>
-          ) : null}
         </Space>
       ),
     },

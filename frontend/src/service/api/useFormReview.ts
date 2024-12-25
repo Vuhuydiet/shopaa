@@ -4,7 +4,10 @@ import { useMemo, useState } from 'react';
 import { REVIEW_API_ENDPOINTS } from '../../config/API_config';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
 
-export const useFormReview = (order: IProductOrder) => {
+export const useFormReview = (
+  order: IProductOrder,
+  setOrderProduct: (a: IProductOrder | null) => void,
+) => {
   const desc = useMemo(
     () => ['Very bad', 'Bad', 'Normal', 'Good', 'Very good'],
     [],
@@ -50,6 +53,9 @@ export const useFormReview = (order: IProductOrder) => {
           },
         },
       );
+      message.success('Review submitted successfully!');
+      console.log('order id:', order.orderId);
+      setOrderProduct(null);
       setIsSubmitting(false);
     } catch (error: any) {
       message.error(error?.message);
