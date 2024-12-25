@@ -3,7 +3,13 @@ import { Button, Col, Row } from 'antd';
 import React from 'react';
 
 export const ProductButton = React.memo(
-  ({ addCart }: { addCart: (e: any) => void }) => {
+  ({
+    addCart,
+    checkout,
+  }: {
+    addCart: (e: any) => void;
+    checkout: (e: any) => void;
+  }) => {
     return (
       <Row style={{ margin: '30px 0 0 40px' }}>
         <Col xs="auto" sm="auto">
@@ -27,6 +33,7 @@ export const ProductButton = React.memo(
             style={{
               width: 'auto',
             }}
+            onClick={checkout}
           >
             Buy Now
           </Button>

@@ -22,6 +22,9 @@ import { ReportPage } from '../pages/admin/report';
 import { AdminRoute } from '../components/admin-route';
 import { LayoutAdmin } from '../layout/admin';
 import { ProductCart } from '../pages/product-cart';
+import OrderUser from '../components/OrderUser';
+import OrderUserDetail from '../components/OrderUser/orderDetails';
+import CheckoutPage from '../pages/Checkout';
 import { FormReview } from '../components/form-review';
 import { OrderStatus } from '../interfaces/Order/OrderEnums';
 
@@ -207,13 +210,21 @@ export const routes = [
               },
               {
                 path: 'orders',
-                // element: <Order />, // Component Order
+                element: <OrderUser />,
+              },
+              {
+                path: '/user/orders/:orderId',
+                element: <OrderUserDetail />,
               },
               {
                 path: 'myshop',
                 element: <MyShop />,
               },
             ],
+          },
+          {
+            path: 'checkout',
+            element: <CheckoutPage />,
           },
           {
             path: 'notifications',
