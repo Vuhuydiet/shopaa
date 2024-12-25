@@ -7,6 +7,17 @@ import { ReportResultState, ReportType, Role } from '@prisma/client';
 import { body, query, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 
+
+
+
+router.get('/reasons',
+  passport.authenticate('jwt', { session: false }),
+  query("type").optional().custom((value: string) => Object.values(ReportType).includes(value as ReportType)),
+  handleValidationErrors,
+  reportController.getReason
+)
+
+
 router.post('/shop',
   passport.authenticate('jwt', { session: false }),
   authorizationMiddleware.authorize([Role.USER, Role.SHOP_MANAGER]),
