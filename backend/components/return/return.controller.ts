@@ -24,6 +24,12 @@ export default {
     new OKResponse({ message: "Return Slip fetched successfully", metadata: { returnSlip } }).send(res);
   },
 
+  //get reason
+  getReason: async (_req: Request, res: Response) => {
+    const reasons = await ReturnService.getReason();
+    new OKResponse({ message: "Reason fetched sucessfully", metadata: {reasons} }).send(res);
+  },  
+
   // Update return slip
   updateReturnSlip: async (req: Request, res: Response) => {
     const { returnId } = matchedData(req);

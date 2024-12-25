@@ -7,6 +7,13 @@ import {ReturnStatus, Role } from '@prisma/client';
 import { body, query, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 
+
+// get reason
+router.get('/reasons',
+  handleValidationErrors,
+  returnController.getReason
+)
+
 // Tạo return slip 
 router.post('/',
   passport.authenticate('jwt', { session: false }),
@@ -17,6 +24,7 @@ router.post('/',
   handleValidationErrors,
   returnController.createReturnSlip 
 );
+
 
 
 // Lấy danh sách return slips 

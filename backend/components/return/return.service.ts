@@ -111,6 +111,18 @@ class ReturnService {
     return returnSlip;
   }
 
+  static async getReason(){
+    const reasons = await prisma.returnReason.findMany({
+    });
+
+    if (!reasons || reasons.length === 0) {
+      throw new NotFoundError('No return reasons found');
+    }
+
+    return reasons;
+  }
+
+
   // update return slip
   static async updateReturnSlip(returnId: number, data: UpdateReturnSlipData) {
     const returnSlip = await prisma.returnSlip.findUnique({
