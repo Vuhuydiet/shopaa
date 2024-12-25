@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { createOrder } from '../../service/orderService';
 import { useCart } from '../../service/api/useCart';
+import { useOrders } from '../../service/api/order/useOrders';
 
 const CheckoutPage = () => {
   const formRef = useRef<any>(null);
@@ -14,11 +15,22 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {}, [productsData]);
+  const { refetch: refetchOrder } = useOrders({
+    userId: parseInt(localStorage.getItem('userId') || '0'),
+    sortBy: 'updatedAt',
+    order: 'desc',
+    limit: 7,
+    offset: 0,
+    status: [],
+  });
 
   const handleShippingFeeChange = (fee: number) => {
     setShippingFee(fee);
   };
-  const { deleteItem } = useCart({ limit: 10, offset: 0 });
+  const {
+    deleteItem,
+    cart: { refetch: refetchCart },
+  } = useCart({ limit: 10, offset: 0 });
 
   const products = productsData?.map((product: any) => ({
     productId: product.id,
@@ -71,6 +83,8 @@ const CheckoutPage = () => {
             await deleteItem(cartID);
           });
         }
+        await refetchCart();
+        refetchOrder();
         message.success('Order created successfully');
         navigate('/user/orders');
       }
