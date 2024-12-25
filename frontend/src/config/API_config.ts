@@ -36,3 +36,10 @@ export const ADMIN_API_ENDPOINTS = {
 export const CART_API_ENDPOINTS = {
   CART: `${API_DOMAIN}api/v1/cart`,
 };
+
+export const REVIEW_API_ENDPOINTS = {
+  REVIEW: `${API_DOMAIN}api/v1/review`,
+
+export const RETURN_API_ENDPOINTS = {
+  RETURN: `${API_DOMAIN}api/v1/return`,
+};

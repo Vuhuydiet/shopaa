@@ -1,10 +1,9 @@
-import { Col, message } from 'antd';
+import { Card, Col, message } from 'antd';
 import { ProductTitle } from './product-title';
 import { ProductReview } from './product-review';
 import { ProductPrice } from './product-price';
 import { ProductColor } from './product-color';
 import { ProductSize } from './product-size';
-import { ProductQuantity } from './product-quantity';
 import { ProductButton } from './product-button';
 import { useCallback, useMemo, useState } from 'react';
 import { useCart } from '../../../service/api/useCart';
@@ -15,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 export const ProductInfo = () => {
   const [size, setSize] = useState<string>('');
   const [color, setColor] = useState<string>('');
-  const [quantity, setQuantity] = useState<number>(1);
   const { addItem } = useCart(undefined);
   const product = useSelector((state: RootState) => state.product);
   const [messageApi, messageHolder] = message.useMessage();
@@ -80,23 +78,26 @@ export const ProductInfo = () => {
 
   const colorMemo = useMemo(() => color, [color]);
   const sizeMemo = useMemo(() => size, [size]);
-  const quantityMemo = useMemo(() => quantity, [quantity]);
 
   return (
-    <>
+    <Card
+      style={{
+        marginLeft: '20px',
+        border: 'none',
+        flex: '1 2 auto',
+      }}
+    >
       {messageHolder}
-      <Col xs={24} sm={24} md={16} style={{ padding: '10px' }}>
-        <ProductTitle />
-        <ProductReview />
-        <ProductPrice />
-        <ProductColor currentColor={colorMemo} onClick={handleChooseColor} />
-        <ProductSize currentSize={sizeMemo} onClick={handleChooseSize} />
-        <ProductQuantity
-          quantity={quantityMemo}
-          onQuantityChange={(value) => setQuantity(value)}
-        />
-        <ProductButton addCart={handleAddToCart} checkout={handleCheckout} />
-      </Col>
-    </>
+      <ProductTitle />
+      <ProductReview />
+      <ProductPrice />
+      <ProductColor currentColor={colorMemo} onClick={handleChooseColor} />
+      <ProductSize currentSize={sizeMemo} onClick={handleChooseSize} />
+      <ProductQuantity
+        quantity={quantityMemo}
+        onQuantityChange={(value) => setQuantity(value)}
+      />
+      <ProductButton addCart={handleAddToCart} checkout={handleCheckout} />
+    </Card>
   );
 };

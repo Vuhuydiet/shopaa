@@ -27,6 +27,8 @@ const getProduct = async (id: string | undefined) => {
         originalPrice: product?.originalPrice,
         description: product?.productDescription,
         soldCount: product?.numSoldProduct,
+        numReviews: product?.numReviews,
+        totalRating: product?.totalRating,
         quantity: product?.quantity,
         material: product?.material,
         origin: product?.origin,

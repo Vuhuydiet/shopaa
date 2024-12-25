@@ -29,35 +29,48 @@ model Order {
   transportationProvider TransportationProvider? @relation(fields: [transProviderId], references: [providerId], onDelete: SetNull)
   orderProducts          OrderDetail[]
   returnSlip             ReturnSlip[]
+  reviews                Review[]
 }
 
 model OrderDetail {
   orderId           Int
   orderDetailNumber Int 
-  productId         Int // no FK because it's a key attribute and the referenced product could be deleted while order still exists
+  productId         Int
   color             String?
   size              String?
   quantity          Int
   price             Float
 
+  order Order @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
+
   @@id([orderId, orderDetailNumber])
   @@unique([orderId, productId, color, size])
-
+  
   order Order @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
+
+  review Review?
 }
 
-
 enum ReturnStatus {
+  PENDING
   ACCEPTED
-  REJECTED
+  DISMISSED
+}
+
+model ReturnReason {
+  categoryName String       @id
+  returns      ReturnSlip[]
 }
 
 model ReturnSlip {
-  returnId  Int           @id @default(autoincrement())
-  orderId   Int
-  createdAt DateTime      @default(now())
-  status    ReturnStatus?
-  reason    String?
+  returnId    Int           @id @default(autoincrement())
+  orderId     Int
+  createdAt   DateTime      @default(now())
+  status      ReturnStatus? @default(PENDING)
+  description String?
+  reason      String
+  result      String?
 
-  order Order @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
+  order          Order         @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
+  returnCategory ReturnReason? @relation(fields: [reason], references: [categoryName], onDelete: Cascade)
 }

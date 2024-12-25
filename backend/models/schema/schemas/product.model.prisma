@@ -12,8 +12,10 @@ model Product {
   colors             String[]
   sizes              String[]
 
-  quantity           Int      @default(0)
-  numSoldProduct     Int      @default(0)
+  quantity       Int @default(0)
+  numSoldProduct Int @default(0)
+  numReviews     Int @default(0)
+  totalRating    Int @default(0)
 
   shop          Shop              @relation(fields: [sellerId], references: [shopOwnerId], onDelete: Cascade)
   categories    ProductCategory[]
@@ -21,7 +23,6 @@ model Product {
   reports       Report[]
   cartProduct   CartItem[]
 }
-
 
 model ProductCategory {
   categoryId   Int     @id @default(autoincrement())
@@ -31,7 +32,6 @@ model ProductCategory {
   products Product[]
 }
 
-
 model ProductImage {
   productId Int
   order     Int @default(autoincrement())
@@ -40,4 +40,3 @@ model ProductImage {
   image   Image   @relation(fields: [imageId], references: [imageId], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [productId], onDelete: Restrict)
 }
-

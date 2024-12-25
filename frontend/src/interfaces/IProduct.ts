@@ -10,6 +10,8 @@ export interface IProduct {
   originalPrice: number;
   description: string;
   soldCount: number;
+  numReviews: number;
+  totalRating: number;
   quantity: number;
   material: string;
   origin: string;

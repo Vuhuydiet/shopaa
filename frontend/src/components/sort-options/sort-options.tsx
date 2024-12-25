@@ -22,7 +22,18 @@ export const SortOptions = () => {
   return (
     <Space
       direction="horizontal"
-      style={{ backgroundColor: 'gray', padding: '16px', width: '100%' }}
+      style={{
+        background: `linear-gradient(
+          to right,
+          rgb(231, 222, 250),
+          #9999ff,
+          rgb(255, 255, 255)
+        )`,
+        padding: '16px',
+        width: '100%',
+        borderRadius: '10px',
+        marginBottom: '10px',
+      }}
     >
       <Typography.Text>Sort by</Typography.Text>
       <Button
