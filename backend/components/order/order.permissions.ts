@@ -43,9 +43,11 @@ export default {
     const order = await OrderService.getOrderById(orderId);
 
     switch (status) {
+      case OrderStatus.RETURN_REQUESTED:
+      case OrderStatus.RETURNED:
+        throw new ForbiddenError("Only return service have permission to update this order status");
       case OrderStatus.CANCELED:
       case OrderStatus.RECEIVED:
-      case OrderStatus.RETURNED:
       case OrderStatus.COMPLETED:
         if (role !== Role.USER || order?.customerId !== userId) {
           throw new ForbiddenError("Only USERs have permission to update this order status");
