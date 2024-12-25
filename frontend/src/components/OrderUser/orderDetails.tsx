@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Table, Tag, Dropdown, message, Modal, Spin } from 'antd';
+import {
+  Button,
+  Table,
+  Tag,
+  Dropdown,
+  message,
+  Modal,
+  Spin,
+  Form as FormAntd,
+} from 'antd';
 import {
   EditOutlined,
   RightCircleOutlined,
@@ -14,6 +23,11 @@ import { deserializeDate } from '../../utils/date-convert';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
 import { NavLink } from 'react-router-dom';
 import { useOrders } from '../../service/api/order/useOrders';
+import { FormReview } from '../form-review';
+import { FormReturn } from '../form-return';
+import axios from 'axios';
+import { RETURN_API_ENDPOINTS } from '../../config/API_config';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 interface OrderDetail {
   productId: number;
@@ -28,8 +42,30 @@ const OrderUserDetail: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const [order, setOrder] = useState<IOrderDetail | null>(null);
   const [hasChangeStatus, setHasChangeStatus] = useState<boolean>(false);
+  const [orderProduct, setOrderProduct] = useState<IProductOrder | null>(null);
   const navigate = useNavigate();
   const { refetch } = useOrders({ status: [] });
+  const [form] = FormAntd.useForm();
+
+  const handleSubmitReturn = (values: any) => {
+    const request = {
+      orderId: orderId,
+      ...values,
+    };
+
+    console.log('return', request);
+
+    try {
+      axios.post(RETURN_API_ENDPOINTS.RETURN, request, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+    } catch (error: any) {
+      message.error(error?.message);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +73,7 @@ const OrderUserDetail: React.FC = () => {
       if (res) setOrder(res);
     };
     fetchData();
-  }, [orderId, hasChangeStatus]);
+  }, [orderId, hasChangeStatus, orderProduct]);
 
   const handleStatusChange = async (
     orderId: number,
@@ -67,7 +103,7 @@ const OrderUserDetail: React.FC = () => {
       case OrderStatus.COMPLETED:
         message = 'Confirmation of completion of order.';
         break;
-      case OrderStatus.RETURNED:
+      case OrderStatus.RETURN_REQUESTED:
         message = 'Are you sure you want to return this order?';
         break;
       default:
@@ -76,8 +112,17 @@ const OrderUserDetail: React.FC = () => {
 
     Modal.confirm({
       title: message,
+      content:
+        newStatus === OrderStatus.RETURN_REQUESTED ? (
+          <QueryClientProvider client={new QueryClient()}>
+            <FormReturn form={form} handleSubmitReturn={handleSubmitReturn} />
+          </QueryClientProvider>
+        ) : (
+          ''
+        ),
       onOk: () => {
         console.log(`Changing order ${orderId} to ${newStatus}`);
+        form.submit();
         handleStatusChange(orderId, newStatus);
       },
     });
@@ -109,14 +154,22 @@ const OrderUserDetail: React.FC = () => {
             onClick: () => confirmStatusChange(orderId, OrderStatus.COMPLETED),
           },
           {
-            key: 'RETURNED',
+            key: 'RETURN_REQUESTED',
             label: 'Return Order',
-            onClick: () => confirmStatusChange(orderId, OrderStatus.RETURNED),
+            onClick: () =>
+              confirmStatusChange(orderId, OrderStatus.RETURN_REQUESTED),
           },
         ];
       default:
         return [];
     }
+  };
+
+  const handleReview = (e: any, record: IProductOrder) => {
+    e.stopPropagation();
+
+    console.log('detail', record);
+    setOrderProduct(record);
   };
 
   const columns = [
@@ -129,8 +182,8 @@ const OrderUserDetail: React.FC = () => {
       title: 'Product image',
       dataIndex: 'productImageUrl',
       key: 'productImageUrl',
-      render: (url: string) => (
-        <img src={url} alt="product" style={{ width: '50px' }} />
+      render: (url: string | null) => (
+        <img src={url ?? ''} alt="product" style={{ width: '50px' }} />
       ),
     },
     {
@@ -169,10 +222,10 @@ const OrderUserDetail: React.FC = () => {
       title: 'Action',
       key: 'action',
       render: (_: any, record: IProductOrder) => {
-        if (record.status === 'COMPLETED') {
+        if (record.status === 'COMPLETED' && !record.isReviewed) {
           return (
             <button
-              // onClick={() => handleReview(record)}
+              onClick={(e) => handleReview(e, record)}
               style={{
                 background: '#4CAF50',
                 color: '#fff',
@@ -212,7 +265,9 @@ const OrderUserDetail: React.FC = () => {
 
   const menuItems = getMenuItems(order?.status, order.orderId);
 
-  return (
+  return orderProduct ? (
+    <FormReview order={orderProduct} setOrderProduct={setOrderProduct} />
+  ) : (
     <Spin spinning={!order} tip="Loading...">
       <div style={{ padding: '50px', color: 'black' }}>
         <h1>Order detail {order.orderId}</h1>
@@ -267,7 +322,7 @@ const OrderUserDetail: React.FC = () => {
                   Total amount:
                 </td>
                 <td style={{ padding: '8px', fontWeight: 'bold' }}>
-                  $ {order.totalAmount.toFixed(2)}
+                  $ {(order.totalAmount + order.shippingFee).toFixed(2)}
                 </td>
               </tr>
               <tr>

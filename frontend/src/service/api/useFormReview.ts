@@ -4,7 +4,10 @@ import { useMemo, useState } from 'react';
 import { REVIEW_API_ENDPOINTS } from '../../config/API_config';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
 
-export const useFormReview = (order: IProductOrder) => {
+export const useFormReview = (
+  order: IProductOrder,
+  setOrderProduct: (a: IProductOrder | null) => void,
+) => {
   const desc = useMemo(
     () => ['Very bad', 'Bad', 'Normal', 'Good', 'Very good'],
     [],
@@ -12,6 +15,7 @@ export const useFormReview = (order: IProductOrder) => {
 
   const [star, setStar] = useState(5);
   const [content, setContent] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmitReview = () => {
     if (!star) {
@@ -24,7 +28,16 @@ export const useFormReview = (order: IProductOrder) => {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
+      console.log({
+        orderId: order?.orderId,
+        orderDetailNumber: order?.orderDetailNumber,
+        rating: star,
+        content: content,
+      });
+
       axios.post(
         REVIEW_API_ENDPOINTS.REVIEW,
         {
@@ -40,10 +53,23 @@ export const useFormReview = (order: IProductOrder) => {
           },
         },
       );
+      message.success('Review submitted successfully!');
+      console.log('order id:', order.orderId);
+      setOrderProduct(null);
+      setIsSubmitting(false);
     } catch (error: any) {
       message.error(error?.message);
+      setIsSubmitting(false);
     }
   };
 
-  return { desc, star, setStar, content, setContent, handleSubmitReview };
+  return {
+    isSubmitting,
+    desc,
+    star,
+    setStar,
+    content,
+    setContent,
+    handleSubmitReview,
+  };
 };

@@ -11,6 +11,7 @@ export const getOrderStatusColor = (status: OrderStatus): string => {
     [OrderStatus.RECEIVED]: 'purple',
     [OrderStatus.COMPLETED]: 'geekblue',
     [OrderStatus.RETURNED]: 'magenta',
+    [OrderStatus.RETURN_REQUESTED]: 'volcano',
   };
 
   return statusColors[status] || 'DefaultColor';

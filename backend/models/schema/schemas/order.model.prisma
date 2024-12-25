@@ -35,7 +35,7 @@ model Order {
 
 model OrderDetail {
   orderId           Int
-  orderDetailNumber Int 
+  orderDetailNumber Int
   productId         Int
   color             String?
   size              String?
@@ -44,10 +44,10 @@ model OrderDetail {
 
   order Order @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
 
+  review Review?
+
   @@id([orderId, orderDetailNumber])
   @@unique([orderId, productId, color, size])
-  
-  review Review?
 }
 
 enum ReturnStatus {
