@@ -4,4 +4,8 @@ export interface IShop {
   description: string;
   address: string;
   bankBalance: number;
+  numProducts: number;
+  numSoldOrders: number;
+  numReviews: number;
+  totalRating: number;
 }

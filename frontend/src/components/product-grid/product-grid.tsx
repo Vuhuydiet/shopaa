@@ -76,7 +76,11 @@ export const ProductGrid = () => {
             quantity={item.quantity}
             originalPrice={item.originalPrice}
             currentPrice={item.currentPrice}
-            star={4.7}
+            star={
+              item.numReviews
+                ? Number((item.totalRating / item.numReviews).toFixed(1))
+                : 0
+            }
             soldCount={item.soldCount}
           />
         </List.Item>

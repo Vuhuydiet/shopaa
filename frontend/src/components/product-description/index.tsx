@@ -22,6 +22,7 @@ export const ProductDescription = () => {
             padding: '5px 30px',
             color: 'gray',
             fontWeight: 'bold',
+            fontSize: '1.3rem',
           }}
         >
           Product Description

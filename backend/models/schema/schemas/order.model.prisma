@@ -29,12 +29,13 @@ model Order {
   transportationProvider TransportationProvider? @relation(fields: [transProviderId], references: [providerId], onDelete: SetNull)
   orderProducts          OrderDetail[]
   returnSlip             ReturnSlip[]
+  reviews                Review[]
 }
 
 model OrderDetail {
   orderId           Int
-  orderDetailNumber Int
-  productId         Int // no FK because it's a key attribute and the referenced product could be deleted while order still exists
+  orderDetailNumber Int 
+  productId         Int
   color             String?
   size              String?
   quantity          Int
@@ -44,6 +45,10 @@ model OrderDetail {
 
   @@id([orderId, orderDetailNumber])
   @@unique([orderId, productId, color, size])
+  
+  order Order @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
+
+  review Review?
 }
 
 enum ReturnStatus {

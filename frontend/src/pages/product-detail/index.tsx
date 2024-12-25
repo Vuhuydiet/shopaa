@@ -6,8 +6,9 @@ import { StoreInfo } from '../../components/store-info';
 import { useProduct } from '../../service/api/useProduct';
 import { useEffect } from 'react';
 import { setProduct } from '../../service/state/slices/product-slice';
-import { Spin } from 'antd';
+import { Card, Spin } from 'antd';
 import { useParams } from 'react-router-dom';
+import CommentList from '../../components/product-reviews';
 
 export const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -45,12 +46,23 @@ export const ProductDetail = () => {
 
   return (
     product && (
-      <div style={{ maxWidth: '1200px', margin: 'auto' }}>
+      <Card
+        style={{
+          maxWidth: '1200px',
+          margin: 'auto',
+          boxShadow: '0 4px 8px 0 rgba(0,0,0,0.1)',
+          backgroundColor: '#f9fafb',
+          padding: '10px',
+        }}
+      >
         <ProductDetailView />
         <StoreInfo />
-        <ProductDetailInfo />
-        <ProductDescription />
-      </div>
+        <Card style={{ marginTop: '20px' }}>
+          <ProductDetailInfo />
+          <ProductDescription />
+        </Card>
+        <CommentList product={product} />
+      </Card>
     )
   );
 };

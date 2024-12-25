@@ -12,7 +12,6 @@ export const ProductDetailInfo = () => {
         color: 'black',
         padding: '15px 40px',
         width: '100%',
-        borderTop: '1px solid lightgray',
       }}
       direction="vertical"
       size={12}
@@ -23,6 +22,7 @@ export const ProductDetailInfo = () => {
             padding: '5px 30px',
             color: 'gray',
             fontWeight: 'bold',
+            fontSize: '1.3rem',
           }}
         >
           Product Detail

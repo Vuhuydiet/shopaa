@@ -33,21 +33,28 @@ const HeaderShop: React.FC<HeaderShopProps> = ({
               style={{ color: '#FF6600', fontSize: '24px' }}
               className="icon-header-shop"
             />
-            <div>Product 244</div>
+            <div>Product {shopInfo?.numProducts}</div>
           </div>
           <div className="HeaderShop__item">
             <StarOutlined
               style={{ color: '#FFFF00', fontSize: '24px' }}
               className="icon-header-shop"
             />
-            <div>4.8 (72.9k reviews)</div>
+            <div>
+              {shopInfo?.numReviews
+                ? Number(shopInfo?.totalRating / shopInfo?.numReviews).toFixed(
+                    1,
+                  )
+                : 0}
+              ({shopInfo?.numReviews} reviews)
+            </div>
           </div>
           <div className="HeaderShop__item">
-            <UserOutlined
+            <ProductOutlined
               style={{ color: '#0033FF', fontSize: '24px' }}
               className="icon-header-shop"
             />
-            <div>Join 5 years ago</div>
+            <div>{shopInfo?.numSoldOrders}</div>
           </div>
         </div>
       </div>
