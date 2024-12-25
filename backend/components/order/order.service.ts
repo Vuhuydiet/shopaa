@@ -337,7 +337,8 @@ class OrderService {
       [OrderStatus.ACCEPTED, [OrderStatus.DELIVERING]],
       [OrderStatus.DELIVERING, [OrderStatus.DELIVERED]],
       [OrderStatus.DELIVERED, [OrderStatus.RECEIVED]],
-      [OrderStatus.RECEIVED, [OrderStatus.COMPLETED, OrderStatus.RETURNED]],
+      [OrderStatus.RECEIVED, [OrderStatus.COMPLETED, OrderStatus.RETURN_REQUESTED]],
+      [OrderStatus.RETURN_REQUESTED, [OrderStatus.RETURNED]],
       [OrderStatus.RETURNED, []],
       [OrderStatus.COMPLETED, []],
     ]);

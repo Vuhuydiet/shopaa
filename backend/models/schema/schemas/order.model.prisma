@@ -7,6 +7,7 @@ enum OrderStatus {
   DELIVERED
   RECEIVED
   COMPLETED
+  RETURN_REQUESTED
   RETURNED
 }
 
