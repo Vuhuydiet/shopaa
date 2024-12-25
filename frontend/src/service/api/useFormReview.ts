@@ -12,6 +12,7 @@ export const useFormReview = (order: IProductOrder) => {
 
   const [star, setStar] = useState(5);
   const [content, setContent] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmitReview = () => {
     if (!star) {
@@ -24,7 +25,16 @@ export const useFormReview = (order: IProductOrder) => {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
+      console.log({
+        orderId: order?.orderId,
+        orderDetailNumber: order?.orderDetailNumber,
+        rating: star,
+        content: content,
+      });
+
       axios.post(
         REVIEW_API_ENDPOINTS.REVIEW,
         {
@@ -40,10 +50,20 @@ export const useFormReview = (order: IProductOrder) => {
           },
         },
       );
+      setIsSubmitting(false);
     } catch (error: any) {
       message.error(error?.message);
+      setIsSubmitting(false);
     }
   };
 
-  return { desc, star, setStar, content, setContent, handleSubmitReview };
+  return {
+    isSubmitting,
+    desc,
+    star,
+    setStar,
+    content,
+    setContent,
+    handleSubmitReview,
+  };
 };
