@@ -1,4 +1,5 @@
-import { NotFoundError } from "../../core/ErrorResponse";
+import { OrderStatus } from "@prisma/client";
+import { BadRequestError, NotFoundError } from "../../core/ErrorResponse";
 import prisma from "../../models";
 import OrderService from "../order/order.service";
 import UserService from "../user/user.service";
@@ -27,6 +28,10 @@ class Review {
     await UserService.checkUserExists(userId);
 
     await OrderService.checkOrderDetailExists(data.orderId, data.orderDetailNumber);
+
+    const order = await OrderService.getOrderById(data.orderId);
+    if (order.status != OrderStatus.COMPLETED)
+      throw new BadRequestError("Order is not completed yet to be reviewed");
 
     return await prisma.review.create({
       data: {

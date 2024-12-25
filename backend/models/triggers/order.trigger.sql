@@ -28,7 +28,8 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF (OLD."status" = 'COMPLETED' AND NEW."status" != 'COMPLETED')
     OR (OLD."status" = 'RETURNED' AND NEW."status" != 'RETURNED')
-    OR (OLD."status" = 'CANCELLED' AND NEW."status" != 'CANCELLED') THEN
+    OR (OLD."status" = 'CANCELED' AND NEW."status" != 'CANCELED')
+    OR (OLD."status" = 'REJECTED' AND NEW."status" != 'REJECTED') THEN
         RAISE EXCEPTION 'Cannot revert order status when it is COMPLETED OR RETURNED';
     END IF;
 
