@@ -1,6 +1,7 @@
 import { OrderStatus, ReturnStatus } from "@prisma/client";
 import prisma from "../../models";
 import { NotFoundError, BadRequestError } from "../../core/ErrorResponse";
+import OrderService from "../order/order.service";
 
 type ReturnSlipData = {
   orderId: number;
@@ -59,6 +60,8 @@ class ReturnService {
     if (existingReturnSlip) {
       throw new BadRequestError(`A return slip for this order already exists`);
     }
+
+    await OrderService.updateOrderStatus(returnData.orderId, OrderStatus.RETURN_REQUESTED);
 
     return await prisma.returnSlip.create({
       data: {
