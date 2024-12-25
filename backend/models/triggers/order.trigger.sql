@@ -1,4 +1,4 @@
--- Active: 1732783228217@@127.0.0.1@5432@shopaa_db@public
+-- Active: 1734185756352@@127.0.0.1@5432@shopaa_db_xcjo@public
 
 CREATE OR REPLACE FUNCTION fn_generate_orderdetail_number()
 RETURNS TRIGGER AS $$
@@ -26,8 +26,10 @@ EXECUTE FUNCTION fn_generate_orderdetail_number();
 CREATE OR REPLACE FUNCTION fn_update_order_status()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF OLD."status" = 'COMPLETED' AND NEW."status" != 'COMPLETED' THEN
-        RAISE EXCEPTION 'Cannot revert order status';
+    IF (OLD."status" = 'COMPLETED' AND NEW."status" != 'COMPLETED')
+    OR (OLD."status" = 'RETURNED' AND NEW."status" != 'RETURNED')
+    OR (OLD."status" = 'CANCELLED' AND NEW."status" != 'CANCELLED') THEN
+        RAISE EXCEPTION 'Cannot revert order status when it is COMPLETED OR RETURNED';
     END IF;
 
     IF NEW."status" = 'COMPLETED' AND OLD."status" != 'COMPLETED' THEN
@@ -41,7 +43,6 @@ BEGIN
         SET "bankingBalance" = "bankingBalance" + NEW."totalAmount",
             "numSoldOrders" = "numSoldOrders" + 1
         WHERE "shopOwnerId" = NEW."shopId";
-
     END IF;
     RETURN NEW;
 END;
