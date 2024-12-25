@@ -217,7 +217,11 @@ class OrderService {
     let order: any = await prisma.order.findUnique({
       where: { orderId: orderId },
       include: {
-        orderProducts: true,
+        orderProducts: {
+          include: {
+            review: true
+          }
+        },
         customer: true,
         shop: {
           select: { 
@@ -231,12 +235,17 @@ class OrderService {
         },
       },
     });
-    order.shop.avatarUrl = order.shop.shopOwner.avatarImage.url;
-    delete order.shop.shopOwner;
-
     if (!order) {
       throw new NotFoundError('Order not found');
     }
+    
+    order.shop.avatarUrl = order.shop.shopOwner.avatarImage.url;
+    delete order.shop.shopOwner;
+    
+    order.orderProducts.forEach((product: any) => {
+      product.isReviewed = product.review ? true : false;
+      delete product.review;
+    });
 
     const orderWithDetails = await Promise.all(
       order.orderProducts.map(async (product: any) => {
