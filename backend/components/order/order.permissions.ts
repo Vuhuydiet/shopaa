@@ -10,11 +10,11 @@ export default {
     const { role } = req.user as any;
 
     if (role === Role.USER) {
-      req.query.userId = (req.user as any)?.userId;
+      req.query.userId = (req.user as any).userId;
     }
 
     if (role === Role.SHOP_MANAGER) {
-      req.query.shopId = (req.user as any)?.shopId;
+      req.query.shopId = (req.user as any).userId;
     }
 
     next();
