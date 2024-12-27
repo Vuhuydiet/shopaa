@@ -12,6 +12,7 @@ import reportRouter from './report/report.route';
 import cartRouter from './cart/cart.route';
 import reviewRouter from './review/review.route';
 import returnRouter from './return/return.route';
+import withdrawRouter from './withdraw/withdraw.route';
 
 router.use('/v1/access', accessRouter);
 router.use('/v1/user', userRouter);
@@ -24,5 +25,6 @@ router.use('/v1/report', reportRouter);
 router.use('/v1/cart', cartRouter);
 router.use('/v1/review', reviewRouter);
 router.use('/v1/return', returnRouter);
+router.use('/v1/withdraw',withdrawRouter);
 
 export default router;
