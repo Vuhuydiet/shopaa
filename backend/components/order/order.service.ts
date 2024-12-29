@@ -1,5 +1,5 @@
 import { OrderStatus } from '@prisma/client';
-import { BadRequestError, NotFoundError } from '../../core/ErrorResponse';
+import { BadRequestError, NotFoundError } from '../../core/responses/ErrorResponse';
 import prisma from '../../models';
 import ProductService from '../product/product.service';
 
@@ -435,10 +435,12 @@ class OrderService {
         break;
     }
 
-    return await prisma.order.update({
+    const updatedOrder = await prisma.order.update({
       where: { orderId: orderId },
       data: { status: newStatus },
     });
+
+    return updatedOrder;
   }
 }
 

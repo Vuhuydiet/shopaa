@@ -1,7 +1,7 @@
 import express from 'express';
 import { Request, Response } from 'express';
 
-import { NotFoundError } from '../../core/ErrorResponse';
+import { NotFoundError } from '../../core/responses/ErrorResponse';
 import { servePath, indexPath } from '../../configs/serve.config';
 const router = express.Router();
 

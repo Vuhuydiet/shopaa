@@ -27,4 +27,5 @@ model UserProfile {
   cart                 CartItem[]
   reports              Report[]
   handledReportsResult ReportResult[]
+  notifications        NotificationEvent[]
 }

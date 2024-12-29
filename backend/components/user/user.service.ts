@@ -1,5 +1,5 @@
 import { Gender } from '@prisma/client';
-import { NotFoundError } from '../../core/ErrorResponse';
+import { NotFoundError } from '../../core/responses/ErrorResponse';
 import prisma from '../../models'
 import ImageService from '../image/image.service';
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import ShopService from "./shop.service";
 import { matchedData } from "express-validator";
-import { CreatedResponse, OKResponse } from "../../core/SuccessResponse";
+import { CreatedResponse, OKResponse } from "../../core/responses/SuccessResponse";
 
 
 export default {
