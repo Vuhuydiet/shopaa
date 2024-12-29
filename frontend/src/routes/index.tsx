@@ -26,6 +26,7 @@ import OrderUser from '../components/OrderUser';
 import OrderUserDetail from '../components/OrderUser/orderDetails';
 import CheckoutPage from '../pages/Checkout';
 import ManageReturnSlips from '../components/ReturnRequests';
+import InfoShop from '../components/InfoShop';
 
 export const routes = [
   {
@@ -133,7 +134,7 @@ export const routes = [
               },
               {
                 path: 'shop-info',
-                // element: <Profile />, information of shop
+                element: <InfoShop />,
               },
               {
                 path: 'list-order',
