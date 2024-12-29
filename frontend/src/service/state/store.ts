@@ -5,6 +5,7 @@ import { filterSlice } from './slices/filter-slice';
 import { categorySlice } from './slices/category-slice';
 import { productSlice } from './slices/product-slice';
 import { ordersSlice } from './slices/orders-slice';
+import { returnSlipSlice } from './slices/return-slice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     categories: categorySlice.reducer,
     product: productSlice.reducer,
     orders: ordersSlice.reducer,
+    returnSlip: returnSlipSlice.reducer,
   },
 });
 

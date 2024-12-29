@@ -1,0 +1,22 @@
+.custom-green-button {
+  color: #187442;
+  border-color: #187442 !important;
+}
+
+.custom-red-button {
+  color: #ff4d4f;
+  border-color: #ff4d4f !important;
+}
+
+.custom-green-button:hover {
+  opacity: 0.8 !important;
+  background-color: #187442 !important;
+  color: white !important;
+}
+
+.custom-red-button:hover {
+  opacity: 0.8 !important;
+  background-color: #ff4d4f !important;
+
+  color: white !important;
+}

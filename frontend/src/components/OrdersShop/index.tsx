@@ -143,7 +143,12 @@ const OrderShop: React.FC = () => {
             </span>
           </Dropdown>
         ) : (
-          <Tag color={getOrderStatusColor(status)}>{status}</Tag>
+          <Tag color={getOrderStatusColor(status)}>
+            {' '}
+            {status === OrderStatus.RETURN_REQUESTED
+              ? 'WAITING RETURN'
+              : status}
+          </Tag>
         ),
     },
     {

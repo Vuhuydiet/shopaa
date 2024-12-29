@@ -25,6 +25,7 @@ import { ProductCart } from '../pages/product-cart';
 import OrderUser from '../components/OrderUser';
 import OrderUserDetail from '../components/OrderUser/orderDetails';
 import CheckoutPage from '../pages/Checkout';
+import ManageReturnSlips from '../components/ReturnRequests';
 
 export const routes = [
   {
@@ -141,6 +142,10 @@ export const routes = [
               {
                 path: 'list-order/:orderId',
                 element: <OrderShopDetail />,
+              },
+              {
+                path: 'return-requests',
+                element: <ManageReturnSlips />,
               },
             ],
           },

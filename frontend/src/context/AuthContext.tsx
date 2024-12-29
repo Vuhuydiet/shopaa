@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const token = localStorage.getItem('token') || '';
     const accountData = await getAccount(token);
     if ('metadata' in accountData && accountData.metadata.user) {
-      console.log('User data:', accountData.metadata.user);
+      // console.log('User data:', accountData.metadata.user);
       setUsername(accountData.metadata.user.username);
       setEmail(accountData.metadata.user.email);
     }
