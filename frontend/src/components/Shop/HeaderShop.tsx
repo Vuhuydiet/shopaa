@@ -45,7 +45,7 @@ const HeaderShop: React.FC<HeaderShopProps> = ({
                 ? Number(shopInfo?.totalRating / shopInfo?.numReviews).toFixed(
                     1,
                   )
-                : 0}
+                : 0}{' '}
               ({shopInfo?.numReviews} reviews)
             </div>
           </div>
@@ -54,7 +54,7 @@ const HeaderShop: React.FC<HeaderShopProps> = ({
               style={{ color: '#0033FF', fontSize: '24px' }}
               className="icon-header-shop"
             />
-            <div>{shopInfo?.numSoldOrders}</div>
+            <div>Sold Orders {shopInfo?.numSoldOrders}</div>
           </div>
         </div>
       </div>

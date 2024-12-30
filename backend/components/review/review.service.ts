@@ -1,16 +1,15 @@
-import { OrderStatus } from "@prisma/client";
-import { BadRequestError, NotFoundError } from "../../core/ErrorResponse";
-import prisma from "../../models";
-import OrderService from "../order/order.service";
-import UserService from "../user/user.service";
-
+import { OrderStatus } from '@prisma/client';
+import { BadRequestError, NotFoundError } from '../../core/ErrorResponse';
+import prisma from '../../models';
+import OrderService from '../order/order.service';
+import UserService from '../user/user.service';
 
 type ReviewData = {
   orderId: number;
   orderDetailNumber: number;
   rating: number;
   content: string;
-}
+};
 
 type ReviewQuery = {
   orderId?: number;
@@ -21,17 +20,20 @@ type ReviewQuery = {
 
   offset?: number;
   limit?: number;
-}
+};
 
 class Review {
   static async createReview(userId: number, data: ReviewData) {
     await UserService.checkUserExists(userId);
 
-    await OrderService.checkOrderDetailExists(data.orderId, data.orderDetailNumber);
+    await OrderService.checkOrderDetailExists(
+      data.orderId,
+      data.orderDetailNumber,
+    );
 
     const order = await OrderService.getOrderById(data.orderId);
     if (order.status != OrderStatus.COMPLETED)
-      throw new BadRequestError("Order is not completed yet to be reviewed");
+      throw new BadRequestError('Order is not completed yet to be reviewed');
 
     return await prisma.review.create({
       data: {
@@ -40,12 +42,12 @@ class Review {
 
         rating: data.rating,
         reviewContent: data.content,
-      }
+      },
     });
   }
 
   static async getReviewById(reviewId: number) {
-    const review =  await prisma.review.findUnique({
+    const review = await prisma.review.findUnique({
       where: { reviewId: reviewId },
       include: {
         orderDetail: true,
@@ -54,16 +56,15 @@ class Review {
             customer: {
               include: {
                 avatarImage: {
-                  select: { url: true }
-                }
-              }
-            }
-          }
-        }
-      }
+                  select: { url: true },
+                },
+              },
+            },
+          },
+        },
+      },
     });
-    if (!review)
-      throw new NotFoundError("Review not found");
+    if (!review) throw new NotFoundError('Review not found');
     let reviewData: any = review;
     let customer: any = review?.order.customer;
     customer.avatar = customer.avatarImage?.url;
@@ -76,17 +77,22 @@ class Review {
   static async getReviews(query: ReviewQuery) {
     const count = await prisma.review.count({
       where: {
-        order: (query.shopId || query.userId) ? {
-          customerId: query.userId,
-          shopId: query.shopId
-        } : undefined,
-        orderDetail: query.productId ? {
-          productId: query.productId
-        } : undefined,
+        order:
+          query.shopId || query.userId
+            ? {
+                customerId: query.userId,
+                shopId: query.shopId,
+              }
+            : undefined,
+        orderDetail: query.productId
+          ? {
+              productId: query.productId,
+            }
+          : undefined,
         orderId: query.orderId,
-        rating: query.rating
-      }
-    })
+        rating: query.rating,
+      },
+    });
     const reviews = await prisma.$queryRaw`
       SELECT 
         r.*,
@@ -99,7 +105,7 @@ class Review {
       JOIN "OrderDetail" od ON od."orderId" = r."orderId" AND od."orderDetailNumber" = r."orderDetailNumber"
       JOIN "Order" o ON o."orderId" = r."orderId"
       JOIN "UserProfile" u ON u."userId" = o."customerId"
-      JOIN "Image" i ON i."imageId" = u."avatarImageId"
+      LEFT JOIN "Image" i ON i."imageId" = u."avatarImageId"
       WHERE (${query.userId}::INTEGER IS NULL OR o."customerId" = ${query.userId}::INTEGER)
       AND (${query.shopId}::INTEGER IS NULL OR o."shopId" = ${query.shopId}::INTEGER)
       AND (${query.productId}::INTEGER IS NULL OR od."productId" = ${query.productId}::INTEGER)
@@ -114,7 +120,7 @@ class Review {
 
   static async deleteReview(reviewId: number) {
     await prisma.review.delete({
-      where: { reviewId: reviewId }
+      where: { reviewId: reviewId },
     });
   }
 }

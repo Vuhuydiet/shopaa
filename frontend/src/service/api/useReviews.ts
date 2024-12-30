@@ -49,8 +49,6 @@ export const useReviews = (product: IProduct) => {
     query: useQuery({
       queryKey: ['reviews', filter],
       queryFn: () => getReviews(filter),
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
     }),
   };
 };

@@ -101,6 +101,26 @@ class ReportService {
 		});
 	}
 
+	static async getReason(type: ReportType) {
+		let reasons;
+
+		if (type == ReportType.shop) {
+			reasons = await prisma.shopReportReason.findMany();
+		}
+		else if (type == ReportType.product) {
+			reasons = await prisma.productReportReason.findMany();
+		}
+		else {
+			throw new NotFoundError('Invalid report type');
+		}
+
+		if (!reasons || reasons.length === 0) {
+			throw new NotFoundError('No report reasons found');
+		}
+
+		return reasons;
+	}
+	
 	static async getReports(reportQuery: ReportQuery) {
 		if (reportQuery.shopId) {
 			const shop = await prisma.shop.findUnique({
