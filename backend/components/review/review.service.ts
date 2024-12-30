@@ -44,6 +44,9 @@ class ReviewService {
         rating: data.rating,
         reviewContent: data.content,
       },
+      include: {
+        order: true
+      }
     });
   }
 

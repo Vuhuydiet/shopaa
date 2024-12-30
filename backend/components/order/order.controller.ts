@@ -4,6 +4,7 @@ import OrderService from "./order.service";
 import { CreatedResponse, OKResponse } from "../../core/responses/SuccessResponse";
 import { NotFoundError } from "../../core/responses/ErrorResponse";
 import OrderNotificationService from "../notification/services/order.notification.service";
+import socketPool from "../io/socketPool";
 
 
 export default {
@@ -31,7 +32,11 @@ export default {
     const { orderData } = matchedData(req);
 
     const order = await OrderService.createOrder(userId, orderData);
-    await OrderNotificationService.createAndSendOrderStatusChangeNotification(order.orderId);
+    await OrderNotificationService.createAndSendOrderStatusChangeNotification(
+      order.orderId, 
+      socketPool.getSocket(order.customerId),
+      socketPool.getSocket(order.shopId)
+    );
 
     new CreatedResponse({ message: 'Order created successfully', metadata: { order } }).send(res);
   },

@@ -3,6 +3,7 @@ import { OKResponse, CreatedResponse } from '../../core/responses/SuccessRespons
 import { Request, Response } from 'express';
 import { matchedData } from 'express-validator';
 import ReviewNotificationService from '../notification/services/review.notification.service';
+import socketPool from '../io/socketPool';
 
 export default {
 
@@ -11,7 +12,7 @@ export default {
     const reviewData = matchedData(req) as any;
     
     const review = await ReviewService.createReview(userId, reviewData);
-    await ReviewNotificationService.createAndSendNewReviewNotification(review.reviewId);
+    await ReviewNotificationService.createAndSendNewReviewNotification(review.reviewId, socketPool.getSocket(review.order.shopId));
 
     new CreatedResponse({ message: 'Review created successfully', metadata: review }).send(res);
   },

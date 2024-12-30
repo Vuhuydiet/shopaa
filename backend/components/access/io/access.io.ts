@@ -7,7 +7,7 @@ import IOController from '../../../core/socket/ioController';
 const ioController = new IOController();
 
 ioController.use(async (socket: Socket, next: any) => {
-  const { token } = socket.handshake.auth.token;
+  const token = socket.handshake.auth?.token;
   if (token) {
     const sub: any = JWT.verifyToken(token).sub;
     if (sub) {

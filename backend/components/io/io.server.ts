@@ -23,8 +23,6 @@ const createWss = (app: Express) => {
       await notificationIoServive.flush(+id);
     }
 
-    console.log(23423);
-    
     ioController.applyOn(socket);
     
     socket.on('disconnect', () => {

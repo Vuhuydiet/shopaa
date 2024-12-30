@@ -23,7 +23,9 @@ class SocketPool {
     this.m_Sockets.delete(id);
   }
   
-  getSocket(id: string | number) {
+  getSocket(id: string | number | null) {
+    if (id == null) // undefined or null
+      return undefined;
     return this.m_Sockets.get(id);
   }
 
