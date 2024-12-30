@@ -17,7 +17,8 @@ const createWss = (app: Express) => {
   ioController.middlewares.forEach((middleware) => io.use(middleware));
 
   io.on('connection', async (socket) => {
-    const id = socketPool.addSocket(socket);
+
+    const id = socketPool.addSocket(socket, socket.user?.userId);
 
     if (!isNaN(+id)) {
       await notificationIoServive.flush(+id);

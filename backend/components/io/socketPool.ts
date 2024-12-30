@@ -10,13 +10,12 @@ class SocketPool {
     this.m_Size = 0;
   }
   
-  addSocket(socket: Socket) {
+  addSocket(socket: Socket, id: string | number = uuidv4()) {
     if (this.m_Size >= 100)
       throw new MaxPoolSizeError();
 
-    const key = socket.user?.userId ?? uuidv4();
-    this.m_Sockets.set(key, socket);
-    return key;
+    this.m_Sockets.set(id, socket);
+    return id;
   }
   
   removeSocket(id: string | number) {
