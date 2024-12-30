@@ -3,6 +3,7 @@ const router = express.Router();
 import passport from '../access/auth/authentication.middleware';
 import { query } from 'express-validator';
 import { NotificationStatus } from '@prisma/client';
+import notificationController from './notification.controller';
 
 
 router.get(
@@ -15,6 +16,8 @@ router.get(
   query('to').optional().isISO8601().toDate(),
   query('limit').optional().isInt().toInt(),
   query('offset').optional().isInt().toInt(),
+  
+  notificationController.getNotifications
 )
 
 
