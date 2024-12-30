@@ -7,19 +7,37 @@ import { WithdrawStatus, Role } from '@prisma/client';
 import { body, query, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 
-// create
+// create request
 router.post('/',
   passport.authenticate('jwt', { session: false }),
   authorizationMiddleware.authorize([Role.SHOP_MANAGER]),
   body('amount').isNumeric().toFloat(),
-  body('shopId').isNumeric().toInt(),
   handleValidationErrors,
   withdrawController.createWithdrawRequest
 );
 
+// create history 
+router.post('/:requestId',
+  passport.authenticate('jwt', { session: false }),
+  authorizationMiddleware.authorize([Role.ADMIN]),
+  param('requestId').isNumeric().toInt(),
+  body('status').optional().custom((value:string)=>Object.values(WithdrawStatus).includes(value as WithdrawStatus)),
+  body('note').optional().isString(),
+  handleValidationErrors,
+  withdrawController.createWithdrawHistory,
+);
+//get for shop
+router.get('/shop',
+  passport.authenticate('jwt', { session: false }),
+  authorizationMiddleware.authorize([Role.SHOP_MANAGER]),
+  handleValidationErrors,
+  withdrawController.getWithdrawForShop
+);
+
+
 router.get('/',
   passport.authenticate('jwt', { session: false }),
-  authorizationMiddleware.authorize([Role.ADMIN, Role.SHOP_MANAGER]),
+  authorizationMiddleware.authorize([Role.ADMIN]),
   query('status').optional().custom((value:string)=>Object.values(WithdrawStatus).includes(value as WithdrawStatus)),
   query('shopId').optional().isNumeric().toInt(),
   query('postAfter').optional().isISO8601().toDate(),
@@ -42,24 +60,8 @@ router.get('/:requestId',
 );
 
 
-router.get('/shop/:shopId',
-  passport.authenticate('jwt', { session: false }),
-  authorizationMiddleware.authorize([Role.SHOP_MANAGER]),
-  param('shopId').isNumeric().toInt(),
-  handleValidationErrors,
-  withdrawController.getWithdrawForShop
-);
 
 
-router.post('/:requestId',
-  passport.authenticate('jwt', { session: false }),
-  authorizationMiddleware.authorize([Role.ADMIN]),
-  param('requestId').isNumeric().toInt(),
-  query('status').optional().custom((value:string)=>Object.values(WithdrawStatus).includes(value as WithdrawStatus)),
-  body('note').optional().isString(),
-  handleValidationErrors,
-  withdrawController.createWithdrawHistory,
-);
 
 router.delete('/:requestId',
   passport.authenticate('jwt', { session: false }),

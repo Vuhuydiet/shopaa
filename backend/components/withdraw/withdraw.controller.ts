@@ -6,11 +6,29 @@ import WithdrawService from "./withdraw.service";
 export default {
   // Create withdraw request
   createWithdrawRequest: async (req: Request, res: Response) => {
+    const {userId} = req.user as any;
     const withdrawData = matchedData(req) as any;
+    withdrawData.shopId = userId;
     const withdrawRequest = await WithdrawService.createWithdrawRequest(withdrawData);
     new CreatedResponse({message: "Withdraw created successfully",metadata: { withdrawRequest }}).send(res);
   },
 
+  
+  //create history
+  createWithdrawHistory: async(req:Request, res:Response) => {
+    const {userId} = req.user as any;
+    const data = matchedData(req) as any;
+    const history = await WithdrawService.createWithdrawHistory(data,userId);
+    new OKResponse({message:"Withdraw history upserted succesfully", metadata: history}).send(res);
+  },
+
+    //get for shop
+    getWithdrawForShop: async(req:Request, res:Response) =>{
+      const { userId } = req.user as any;
+      const withdrawRequest= await WithdrawService.getWithdrawForShop(userId);
+      new OKResponse({message:"Withdraw request for shop fetched succesfully", metadata:withdrawRequest}).send(res);
+    },
+  
   //get
   getAllWithdraw: async(req:Request, res:Response) => {
     const query = matchedData(req) as any;
@@ -22,21 +40,6 @@ export default {
     const {requestId} = matchedData(req);
     const withdrawRequest = await WithdrawService.getWithdrawById(requestId);
     new OKResponse({message:"Withdraw request fetched succesfully", metadata: {withdrawRequest}}).send(res);
-  },
-
-  //get for shop
-  getWithdrawForShop: async(req:Request, res:Response) =>{
-    const data= matchedData(req) as any;
-    const withdrawRequest= await WithdrawService.getWithdrawForShop(data);
-    new OKResponse({message:"Withdraw request for shop fetched succesfully", metadata:withdrawRequest}).send(res);
-  },
-
-  //upsert history
-  createWithdrawHistory: async(req:Request, res:Response) => {
-    const {userId} = req.user as any;
-    const data = matchedData(req) as any;
-    const history = await WithdrawService.createWithdrawHistory(data,userId);
-    new OKResponse({message:"Withdraw history upserted succesfully", metadata: history}).send(res);
   },
 
   //delete

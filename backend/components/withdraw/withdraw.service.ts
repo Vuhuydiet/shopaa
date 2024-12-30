@@ -3,7 +3,7 @@ import prisma from "../../models";
 import { NotFoundError, BadRequestError } from "../../core/ErrorResponse";
 
 type WithdrawData = {
-  requestId: number;
+ // requestId: number;
   amount: number;
   shopId: number;
 }
@@ -149,16 +149,16 @@ class WithdrawService {
 
 
   // get withdraw for shop
-  static async getWithdrawForShop(data: WithdrawData) {
+  static async getWithdrawForShop(shopId:number) {
     const shop = await prisma.shop.findUnique({
-      where: { shopOwnerId: data.shopId }
+      where: { shopOwnerId: shopId }
     });
     if (!shop)
       throw new NotFoundError('Shop not found');
 
     const withdrawRequests = await prisma.withdrawRequest.findMany({
       where: {
-        shopOwnerId: data.shopId,
+        shopOwnerId: shopId,
       },
       include: {
         requesthistory: true,
