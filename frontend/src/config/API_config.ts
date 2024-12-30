@@ -45,3 +45,8 @@ export const RETURN_API_ENDPOINTS = {
   RETURN: `${API_DOMAIN}api/v1/return`,
   REASONS: `${API_DOMAIN}api/v1/return/reasons`,
 };
+
+export const WITHDRAW_API_ENDPOINTS = {
+  WITHDRAW: `${API_DOMAIN}api/v1/withdraw/`,
+  GET_LIST_WITHDRAW: `${API_DOMAIN}api/v1/withdraw/shop/`,
+};
