@@ -14,4 +14,5 @@ model Shop {
   orders    Order[]
   products  Product[]
   reports   Report[]
+  withdraw WithdrawRequest[]
 }

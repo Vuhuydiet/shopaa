@@ -27,6 +27,7 @@ import OrderUserDetail from '../components/OrderUser/orderDetails';
 import CheckoutPage from '../pages/Checkout';
 import ManageReturnSlips from '../components/ReturnRequests';
 import InfoShop from '../components/InfoShop';
+import ShopWithdraw from '../components/WalletShop';
 
 export const routes = [
   {
@@ -147,6 +148,10 @@ export const routes = [
               {
                 path: 'return-requests',
                 element: <ManageReturnSlips />,
+              },
+              {
+                path: 'finance',
+                element: <ShopWithdraw />,
               },
             ],
           },
