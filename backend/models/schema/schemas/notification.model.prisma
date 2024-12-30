@@ -1,6 +1,6 @@
 enum NotificationStatus {
   NOT_SENT
-  UNREAD
+  SENT
   READ
 }
 

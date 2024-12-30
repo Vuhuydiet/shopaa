@@ -23,7 +23,7 @@ export default {
 
     notifications.forEach(async notif => {
       socket.emit('notification-flush', notif);
-      await NotificationService.updateNotifStatus(notif.notificationId, NotificationStatus.UNREAD);
+      await NotificationService.updateNotifStatus(notif.notificationId, NotificationStatus.SENT);
     });
   }
 
