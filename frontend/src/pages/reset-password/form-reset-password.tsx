@@ -101,6 +101,7 @@ export const FormResetPassword = () => {
           <Form
             onFinish={onFinishResetPassword}
             className="login__content-form"
+            style={{ maxWidth: '300px' }}
           >
             <Col
               className="login__content-form__item reset-password"
@@ -186,7 +187,11 @@ export const FormResetPassword = () => {
           </Form>
         </>
       ) : (
-        <Form onFinish={onFinishEmail} className="login__content-form">
+        <Form
+          onFinish={onFinishEmail}
+          className="login__content-form"
+          style={{ maxWidth: '300px' }}
+        >
           <Form.Item
             name="email"
             className="login__content-form__item"

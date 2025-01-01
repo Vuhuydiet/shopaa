@@ -16,6 +16,8 @@ import logo from '../../assets/images/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
 import { useCart } from '../../service/api/useCart';
+import NotificationPopover from '../notification/notification';
+import { NotificationProvider } from '../../context/NotificationContext';
 
 const { Search } = Input;
 
@@ -32,7 +34,6 @@ const HeaderComponent: React.FC = () => {
       refreshUser();
     }
   }, [isAuthenticated]);
-  const unreadNotifications = 5;
 
   const handleLogout = () => {
     resetUser();
@@ -120,25 +121,9 @@ const HeaderComponent: React.FC = () => {
                     alignItems: 'flex-end',
                   }}
                 >
-                  <NavLink
-                    to="/notifications"
-                    className={
-                      location.pathname === '/notifications'
-                        ? 'active-link'
-                        : ''
-                    }
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-end',
-                    }}
-                  >
-                    <Badge count={unreadNotifications}>
-                      <BellOutlined
-                        style={{ fontSize: '28px' }}
-                        className="header__icon"
-                      />
-                    </Badge>
-                  </NavLink>
+                  <NotificationProvider>
+                    <NotificationPopover />
+                  </NotificationProvider>
                 </Col>
 
                 <Col

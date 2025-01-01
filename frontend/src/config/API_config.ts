@@ -45,3 +45,17 @@ export const RETURN_API_ENDPOINTS = {
   RETURN: `${API_DOMAIN}api/v1/return`,
   REASONS: `${API_DOMAIN}api/v1/return/reasons`,
 };
+
+export const NOTIFICATION_API_ENDPOINTS = {
+  NOTIFICATION: `${API_DOMAIN}api/v1/notification`,
+};
+
+export const SOCKET_EVENTS = {
+  CONNECT: 'connect',
+  DISCONNECT: 'disconnect',
+  NEW_NOTIFICATION: 'notification-new',
+  FLUSH_NOTIFICATION: 'notification-flush',
+  READ_NOTIFICATION: 'notification-read',
+};
+
+export const SOCKET_URL = 'ws://localhost:3080';
