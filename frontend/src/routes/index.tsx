@@ -28,6 +28,7 @@ import CheckoutPage from '../pages/Checkout';
 import ManageReturnSlips from '../components/ReturnRequests';
 import InfoShop from '../components/InfoShop';
 import ShopWithdraw from '../components/WalletShop';
+import AdminWithdraw from '../components/ManagerWithdraw';
 
 export const routes = [
   {
@@ -48,6 +49,10 @@ export const routes = [
           {
             path: 'report',
             element: <ReportPage />,
+          },
+          {
+            path: 'withdraw-request',
+            element: <AdminWithdraw />,
           },
         ],
       },

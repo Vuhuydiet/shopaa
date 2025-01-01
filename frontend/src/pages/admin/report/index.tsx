@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AppstoreOutlined,
   ContactsOutlined,
@@ -9,10 +9,11 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   PieChartOutlined,
+  TransactionOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Col, Layout, Menu, Row, Space, Typography } from 'antd';
+import { Button, Layout, Menu, Space, Typography } from 'antd';
 import { ReportTable } from '../../../components/report-table';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
@@ -24,6 +25,7 @@ const items: MenuItem[] = [
   { key: '1', icon: <DashboardOutlined />, label: 'Dashboard' },
   { key: '2', icon: <ContactsOutlined />, label: 'Report' },
   { key: '3', icon: <UserOutlined />, label: 'User' },
+  { key: 'withdraw', icon: <TransactionOutlined />, label: 'Withdraw request' },
   {
     key: '4',
     label: 'Mail',

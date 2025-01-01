@@ -1,17 +1,26 @@
 import { SHOP_API_ENDPOINTS } from '../config/API_config';
 import { IShop } from '../interfaces/IShop';
 
-// GET SHOP
-export const getShop = async (shopId: number) => {
+export const getShop = async (shopId: number, token?: string) => {
   try {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${SHOP_API_ENDPOINTS.SHOP}${shopId}`, {
       method: 'GET',
+      headers,
     });
 
     if (!response.ok) {
       throw new Error(`Error fetching shop: ${response.statusText}`);
     }
     const data = await response.json();
+    // console.log('data:', data);
     const infoShop: IShop = {
       shopOwnerId: data?.metadata?.shop?.shopOwnerId,
       name: data?.metadata?.shop?.shopName,
@@ -55,7 +64,6 @@ export const registerShop = async (token: string, shopData: any) => {
 // UPDATE SHOP
 export const updateShop = async (token: string, shopData: any) => {
   try {
-    console.log('shopDataffffffffffffff:', shopData);
     const response = await fetch(`${SHOP_API_ENDPOINTS.SHOP}`, {
       method: 'PATCH',
       headers: {

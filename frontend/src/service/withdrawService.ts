@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { WITHDRAW_API_ENDPOINTS } from '../config/API_config';
-import { WithdrawQuery } from '../interfaces/IWithDraw';
+import { IWithdraw, WithdrawQuery } from '../interfaces/IWithDraw';
 
 const getToken = () => {
   return localStorage.getItem('token');
@@ -16,12 +16,25 @@ export const getAllWithdrawRequest = async (param: WithdrawQuery) => {
       },
     });
     if (response.data?.metadata) {
-      return response.data.metadata;
+      const result: IWithdraw[] = response.data?.metadata?.map(
+        (item: any): IWithdraw => ({
+          requestId: item?.requestId,
+          handlerId: item?.requesthistory?.handler,
+          shopId: item?.shopOwnerId,
+          amount: item?.amount,
+          status: item?.requesthistory?.status,
+          createdAt: item?.createdAt,
+          updatedAt: item?.requesthistory?.createdAt,
+          note: item?.requesthistory?.note,
+          shopName: item?.shopName,
+        }),
+      );
+      return { items: result, count: result.length | 0 };
     }
   } catch (error) {
     console.error('Error fetching withdraws:', error);
   }
-  return [];
+  return { items: [], count: 0 };
 };
 
 export const getWithdrawById = async (requestId: number) => {
@@ -36,7 +49,18 @@ export const getWithdrawById = async (requestId: number) => {
       },
     );
     if (response.data?.metadata) {
-      return response.data.metadata;
+      const result: IWithdraw = {
+        requestId: response.data.metadata?.request?.requestId,
+        handlerId: response.data.metadata?.request?.requesthistory?.handler,
+        shopId: response.data.metadata?.request?.shopOwnerId,
+        amount: response.data.metadata?.request?.amount,
+        status: response.data.metadata?.request?.requesthistory?.status,
+        createdAt: response.data.metadata?.request?.createdAt,
+        updatedAt: response.data.metadata?.request?.requesthistory?.createdAt,
+        note: response.data.metadata?.request?.requesthistory?.note,
+        shopName: response.data.metadata?.request?.shopName,
+      };
+      return result;
     }
   } catch (error) {
     console.error('Error fetching withdraw:', error);
@@ -44,10 +68,10 @@ export const getWithdrawById = async (requestId: number) => {
   return [];
 };
 
-export const getWithdrawForShop = async (shopId: number) => {
+export const getWithdrawForShop = async () => {
   try {
     const response = await axios.get(
-      `${WITHDRAW_API_ENDPOINTS.WITHDRAW}/shop/${shopId}`,
+      `${WITHDRAW_API_ENDPOINTS.WITHDRAW}/shop`,
       {
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -56,7 +80,20 @@ export const getWithdrawForShop = async (shopId: number) => {
       },
     );
     if (response.data?.metadata) {
-      return response.data.metadata;
+      const result: IWithdraw[] = response.data?.metadata?.map(
+        (item: any): IWithdraw => ({
+          requestId: item?.requestId,
+          handlerId: item?.requesthistory?.handler,
+          shopId: item?.shopOwnerId,
+          amount: item?.amount,
+          status: item?.requesthistory?.status,
+          createdAt: item?.createdAt,
+          updatedAt: item?.requesthistory?.createdAt,
+          note: item?.requesthistory?.note,
+          shopName: item?.shopName,
+        }),
+      );
+      return result;
     }
   } catch (error) {
     console.error('Error fetching withdraw:', error);
@@ -96,10 +133,13 @@ export const createWithdrawRequest = async (withdrawData: Object) => {
   }
 };
 
-export const createWithdrawHistory = async (withdrawData: Object) => {
+export const createWithdrawHistory = async (
+  requestId: number,
+  withdrawData: Object,
+) => {
   try {
     const response = await axios.post(
-      WITHDRAW_API_ENDPOINTS.WITHDRAW,
+      `${WITHDRAW_API_ENDPOINTS.WITHDRAW}${requestId}`,
       withdrawData,
       {
         headers: {
