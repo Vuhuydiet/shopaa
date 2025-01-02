@@ -11,10 +11,10 @@ export default {
     const { role, userId } = req.user as any;
     const query = matchedData(req) as { shopId?: number; year: number };
 
-    // Kiểm tra quyền hạn
-    if (role !== Role.ADMIN && query.shopId !== userId) {
-      throw new UnauthorizedError("You are not authorized to view this request");
+    if (role !== Role.ADMIN) {
+      query.shopId = userId;
     }
+
     const revenue = await StatisticsService.getRevenueByMonth(query);
 
     new OKResponse({
@@ -28,12 +28,10 @@ export default {
     const { role, userId } = req.user as any;
     const query = matchedData(req) as { shopId?: number; year: number };
 
-    // Kiểm tra quyền hạn
-    if (role !== Role.ADMIN && query.shopId !== userId) {
-      throw new UnauthorizedError("You are not authorized to view this request");
+    if (role !== Role.ADMIN) {
+      query.shopId = userId;
     }
     
-    // Lấy thống kê doanh thu theo sản phẩm từ service
     const productStats = await StatisticsService.getProductRevenueByMonth(query);
 
     new OKResponse({
@@ -47,9 +45,8 @@ export default {
     const { role, userId } = req.user as any;
     const query = matchedData(req) as { shopId?: number; year: number };
 
-    // Kiểm tra quyền hạn
-    if (role !== Role.ADMIN && query.shopId !== userId) {
-      throw new UnauthorizedError("You are not authorized to view this request");
+    if (role !== Role.ADMIN) {
+      query.shopId = userId;
     }
 
 
