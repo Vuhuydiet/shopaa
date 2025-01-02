@@ -11,10 +11,23 @@ const router = express.Router();
 
 router.get(
   '/:shopId',
-  param('shopId').isNumeric().withMessage('shopId must be a number'),
+  
+  param('shopId').isNumeric().withMessage('shopId must be a number').toInt(),
   handleValidationErrors,
+
   shopController.getShop
 );
+
+router.get(
+  '/:shopId/self', 
+
+  passport.authenticate('jwt', { session: false }),
+  Auth.authorize([Role.SHOP_MANAGER, Role.ADMIN]),
+  param('shopId').isNumeric().withMessage('shopId must be a number').toInt(),
+  handleValidationErrors,
+
+  shopController.getSelfShop
+)
 
 router.post(
   '/register',

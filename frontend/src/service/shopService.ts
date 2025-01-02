@@ -20,13 +20,48 @@ export const getShop = async (shopId: number, token?: string) => {
       throw new Error(`Error fetching shop: ${response.statusText}`);
     }
     const data = await response.json();
-    console.log('data:', data);
     const infoShop: IShop = {
       shopOwnerId: data?.metadata?.shop?.shopOwnerId,
       name: data?.metadata?.shop?.shopName,
       description: data?.metadata?.shop?.shopDescription,
       address: data?.metadata?.shop?.address,
-      bankBalance: data?.metadata?.shop?.bankBalance,
+      bankBalance: data?.metadata?.shop?.bankingBalance,
+      numProducts: data?.metadata?.shop?.numProducts,
+      numSoldOrders: data?.metadata?.shop?.numSoldOrders,
+      numReviews: data?.metadata?.shop?.numReviews,
+      totalRating: data?.metadata?.shop?.totalRating,
+    };
+    return infoShop;
+  } catch (error) {
+    console.error('Error in getShop: ', error);
+    throw error;
+  }
+};
+export const getShopSelf = async (shopId: number, token?: string) => {
+  try {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${SHOP_API_ENDPOINTS.SHOP}${shopId}/self`, {
+      method: 'GET',
+      headers,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching shop: ${response.statusText}`);
+    }
+    const data = await response.json();
+    const infoShop: IShop = {
+      shopOwnerId: data?.metadata?.shop?.shopOwnerId,
+      name: data?.metadata?.shop?.shopName,
+      description: data?.metadata?.shop?.shopDescription,
+      address: data?.metadata?.shop?.address,
+      bankBalance: data?.metadata?.shop?.bankingBalance,
       numProducts: data?.metadata?.shop?.numProducts,
       numSoldOrders: data?.metadata?.shop?.numSoldOrders,
       numReviews: data?.metadata?.shop?.numReviews,

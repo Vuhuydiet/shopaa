@@ -14,7 +14,7 @@ import {
   createWithdrawRequest,
   getWithdrawForShop,
 } from '../../service/withdrawService';
-import { getShop } from '../../service/shopService';
+import { getShopSelf } from '../../service/shopService';
 import { WalletFilled } from '@ant-design/icons';
 import { IWithdraw } from '../../interfaces/IWithDraw';
 import { formatDateString } from '../../utils/formatDateString';
@@ -47,7 +47,7 @@ const ShopWithdraw: React.FC = () => {
   useEffect(() => {
     const fetchDataShop = async () => {
       try {
-        const rs = await getShop(
+        const rs = await getShopSelf(
           parseInt(localStorage.getItem('userId') || ''),
           localStorage.getItem('token') || '',
         );
