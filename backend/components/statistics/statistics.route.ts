@@ -42,6 +42,7 @@ router.get('/withdrawals',
   passport.authenticate('jwt', { session: false }),
   authorizationMiddleware.authorize([Role.ADMIN]),
   query('year').isInt().toInt(),
+  query('shopId').optional().isNumeric().toInt(),
   handleValidationErrors,
   statisticsController.getWithdrawalStatistics
 );

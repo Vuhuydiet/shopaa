@@ -33,10 +33,6 @@ export default {
       throw new UnauthorizedError("You are not authorized to view this request");
     }
     
-    if (role === Role.ADMIN) {
-      query.shopId = undefined; 
-    }
-
     // Lấy thống kê doanh thu theo sản phẩm từ service
     const productStats = await StatisticsService.getProductRevenueByMonth(query);
 
@@ -55,10 +51,7 @@ export default {
     if (role !== Role.ADMIN && query.shopId !== userId) {
       throw new UnauthorizedError("You are not authorized to view this request");
     }
-    
-    if (role === Role.ADMIN) {
-      query.shopId = undefined; 
-    }
+
 
     // Lấy thống kê trạng thái đơn hàng theo tháng từ service
     const orderStats = await StatisticsService.getOrderStatusByMonth(query);
