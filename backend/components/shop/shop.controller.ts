@@ -15,7 +15,13 @@ export default {
 
   getShop: async (req: Request, res: Response) => {
     const { shopId } = matchedData(req);
-    const shop = await ShopService.getShopById(+shopId);
+    const shop = await ShopService.getShopById(shopId);
+    new OKResponse({ message: 'Get shop successflly', metadata: { shop } }).send(res);
+  },
+
+  getOwnShop: async (req: Request, res: Response) => {
+    const { userId } = req.user as any;
+    const shop = await ShopService.getShopById(userId, true);
     new OKResponse({ message: 'Get shop successflly', metadata: { shop } }).send(res);
   },
 

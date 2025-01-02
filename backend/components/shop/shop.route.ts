@@ -11,10 +11,15 @@ const router = express.Router();
 
 router.get(
   '/:shopId',
-  param('shopId').isNumeric().withMessage('shopId must be a number'),
+  param('shopId').isNumeric().withMessage('shopId must be a number').toInt(),
   handleValidationErrors,
   shopController.getShop
 );
+
+router.get(
+  '/self',
+  shopController.getOwnShop
+)
 
 router.post(
   '/register',
