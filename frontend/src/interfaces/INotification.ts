@@ -11,8 +11,12 @@ export interface INotification {
   userId: number;
   eventType: string;
   payload: {
-    orderId: number;
-    newOrderStatus: OrderStatus;
+    orderId?: number;
+    newOrderStatus?: OrderStatus;
+
+    reviewId?: number;
+    productId?: number;
+
     updatedAt: string;
   };
   createdAt: string;

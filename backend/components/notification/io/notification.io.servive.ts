@@ -1,18 +1,17 @@
-import { NotificationEvent } from "../core/notification";
-import NotificationService from "../services/notification.service";
-import { Socket } from "socket.io";
-
+import { NotificationEvent } from '../core/notification';
+import NotificationService from '../services/notification.service';
+import { Socket } from 'socket.io';
 
 export default {
   createAndSend: async (notif: NotificationEvent, socket?: Socket) => {
+    if (socket) notif.markAsSent();
 
-    if (socket)
-      notif.markAsSent();
-    
     const notification = await NotificationService.createNotification(notif);
 
-    if (socket)
+    if (socket) {
       socket.emit('notification-new', notification);
+      console.log('Notification sent', notification);
+    }
   },
 
   // flush: async (userId: number, socket?: Socket) => {
@@ -25,5 +24,4 @@ export default {
   //     await NotificationService.updateNotifStatus(notif.notificationId, NotificationStatus.SENT);
   //   });
   // }
-
-}
+};

@@ -17,9 +17,8 @@ import { useAuthContext } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
 import { useCart } from '../../service/hooks/useCart';
 import NotificationPopover from '../notification/notification';
-import { NotificationProvider } from '../../context/NotificationContext';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../service/state/store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../service/state/store';
 import { filterAsync } from '../../service/state/actions/filter-action';
 import { PRODUCTS_FILTER } from '../../config/constants';
 
@@ -151,9 +150,7 @@ const HeaderComponent: React.FC = () => {
                     alignItems: 'flex-end',
                   }}
                 >
-                  <NotificationProvider>
-                    <NotificationPopover />
-                  </NotificationProvider>
+                  <NotificationPopover />
                 </Col>
 
                 <Col

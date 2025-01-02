@@ -54,8 +54,7 @@ export const SOCKET_EVENTS = {
   CONNECT: 'connect',
   DISCONNECT: 'disconnect',
   NEW_NOTIFICATION: 'notification-new',
-  FLUSH_NOTIFICATION: 'notification-flush',
   READ_NOTIFICATION: 'notification-read',
 };
 
-export const SOCKET_URL = 'ws://localhost:3080';
+export const SOCKET_URL = 'http://localhost:3080';
