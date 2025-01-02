@@ -4,7 +4,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { capitalizeWords } from '../../utils/capitalizeWords';
 import { formatDateString } from '../../utils/formatDateString';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
-import { useFormReview } from '../../service/api/useFormReview';
+import { useFormReview } from '../../service/hooks/useFormReview';
 
 export const FormReview = memo(
   ({

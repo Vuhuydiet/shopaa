@@ -22,7 +22,7 @@ import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
 import { deserializeDate } from '../../utils/date-convert';
 import { IProductOrder } from '../../interfaces/Order/IProductOrder';
 import { NavLink } from 'react-router-dom';
-import { useOrders } from '../../service/api/order/useOrders';
+import { useOrders } from '../../service/hooks/order/useOrders';
 import { FormReview } from '../form-review';
 import { FormReturn } from '../form-return';
 import axios from 'axios';

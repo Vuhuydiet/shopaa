@@ -11,6 +11,6 @@ export interface IFilterProduct {
   maxQuantity?: number;
   sortBy?: string;
   order?: string;
-  offset?: number;
-  limit?: number;
+  offset: number;
+  limit: number;
 }

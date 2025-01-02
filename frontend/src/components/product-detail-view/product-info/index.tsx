@@ -6,7 +6,7 @@ import { ProductColor } from './product-color';
 import { ProductSize } from './product-size';
 import { ProductButton } from './product-button';
 import { useCallback, useMemo, useState } from 'react';
-import { useCart } from '../../../service/api/useCart';
+import { useCart } from '../../../service/hooks/useCart';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../service/state/store';
 import { useNavigate } from 'react-router-dom';

@@ -4,17 +4,18 @@ import {
   CalculatorOutlined,
   CalendarOutlined,
   MoneyCollectOutlined,
+  RestOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
-import { RootState } from '../../service/state/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ICategory } from '../../interfaces/ICategory';
-import { setFilter } from '../../service/state/slices/filter-slice';
-import { setPagination } from '../../service/state/slices/pagination-slice';
 import { serializeDate } from '../../utils/date-convert';
-import { useCategories } from '../../service/api/useCategories';
-import { setCategories } from '../../service/state/slices/category-slice';
+import { useCategories } from '../../service/hooks/useCategories';
+import { filterAsync } from '../../service/state/actions/filter-action';
+import { resetInitialState } from '../../service/state/reducers/filter-reducer';
+import { AppDispatch, RootState } from '../../service/state/store';
+import { PRODUCTS_FILTER } from '../../config/constants';
 
 export const CategoryFilter = () => {
   const [minPrice, setMinPrice] = useState<number | null>(null);
@@ -23,75 +24,72 @@ export const CategoryFilter = () => {
   const [maxQuantity, setMaxQuantity] = useState<number | null>(null);
   const [postedAfter, setPostedAfter] = useState<Date | null>(null);
   const [postedBefore, setPostedBefore] = useState<Date | null>(null);
-  const dispatch = useDispatch();
-  const filters = useSelector((state: RootState) => state.filters);
+  const dispatch = useDispatch<AppDispatch>();
   const { data: categories } = useCategories();
+  const filter = useSelector((state: RootState) => state.filters.filter);
 
-  useEffect(() => {
-    if (categories) {
-      dispatch(setCategories(categories));
-    }
-  }, [categories]);
+  const handleCategoryChange = (key: number | undefined) => {
+    console.log('category', key);
+    dispatch(
+      filterAsync({
+        ...filter,
+        offset: 0,
+        category: key,
+      }),
+    );
+  };
 
-  const handleCategoryChange = useCallback(
-    (key: number | undefined) => {
+  const handleChangePriceRange = (
+    minPrice: number | null,
+    maxPrice: number | null,
+  ) => {
+    if (minPrice !== null && maxPrice !== null && minPrice < maxPrice) {
       dispatch(
-        setFilter({
-          category: key || undefined,
+        filterAsync({
+          ...filter,
+          minPrice,
+          maxPrice,
+          offset: 0,
         }),
       );
-    },
-    [filters.category, dispatch],
-  );
+    }
+  };
 
-  const handleChangePriceRange = useCallback(
-    (minPrice: number | null, maxPrice: number | null) => {
-      if (minPrice != null && maxPrice != null && minPrice < maxPrice) {
-        dispatch(
-          setFilter({
-            minPrice: minPrice,
-            maxPrice: maxPrice,
-          }),
-        );
-        dispatch(setPagination({ currentPage: 1 }));
-      }
-    },
-    [minPrice, maxPrice, dispatch],
-  );
+  const handleChangeQuantityRange = (
+    minQuantity: number | null,
+    maxQuantity: number | null,
+  ) => {
+    if (
+      minQuantity != null &&
+      maxQuantity != null &&
+      minQuantity < maxQuantity
+    ) {
+      dispatch(
+        filterAsync({
+          ...filter,
+          minQuantity,
+          maxQuantity,
+          offset: 0,
+        }),
+      );
+    }
+  };
 
-  const handleChangeQuantityRange = useCallback(
-    (minQuantity: number | null, maxQuantity: number | null) => {
-      if (
-        minQuantity != null &&
-        maxQuantity != null &&
-        minQuantity < maxQuantity
-      ) {
-        dispatch(
-          setFilter({
-            minQuantity: minQuantity,
-            maxQuantity: maxQuantity,
-          }),
-        );
-        dispatch(setPagination({ currentPage: 1 }));
-      }
-    },
-    [minQuantity, maxQuantity, dispatch],
-  );
-
-  const handleChangeDateRange = useCallback(
-    (postedAfter: Date | null, postedBefore: Date | null) => {
-      if (postedAfter != null && postedBefore != null) {
-        dispatch(
-          setFilter({
-            postedAfter: serializeDate(postedAfter),
-            postedBefore: serializeDate(postedBefore),
-          }),
-        );
-        dispatch(setPagination({ currentPage: 1 }));
-      }
-    },
-    [postedAfter, postedBefore, dispatch],
-  );
+  const handleChangeDateRange = (
+    postedAfter: Date | null,
+    postedBefore: Date | null,
+  ) => {
+    if (postedAfter != null && postedBefore != null) {
+      dispatch(
+        filterAsync({
+          ...filter,
+          postedAfter: serializeDate(postedAfter),
+          postedBefore: serializeDate(postedBefore),
+          offset: 0,
+        }),
+      );
+    }
+  };
 
   return (
     <Menu
@@ -253,6 +251,40 @@ export const CategoryFilter = () => {
               ),
             },
           ],
+        },
+        {
+          key: 'reset-filter',
+          label: 'Reset Filter',
+          icon: <RestOutlined />,
+          onClick: () => {
+            setMinPrice(null);
+            setMaxPrice(null);
+            setMinQuantity(null);
+            setMaxQuantity(null);
+            setPostedAfter(null);
+            setPostedBefore(null);
+            const order = filter.order;
+            const sortBy = filter.sortBy;
+
+            dispatch(
+              filterAsync({
+                keyword: undefined,
+                shopId: undefined,
+                category: undefined,
+                brand: undefined,
+                postedAfter: undefined,
+                postedBefore: undefined,
+                minPrice: undefined,
+                maxPrice: undefined,
+                minQuantity: undefined,
+                maxQuantity: undefined,
+                order,
+                sortBy,
+                offset: 0,
+                limit: PRODUCTS_FILTER.ITEMS_PER_PAGE,
+              }),
+            );
+          },
         },
       ]}
     />

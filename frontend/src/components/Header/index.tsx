@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Input, Badge, Dropdown, Avatar, Row, Col, MenuProps } from 'antd';
 import {
   BellOutlined,
@@ -15,9 +15,13 @@ import './HeaderStyle.css';
 import logo from '../../assets/images/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
-import { useCart } from '../../service/api/useCart';
+import { useCart } from '../../service/hooks/useCart';
 import NotificationPopover from '../notification/notification';
 import { NotificationProvider } from '../../context/NotificationContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../service/state/store';
+import { filterAsync } from '../../service/state/actions/filter-action';
+import { PRODUCTS_FILTER } from '../../config/constants';
 
 const { Search } = Input;
 
@@ -39,7 +43,33 @@ const HeaderComponent: React.FC = () => {
     resetUser();
     logout();
   };
-  const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  const handleSearchKeyword = useCallback((value: string) => {
+    dispatch(
+      filterAsync({
+        shopId: undefined,
+        category: undefined,
+        brand: undefined,
+        postedAfter: undefined,
+        postedBefore: undefined,
+        minPrice: undefined,
+        maxPrice: undefined,
+        minQuantity: undefined,
+        maxQuantity: undefined,
+        sortBy: undefined,
+        order: undefined,
+        keyword: value,
+        offset: 0,
+        limit: PRODUCTS_FILTER.ITEMS_PER_PAGE,
+      }),
+    );
+
+    if (location.pathname !== '/home') {
+      navigate('/home');
+    }
+  }, []);
 
   const menuItems: MenuProps['items'] = [
     {
@@ -200,6 +230,7 @@ const HeaderComponent: React.FC = () => {
                     className="icon-search"
                   />
                 }
+                onSearch={handleSearchKeyword}
               />
             </Col>
 

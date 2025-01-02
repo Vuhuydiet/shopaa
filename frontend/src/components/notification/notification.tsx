@@ -20,7 +20,7 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import { OrderStatus } from '../../interfaces/Order/OrderEnums';
-import { useNotification } from '../../service/api/useNotification';
+import { useNotification } from '../../service/hooks/useNotification';
 import {
   INotification,
   INotificationStatus,

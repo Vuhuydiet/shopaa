@@ -1,29 +1,33 @@
 import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../service/state/store';
-import { setPagination } from '../../service/state/slices/pagination-slice';
-import { useEffect } from 'react';
-import { setFilter } from '../../service/state/slices/filter-slice';
+import { AppDispatch, RootState } from '../../service/state/store';
+import { PRODUCTS_FILTER } from '../../config/constants';
+import { filterAsync } from '../../service/state/actions/filter-action';
 
 export const PaginationProduct = () => {
-  const { totalItems, currentPage, itemsPerPage } = useSelector(
-    (state: RootState) => state.pagination,
+  const dispatch = useDispatch<AppDispatch>();
+  const totalItems = useSelector(
+    (state: RootState) => state.filters.totalItems,
   );
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setFilter({ offset: (currentPage - 1) * itemsPerPage }));
-  }, [currentPage, itemsPerPage]);
+  const currentPage = useSelector(
+    (state: RootState) =>
+      state.filters.filter.offset / PRODUCTS_FILTER.ITEMS_PER_PAGE + 1,
+  );
 
   return (
     <Pagination
       total={totalItems}
       current={currentPage}
-      pageSize={itemsPerPage}
+      pageSize={PRODUCTS_FILTER.ITEMS_PER_PAGE}
       showSizeChanger={false}
       showQuickJumper={true}
-      onChange={(page, pageSize) => {
-        dispatch(setPagination({ currentPage: page, itemsPerPage: pageSize }));
+      onChange={(page: number, pageSize: number) => {
+        dispatch(
+          filterAsync({
+            offset: (page - 1) * pageSize,
+            limit: pageSize,
+          }),
+        );
       }}
     />
   );

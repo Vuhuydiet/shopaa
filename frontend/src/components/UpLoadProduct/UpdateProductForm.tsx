@@ -16,7 +16,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { RcFile, UploadFile } from 'antd/es/upload/interface';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './UpLoadProductFromStyle.css';
-import { useCategories } from '../../service/api/useCategories';
+import { useCategories } from '../../service/hooks/useCategories';
 import { ICategory } from '../../interfaces/ICategory';
 import axios from 'axios';
 import { PRODUCT_API_ENDPOINTS } from '../../config/API_config';

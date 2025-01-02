@@ -1,46 +1,13 @@
-import { List, message, Spin } from 'antd';
+import { List, Spin } from 'antd';
 import { ProductCard } from '../product-card/product-card';
 import { IProduct } from '../../interfaces/IProduct';
-import { useProducts } from '../../service/api/useProducts';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
-import { useEffect } from 'react';
-import { setPagination } from '../../service/state/slices/pagination-slice';
-import { setFilter } from '../../service/state/slices/filter-slice';
 
 export const ProductGrid = () => {
-  const filters = useSelector((state: RootState) => state.filters);
-  const { data: products, isLoading } = useProducts(filters);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setPagination({ currentPage: 1, totalItems: 0 }));
-    dispatch(
-      setFilter({
-        keyword: undefined,
-        shopId: undefined,
-        category: undefined,
-        brand: undefined,
-        postedAfter: undefined,
-        postedBefore: undefined,
-        minPrice: undefined,
-        maxPrice: undefined,
-        minQuantity: undefined,
-        maxQuantity: undefined,
-        sortBy: undefined,
-        order: undefined,
-        offset: 0,
-      }),
-    );
-  }, []);
-
-  useEffect(() => {
-    if (products?.count) {
-      dispatch(setPagination({ totalItems: products?.count }));
-    } else {
-      dispatch(setPagination({ totalItems: 0 }));
-    }
-  }, [products]);
+  const { products, isLoading } = useSelector(
+    (state: RootState) => state.filters,
+  );
 
   if (isLoading) {
     return (
@@ -66,7 +33,7 @@ export const ProductGrid = () => {
         xl: 4,
         xxl: 4,
       }}
-      dataSource={products?.items}
+      dataSource={products}
       renderItem={(item: IProduct) => (
         <List.Item key={item.id}>
           <ProductCard
