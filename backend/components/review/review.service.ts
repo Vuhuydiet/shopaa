@@ -78,7 +78,6 @@ class ReviewService {
     customer.avatar = customer.avatarImage?.url;
     delete customer.avatarImage;
     reviewData.customer = review?.order.customer;
-    delete reviewData.order;
     return reviewData;
   }
 
