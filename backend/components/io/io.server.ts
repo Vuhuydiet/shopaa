@@ -4,7 +4,6 @@ import { Express } from 'express';
 
 import ioController from './io';
 import socketPool from './socketPool';
-import notificationIoServive from '../notification/io/notification.io.servive';
 
 const createWss = (app: Express) => {
   const server = http.createServer(app);
@@ -19,10 +18,6 @@ const createWss = (app: Express) => {
   io.on('connection', async (socket) => {
 
     const id = socketPool.addSocket(socket, socket.user?.userId);
-
-    if (!isNaN(+id)) {
-      await notificationIoServive.flush(+id);
-    }
 
     ioController.applyOn(socket);
     
