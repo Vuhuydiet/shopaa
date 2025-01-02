@@ -13,7 +13,7 @@ export const useFormReview = (
     [],
   );
 
-  const [star, setStar] = useState(5);
+  const [star, setStar] = useState(0);
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
