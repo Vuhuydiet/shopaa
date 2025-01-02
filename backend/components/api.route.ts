@@ -13,6 +13,7 @@ import cartRouter from './cart/cart.route';
 import reviewRouter from './review/review.route';
 import returnRouter from './return/return.route';
 import withdrawRouter from './withdraw/withdraw.route';
+import stastisticsRouter from './statistics/statistics.route';
 
 router.use('/v1/access', accessRouter);
 router.use('/v1/user', userRouter);
@@ -26,5 +27,6 @@ router.use('/v1/cart', cartRouter);
 router.use('/v1/review', reviewRouter);
 router.use('/v1/return', returnRouter);
 router.use('/v1/withdraw',withdrawRouter);
+router.use('/v1/statistics',stastisticsRouter);
 
 export default router;
