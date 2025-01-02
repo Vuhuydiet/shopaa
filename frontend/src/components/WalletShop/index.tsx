@@ -286,7 +286,7 @@ const ShopWithdraw: React.FC = () => {
       <Table
         dataSource={filteredData}
         columns={columns}
-        rowKey="id"
+        rowKey="requestId"
         pagination={paginationConfig}
       />
 

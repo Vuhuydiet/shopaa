@@ -20,7 +20,7 @@ export const getShop = async (shopId: number, token?: string) => {
       throw new Error(`Error fetching shop: ${response.statusText}`);
     }
     const data = await response.json();
-    // console.log('data:', data);
+    console.log('data:', data);
     const infoShop: IShop = {
       shopOwnerId: data?.metadata?.shop?.shopOwnerId,
       name: data?.metadata?.shop?.shopName,
