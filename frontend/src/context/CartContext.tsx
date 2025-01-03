@@ -10,7 +10,7 @@ import {
   Typography,
 } from 'antd';
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { useCart } from '../service/api/useCart';
+import { useCart } from '../service/hooks/useCart';
 import { CART_PRODUCTS_FILTER } from '../config/constants';
 import { AxiosResponse } from 'axios';
 

@@ -4,8 +4,8 @@ import { OrderSummary } from '../../components/Checkout/OrderSummary';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { createOrder } from '../../service/orderService';
-import { useCart } from '../../service/api/useCart';
-import { useOrders } from '../../service/api/order/useOrders';
+import { useCart } from '../../service/hooks/useCart';
+import { useOrders } from '../../service/hooks/order/useOrders';
 
 const CheckoutPage = () => {
   const formRef = useRef<any>(null);
