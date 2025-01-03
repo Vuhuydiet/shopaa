@@ -5,7 +5,7 @@ import { EditOutlined } from '@ant-design/icons';
 import {
   useOrders,
   useUpdateOrderStatus,
-} from '../../service/api/order/useOrders';
+} from '../../service/hooks/order/useOrders';
 import { OrderStatus } from '../../interfaces/Order/OrderEnums';
 import { IOrder } from '../../interfaces/Order/IOrder';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';

@@ -9,7 +9,7 @@ import {
   Flex,
   Spin,
 } from 'antd';
-import { useReviews } from '../../service/api/useReviews';
+import { useReviews } from '../../service/hooks/useReviews';
 import { formatDateString } from '../../utils/formatDateString';
 import { IProduct } from '../../interfaces/IProduct';
 import { REVIEWS_FILTER } from '../../config/constants';

@@ -4,7 +4,7 @@ import { createWithdrawHistory } from '../../service/withdrawService';
 import { IWithdraw } from '../../interfaces/IWithDraw';
 import { formatDateString } from '../../utils/formatDateString';
 import DetailRequestModal from './RequestDetail';
-import { useWithdraw } from '../../service/api/useWithdraw';
+import { useWithdraw } from '../../service/hooks/useWithdraw';
 import { stringToISOString } from '../../utils/date-convert';
 
 const AdminWithdraw: React.FC = () => {

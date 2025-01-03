@@ -4,7 +4,7 @@ import { getShop } from '../../service/shopService';
 import HeaderShop from '../../components/Shop/HeaderShop';
 import { ProductCatalog } from '../../components/product-catalog/product-catalog';
 import { useDispatch } from 'react-redux';
-import { setFilter } from '../../service/state/slices/filter-slice';
+import { setFilter } from '../../service/state/reducers/filter-reducer';
 import { getUserProfile } from '../../service/userService';
 const ShopPage: React.FC = () => {
   const { shopId } = useParams<{ shopId: string }>();
@@ -28,7 +28,7 @@ const ShopPage: React.FC = () => {
       if (shopId) {
         try {
           const result = await getShop(parseInt(shopId ?? '0', 10));
-          setShopInfo(result.metadata.shop);
+          setShopInfo(result);
           dispatch(
             setFilter({
               shopId: parseInt(shopId),

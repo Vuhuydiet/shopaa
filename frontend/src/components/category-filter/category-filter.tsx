@@ -10,11 +10,11 @@ import { RootState } from '../../service/state/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useState } from 'react';
 import { ICategory } from '../../interfaces/ICategory';
-import { setFilter } from '../../service/state/slices/filter-slice';
-import { setPagination } from '../../service/state/slices/pagination-slice';
+import { setFilter } from '../../service/state/reducers/filter-reducer';
+import { setPagination } from '../../service/state/reducers/pagination-reducer';
 import { serializeDate } from '../../utils/date-convert';
-import { useCategories } from '../../service/api/useCategories';
-import { setCategories } from '../../service/state/slices/category-slice';
+import { useCategories } from '../../service/hooks/useCategories';
+import { setCategories } from '../../service/state/reducers/category-reducer';
 
 export const CategoryFilter = () => {
   const [minPrice, setMinPrice] = useState<number | null>(null);

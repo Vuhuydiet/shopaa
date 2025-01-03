@@ -10,7 +10,7 @@ import {
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useProducts } from '../../service/api/useProducts';
+import { useProducts } from '../../service/hooks/useProducts';
 import { IProduct } from '../../interfaces/IProduct';
 import {
   AppstoreOutlined,
