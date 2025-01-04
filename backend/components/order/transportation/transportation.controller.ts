@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import Transportation from "./transportation.service";
-import { OKResponse } from "../../../core/SuccessResponse";
+import { OKResponse } from "../../../core/responses/SuccessResponse";
 
 export default {
 

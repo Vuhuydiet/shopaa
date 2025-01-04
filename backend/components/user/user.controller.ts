@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import UserService from "./user.service";
-import { OKResponse } from "../../core/SuccessResponse";
+import { OKResponse } from "../../core/responses/SuccessResponse";
 import { matchedData } from "express-validator";
 
 export default {

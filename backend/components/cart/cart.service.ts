@@ -1,4 +1,4 @@
-import { BadRequestError, NotFoundError } from "../../core/ErrorResponse";
+import { BadRequestError, NotFoundError } from "../../core/responses/ErrorResponse";
 import prisma from "../../models";
 import ProductService from "../product/product.service";
 

@@ -1,8 +1,7 @@
 import { OrderStatus } from '@prisma/client';
-import { BadRequestError, NotFoundError } from '../../core/ErrorResponse';
+import { BadRequestError, NotFoundError } from '../../core/responses/ErrorResponse';
 import prisma from '../../models';
 import OrderService from '../order/order.service';
-import UserService from '../user/user.service';
 
 type ReviewData = {
   orderId: number;
@@ -22,10 +21,8 @@ type ReviewQuery = {
   limit?: number;
 };
 
-class Review {
+class ReviewService {
   static async createReview(userId: number, data: ReviewData) {
-    await UserService.checkUserExists(userId);
-
     await OrderService.checkOrderDetailExists(
       data.orderId,
       data.orderDetailNumber,
@@ -35,6 +32,10 @@ class Review {
     if (order.status != OrderStatus.COMPLETED)
       throw new BadRequestError('Order is not completed yet to be reviewed');
 
+    if (order.customerId != userId) {
+      throw new BadRequestError('You are not allowed to review this order because you are not the owner');
+    }
+
     return await prisma.review.create({
       data: {
         orderId: data.orderId,
@@ -43,6 +44,9 @@ class Review {
         rating: data.rating,
         reviewContent: data.content,
       },
+      include: {
+        order: true
+      }
     });
   }
 
@@ -53,6 +57,9 @@ class Review {
         orderDetail: true,
         order: {
           include: {
+            shop: {
+              select: { shopOwnerId: true },
+            },
             customer: {
               include: {
                 avatarImage: {
@@ -64,13 +71,13 @@ class Review {
         },
       },
     });
-    if (!review) throw new NotFoundError('Review not found');
+    if (!review) 
+      throw new NotFoundError('Review not found');
     let reviewData: any = review;
     let customer: any = review?.order.customer;
     customer.avatar = customer.avatarImage?.url;
     delete customer.avatarImage;
     reviewData.customer = review?.order.customer;
-    delete reviewData.order;
     return reviewData;
   }
 
@@ -125,4 +132,4 @@ class Review {
   }
 }
 
-export default Review;
+export default ReviewService;

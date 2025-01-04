@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { matchedData } from 'express-validator';
 import ProductService from './product.service';
-import { CreatedResponse, OKResponse } from '../../core/SuccessResponse';
+import { CreatedResponse, OKResponse } from '../../core/responses/SuccessResponse';
 
 export default {
   createProduct: async (req: Request, res: Response) => {

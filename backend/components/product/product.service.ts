@@ -1,4 +1,4 @@
-import { InternalServerError, NotFoundError } from '../../core/ErrorResponse';
+import { InternalServerError, NotFoundError } from '../../core/responses/ErrorResponse';
 import prisma from '../../models';
 import ImageService from '../image/image.service';
 import ShopService from '../shop/shop.service';

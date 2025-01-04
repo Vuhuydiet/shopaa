@@ -1,7 +1,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import TransportationService from './transportation.service';
-import { ForbiddenError } from '../../../core/ErrorResponse';
+import { ForbiddenError } from '../../../core/responses/ErrorResponse';
 
 export default {
   
