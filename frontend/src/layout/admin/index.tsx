@@ -1,4 +1,4 @@
-import { Outlet, Navigate, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import HeaderComponent from '../../components/Header';
 import {
   Button,
@@ -10,13 +10,11 @@ import {
   Typography,
 } from 'antd';
 import {
-  AppstoreOutlined,
   ContactsOutlined,
   DashboardOutlined,
-  MailOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UserOutlined,
+  QuestionOutlined,
 } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
@@ -46,34 +44,11 @@ export const LayoutAdmin = () => {
       label: 'Report',
       onClick: () => navigate('/admin/report'),
     },
-    { key: '3', icon: <UserOutlined />, label: 'User' },
     {
-      key: '4',
-      label: 'Mail',
-      icon: <MailOutlined />,
-      children: [
-        { key: '5', label: 'Option 5' },
-        { key: '6', label: 'Option 6' },
-        { key: '7', label: 'Option 7' },
-        { key: '8', label: 'Option 8' },
-      ],
-    },
-    {
-      key: 'sub2',
-      label: 'Navigation Two',
-      icon: <AppstoreOutlined />,
-      children: [
-        { key: '9', label: 'Option 9' },
-        { key: '10', label: 'Option 10' },
-        {
-          key: 'sub3',
-          label: 'Submenu',
-          children: [
-            { key: '11', label: 'Option 11' },
-            { key: '12', label: 'Option 12' },
-          ],
-        },
-      ],
+      key: '3',
+      icon: <QuestionOutlined />,
+      label: 'Withdraw Request',
+      onClick: () => navigate('/admin/withdraw-request'),
     },
   ];
 
