@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import OrderService from "./order.service";
-import { CreatedResponse, OKResponse } from "../../core/SuccessResponse";
-import { NotFoundError } from "../../core/ErrorResponse";
+import { CreatedResponse, OKResponse } from "../../core/responses/SuccessResponse";
+import { NotFoundError } from "../../core/responses/ErrorResponse";
+import OrderNotificationService from "../notification/services/order.notification.service";
+import socketPool from "../io/socketPool";
 
 
 export default {
@@ -30,6 +32,11 @@ export default {
     const { orderData } = matchedData(req);
 
     const order = await OrderService.createOrder(userId, orderData);
+    await OrderNotificationService.createAndSendOrderStatusChangeNotification(
+      order.orderId, 
+      socketPool.getSocket(order.customerId),
+      socketPool.getSocket(order.shopId)
+    );
 
     new CreatedResponse({ message: 'Order created successfully', metadata: { order } }).send(res);
   },
@@ -38,6 +45,7 @@ export default {
     const { orderId, status } = matchedData(req);
 
     const order = await OrderService.updateOrderStatus(orderId, status);
+    await OrderNotificationService.createAndSendOrderStatusChangeNotification(order.orderId);
 
     new OKResponse({ message: 'Order status updated successfully', metadata: { order } }).send(res);
   },

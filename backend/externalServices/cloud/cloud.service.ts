@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 
 import keyConfig from '../../configs/key.config';
-import { InternalServerError } from '../../core/ErrorResponse';
+import { InternalServerError } from '../../core/responses/ErrorResponse';
 
 cloudinary.config({
   cloudinary_url: keyConfig.CLOUDINARY_URL

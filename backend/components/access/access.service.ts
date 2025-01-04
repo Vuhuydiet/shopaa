@@ -1,9 +1,9 @@
-import { BadRequestError, InternalServerError, NotFoundError } from "../../core/ErrorResponse";
+import { BadRequestError, InternalServerError, NotFoundError } from "../../core/responses/ErrorResponse";
 import prisma from "../../models";
 import { getHashedPassword, comparePassword } from "../../libraries/utils/password";
-import JWT from "../../libraries/auth/JWT";
+import JWT from "./auth/JWT";
 import UserService from "../user/user.service";
-import EmailService from "../../externalServices/email/email.service";
+import OTPService from "./otp.service";
 import { Role } from "@prisma/client";
 
 class AccessService {
@@ -98,7 +98,7 @@ class AccessService {
       throw new BadRequestError('User does not exist');
     }
 
-    if (!EmailService.validateOtp(email, otp)) {
+    if (!OTPService.validateOtp(email, otp)) {
       throw new BadRequestError('Invalid OTP');
     }
 

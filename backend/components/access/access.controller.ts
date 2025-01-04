@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
-import { CreatedResponse, OKResponse } from "../../core/SuccessResponse";
+import { CreatedResponse, OKResponse } from "../../core/responses/SuccessResponse";
 import AccessService from "./access.service";
-import EmailService from "../../externalServices/email/email.service";
-import { BadRequestError } from "../../core/ErrorResponse";
+import OTPService from "./otp.service";
+import { BadRequestError } from "../../core/responses/ErrorResponse";
 import { matchedData } from "express-validator";
-import JWT from "../../libraries/auth/JWT";
+import JWT from "./auth/JWT";
 
 export default {
 
   sendOtp: async (req: Request, res: Response) => {
     const { email } = matchedData(req);
 
-    await EmailService.sendOtpEmail(email);
+    await OTPService.sendOtpEmail(email);
 
     new OKResponse({
       message: 'OTP sent successfully',
@@ -21,7 +21,7 @@ export default {
   signUp: async (req: Request, res: Response) => {
     const { username, password, email, otp } = matchedData(req);
 
-    if (!EmailService.validateOtp(email, otp))
+    if (!OTPService.validateOtp(email, otp))
       throw new BadRequestError('Invalid OTP');
 
     await AccessService.signUp(username, password, email);

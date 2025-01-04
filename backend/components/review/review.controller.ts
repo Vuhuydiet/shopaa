@@ -1,14 +1,19 @@
 import ReviewService from './review.service';
-import { OKResponse, CreatedResponse } from '../../core/SuccessResponse';
+import { OKResponse, CreatedResponse } from '../../core/responses/SuccessResponse';
 import { Request, Response } from 'express';
 import { matchedData } from 'express-validator';
+import ReviewNotificationService from '../notification/services/review.notification.service';
+import socketPool from '../io/socketPool';
 
 export default {
 
   createReview: async (req: Request, res: Response) => {
     const { userId } = req.user as any;
     const reviewData = matchedData(req) as any;
+    
     const review = await ReviewService.createReview(userId, reviewData);
+    await ReviewNotificationService.createAndSendNewReviewNotification(review.reviewId, socketPool.getSocket(review.order.shopId));
+
     new CreatedResponse({ message: 'Review created successfully', metadata: review }).send(res);
   },
 

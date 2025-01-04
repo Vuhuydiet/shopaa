@@ -4,11 +4,11 @@ const router = express.Router();
 import { body, query, param } from 'express-validator';
 
 import orderController from './order.controller';
-import passport from '../../libraries/auth/authentication.middleware';
+import passport from '../access/auth/authentication.middleware';
 import orderPermissions from './order.permissions';
 import { OrderStatus, Role } from '@prisma/client';
 import { handleValidationErrors } from '../../libraries/validator/validator';
-import auth from '../../libraries/auth/authorization.middleware';
+import auth from '../access/auth/authorization.middleware';
 import transportationPermissions from './transportation/transportation.permissions';
 
 const orderDataValidator = () => {

@@ -12,6 +12,9 @@ import { NODE_ENV } from './configs/serve.config';
 import router from './components';
 import notFoundHandler from './libraries/errorHandler/notFoundHandler';
 import errorHandler from './libraries/errorHandler/errorHandler';
+import createWss from './components/io/io.server';
+
+const wss = createWss(app);
 
 // middlewares
 app.use(cors());
@@ -41,4 +44,9 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+const PORT_WS = process.env.PORT_WS || 3080;
+wss.listen(PORT_WS, () => {
+  console.log(`WebSocket is running on port ${PORT_WS}`);
 });

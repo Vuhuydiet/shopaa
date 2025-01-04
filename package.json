@@ -65,7 +65,9 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "path-to-regexp": "^8.2.0",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.9",

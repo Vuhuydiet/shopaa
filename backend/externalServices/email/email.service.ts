@@ -1,73 +1,45 @@
-import keyConfig from '../../configs/key.config';
 import nodemailer from 'nodemailer';
-import { generateOtp } from '../../libraries/utils/random'
+import keyConfig from '../../configs/key.config';
 
-type Record = {
-  otp: number,
-  exp: number,
-};
+type Email = {
+  subject: string,
+  text: string,
+}
 
-class OtpStorage {
-  private static readonly EXPIRES_IN = 5; // minutes
-  private static m_OtpStorage: { [key: string]: Record } = {};
+class EmailService {
+  transporter: nodemailer.Transporter;
 
-  static storeOtp(clientEmail: string, otp: number) {
-    this.m_OtpStorage[clientEmail] = {
-      otp: otp,
-      exp: Date.now() + (this.EXPIRES_IN * 60 * 1000),
-    };
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      // host: keyConfig.SMTP_HOST,
+      // port: keyConfig.SMTP_PORT,
+      service: 'Gmail',
+      // secure: true, // true for 465, false for other ports
+      auth: {
+        user: keyConfig.EMAIL_USER,
+        pass: keyConfig.EMAIL_PASSWORD,
+      },
+    });
   }
 
-  static validate(clientEmail: string, otp: number) {
-    this.invalidate();
-    if (!this.m_OtpStorage[clientEmail])
-      return false;
-    return this.m_OtpStorage[clientEmail].otp == otp;
-  }
-
-  static invalidate() {
-    for (const clientEmail in this.m_OtpStorage) {
-      if (this.m_OtpStorage[clientEmail].exp < Date.now()) {
-        delete this.m_OtpStorage[clientEmail];
-      }
+  async send(clientAdress: string, email: Email) {
+    const mailOptions = {
+      from: keyConfig.EMAIL_USER,
+      to: clientAdress,
+      subject: email.subject,
+      text: email.text,
     }
+    await this.transporter.sendMail(mailOptions);
   }
+
+  async sendMany(clientAddresses: string[], email: Email) {
+    clientAddresses.forEach(async (clientAdress) => {
+      await this.send(clientAdress, email);
+    });
+  }
+
+  
 }
 
-async function sendOtpEmail(clientEmail: string) {
-  const transporter = nodemailer.createTransport({
-    // host: keyConfig.SMTP_HOST,
-    // port: keyConfig.SMTP_PORT,
-    service: 'Gmail',
-    // secure: true, // true for 465, false for other ports
-    auth: {
-      user: keyConfig.EMAIL_USER,
-      pass: keyConfig.EMAIL_PASSWORD,
-    },
-  });
-
-  const otp = generateOtp();
-  OtpStorage.storeOtp(clientEmail, otp);
-
-  const mailOptions = {
-    from: keyConfig.EMAIL_USER,
-    to: clientEmail,
-    subject: 'Your OTP Code',
-    text: `
-        Hello,
-
-        Your OTP code is: ${otp}\n
-        Please enter this code to proceed.
-        
-        Thank you!
-      `,
-  };
-
-  await transporter.sendMail(mailOptions);
-}
-
-function validateOtp(clientEmail: string, otp: number) {
-  return OtpStorage.validate(clientEmail, otp);
-}
-
-export default { sendOtpEmail, validateOtp };
+export { Email };
+export default new EmailService();

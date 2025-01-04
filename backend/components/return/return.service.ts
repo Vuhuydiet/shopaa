@@ -1,6 +1,6 @@
 import { OrderStatus, ReturnStatus } from "@prisma/client";
 import prisma from "../../models";
-import { NotFoundError, BadRequestError } from "../../core/ErrorResponse";
+import { NotFoundError, BadRequestError } from "../../core/responses/ErrorResponse";
 import OrderService from "../order/order.service";
 
 type ReturnSlipData = {
