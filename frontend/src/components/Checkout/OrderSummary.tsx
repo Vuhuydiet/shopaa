@@ -48,8 +48,6 @@ export const OrderSummary = ({
                     {item.size && (
                       <Text type="secondary">Size: {item.size}</Text>
                     )}
-                    {/* <Text type="secondary">Color: {item.color}</Text>
-                    <Text type="secondary">Size: {item.size}</Text> */}
                   </div>
                 </Col>
                 <Col>

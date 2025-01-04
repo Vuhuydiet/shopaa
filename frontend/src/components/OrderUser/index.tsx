@@ -48,6 +48,8 @@ const OrderUser: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
+      values = {};
+      form.resetFields();
     } catch (error: any) {
       message.error(error?.message);
     }
@@ -60,7 +62,6 @@ const OrderUser: React.FC = () => {
     offset: (currentPage - 1) * pageSize,
     status: currentStatus,
   });
-  console.log('Order: ', data);
   const { mutate: updateStatus } = useUpdateOrderStatus();
   const changeFilteredOrders = () => {
     if (filteredOrders === 'all') {
@@ -108,11 +109,10 @@ const OrderUser: React.FC = () => {
   ];
 
   const handleStatusChange = (orderId: number, newStatus: OrderStatus) => {
-    if (newStatus === OrderStatus.RETURN_REQUESTED) {
-      refetch();
-      return;
-    }
     updateStatus({ orderId, status: newStatus });
+    setTimeout(() => {
+      refetch();
+    }, 3000);
   };
 
   const columns = [
@@ -183,6 +183,10 @@ const OrderUser: React.FC = () => {
               console.log(`Changing order ${record.orderId} to ${newStatus}`);
               form.submit();
               handleStatusChange(record.orderId, newStatus);
+            },
+            onCancel: () => {
+              console.log('Modal closed');
+              form.resetFields();
             },
           });
         };

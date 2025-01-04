@@ -1,7 +1,7 @@
 import { Button, Select, Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setFilter } from '../../service/state/slices/filter-slice';
+import { setFilter } from '../../service/state/reducers/filter-reducer';
 
 export const SortOptions = () => {
   const [sortBy, setSortBy] = useState<string | null>(null);

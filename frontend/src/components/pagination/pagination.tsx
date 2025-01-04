@@ -1,9 +1,9 @@
 import { Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
-import { setPagination } from '../../service/state/slices/pagination-slice';
+import { setPagination } from '../../service/state/reducers/pagination-reducer';
 import { useEffect } from 'react';
-import { setFilter } from '../../service/state/slices/filter-slice';
+import { setFilter } from '../../service/state/reducers/filter-reducer';
 
 export const PaginationProduct = () => {
   const { totalItems, currentPage, itemsPerPage } = useSelector(

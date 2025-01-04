@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Button, Card, Rate, Space, Tooltip, Typography } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { capitalizeWords } from '../../utils/capitalizeWords';
@@ -27,6 +27,20 @@ export const FormReview = memo(
       setContent,
       handleSubmitReview,
     } = useFormReview(order, setOrderProduct);
+
+    const [error, setError] = useState<string>('');
+
+    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value;
+      setContent(value);
+      if (!value) {
+        setError('Content cannot be empty');
+      } else if (value.length > 1000) {
+        setError('Content exceeds the 1000 character limit! Please summarize.');
+      } else {
+        setError('');
+      }
+    };
 
     return (
       <Card
@@ -166,8 +180,16 @@ export const FormReview = memo(
                     rows={5}
                     size="large"
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    onChange={handleContentChange}
+                    style={{
+                      borderColor: error ? 'red' : undefined,
+                    }}
                   />
+                  {error && (
+                    <Typography.Text style={{ color: 'red', fontSize: '12px' }}>
+                      {error}
+                    </Typography.Text>
+                  )}
                   <Space
                     direction="horizontal"
                     style={{

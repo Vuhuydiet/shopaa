@@ -5,7 +5,7 @@ import { ProductDetailView } from '../../components/product-detail-view';
 import { StoreInfo } from '../../components/store-info';
 import { useProduct } from '../../service/hooks/useProduct';
 import { useEffect } from 'react';
-import { setProduct } from '../../service/state/slices/product-slice';
+import { setProduct } from '../../service/state/reducers/product-reducer';
 import { Card, Spin } from 'antd';
 import { useParams } from 'react-router-dom';
 import CommentList from '../../components/product-reviews';

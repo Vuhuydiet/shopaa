@@ -33,12 +33,11 @@ export const CheckoutForm = forwardRef(
     useEffect(() => {
       const fetchData = async () => {
         const res = await getTransportationInfo();
-        console.log('Transportation Info:', res);
         setShippingProviders(res);
       };
       if (user) {
         form.setFieldsValue({
-          name: user.fullname || '',
+          name: user.fullname || 'User',
         });
       }
       fetchData();
@@ -93,12 +92,12 @@ export const CheckoutForm = forwardRef(
 
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <Form.Item label="Name" name="name">
-              <Input
-                disabled
-                value={user?.fullname || 'No name available'}
-                style={{ color: 'black' }}
-              />
+            <Form.Item
+              label="Name"
+              name="name"
+              initialValue={user?.fullname || 'User'}
+            >
+              <Input disabled style={{ color: 'black' }} />
             </Form.Item>
           </Col>
 

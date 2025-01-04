@@ -39,7 +39,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
       const userID = localStorage.getItem('userId');
       if (token && userID) {
         const profile = await getUserProfile(parseInt(userID, 10), token);
-        console.log(profile.metadata.profile);
+        // console.log(profile.metadata.profile);
         setUser({
           fullname: profile.metadata.profile?.fullname || null,
           dateOfBirth: profile.metadata.profile?.dateOfBirth || null,
