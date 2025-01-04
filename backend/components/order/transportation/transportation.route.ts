@@ -1,8 +1,8 @@
 import express from 'express';
 const router = express.Router();
 
-import passport from '../../access/auth/authentication.middleware';
-import authorizationMiddleware from '../../access/auth/authorization.middleware';
+import passport from '../../../libraries/auth/authentication.middleware';
+import authorizationMiddleware from '../../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from '../../../libraries/validator/validator';
@@ -30,14 +30,14 @@ router.post(
   body('shippingFee').isFloat().notEmpty(),
   handleValidationErrors,
 
-  transportationController.createProvider
-)
+  transportationController.createProvider,
+);
 
 router.get(
   '/',
-  
-  transportationController.getAllProviders
-)
+
+  transportationController.getAllProviders,
+);
 
 router.get(
   '/:providerId',
@@ -45,8 +45,8 @@ router.get(
   param('providerId').isInt().toInt(),
   handleValidationErrors,
 
-  transportationController.getProviderById
-)
+  transportationController.getProviderById,
+);
 
 router.patch(
   '/',
@@ -59,8 +59,7 @@ router.patch(
   body('shippingFee').optional().isFloat(),
   handleValidationErrors,
 
-  transportationController.updateProvider
-)
-
+  transportationController.updateProvider,
+);
 
 export default router;

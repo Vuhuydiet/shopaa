@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Table,
   Card,
@@ -12,22 +12,20 @@ import {
 } from 'antd';
 import {
   ShopOutlined,
-  OrderedListOutlined,
+  DollarOutlined,
   SearchOutlined,
   ReloadOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
-import { useOrderStatistics } from '../../../service/hooks/useOrderStatistics';
-import { formatNumber } from '../../../utils/format-number';
+import { useWithdrawals } from '../../../service/hooks/useWithdrawals';
 
 const { Title } = Typography;
 
-const OrderStatisticsTable = () => {
-  const { setYear, orderStatistics } = useOrderStatistics();
+const WithdrawalStatisticsTable = () => {
+  const { setYear, withdrawals } = useWithdrawals();
 
   const [searchText, setSearchText] = useState('');
-  const [filteredInfo, setFilteredInfo] = useState({
-    month: null,
-  });
+  const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({
     columnKey: '',
     order: '',
@@ -39,27 +37,9 @@ const OrderStatisticsTable = () => {
     return new Date().getFullYear();
   }, []);
 
-  const getStatusColor = (status: string) => {
-    const statusColors = {
-      PENDING: 'gold',
-      CANCELED: 'red',
-      ACCEPTED: 'blue',
-      REJECTED: 'volcano',
-      DELIVERING: 'purple',
-      DELIVERED: 'geekblue',
-      RECEIVED: 'cyan',
-      COMPLETED: 'green',
-      RETURNED: 'orange',
-      RETURN_REQUESTED: 'magenta',
-    };
-    return statusColors[status] || 'default';
-  };
-
   const handleReset = () => {
     setSearchText('');
-    setFilteredInfo({
-      month: null,
-    });
+    setFilteredInfo({});
     setSortedInfo({
       columnKey: '',
       order: '',
@@ -136,7 +116,7 @@ const OrderStatisticsTable = () => {
       title: 'Shop Name',
       dataIndex: 'shopName',
       key: 'shopName',
-      width: '20%',
+      width: '25%',
       ...getColumnSearchProps('shopName'),
       sorter: (a: any, b: any) => a.shopName.localeCompare(b.shopName),
       sortOrder: sortedInfo.columnKey === 'shopName' && sortedInfo.order,
@@ -148,55 +128,49 @@ const OrderStatisticsTable = () => {
       ),
     },
     {
-      title: 'Status',
-      dataIndex: 'orderStatus',
-      key: 'orderStatus',
-      width: '15%',
-      filters: [
-        'PENDING',
-        'CANCELED',
-        'ACCEPTED',
-        'REJECTED',
-        'DELIVERING',
-        'DELIVERED',
-        'RECEIVED',
-        'COMPLETED',
-        'RETURNED',
-        'RETURN_REQUESTED',
-      ].map((status) => ({ text: status, value: status })),
-      onFilter: (value: any, record: any) => record.orderStatus === value,
-      render: (status: any) => (
-        <Tag color={getStatusColor(status)}>{status}</Tag>
-      ),
-    },
-    {
-      title: 'Month',
-      key: 'month',
-      width: '15%',
-      render: (_: any, record: any) => (
-        <span>
-          Month {record.month}/{record.year}
+      title: 'Total Withdrawal Amount',
+      dataIndex: 'totalWithdrawalAmount',
+      key: 'totalWithdrawalAmount',
+      width: '25%',
+      sorter: (a: any, b: any) =>
+        a.totalWithdrawalAmount - b.totalWithdrawalAmount,
+      sortOrder:
+        sortedInfo.columnKey === 'totalWithdrawalAmount' && sortedInfo.order,
+      render: (amount: any) => (
+        <span style={{ color: '#52c41a', fontWeight: 'bold' }}>
+          <DollarOutlined style={{ marginRight: 8 }} />
+          {new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+          }).format(amount)}
         </span>
       ),
-      filters: Array.from({ length: 12 }, (_, i) => ({
-        text: `Month ${i + 1}`,
-        value: (i + 1).toString(),
-      })),
-      onFilter: (value: any, record: any) => record.month === value,
     },
     {
-      title: 'Total Orders',
-      dataIndex: 'totalOrders',
-      key: 'totalOrders',
-      width: '15%',
-      sorter: (a: any, b: any) => a.totalOrders - b.totalOrders,
-      sortOrder: sortedInfo.columnKey === 'totalOrders' && sortedInfo.order,
+      title: 'Total Requests',
+      dataIndex: 'totalRequests',
+      key: 'totalRequests',
+      width: '20%',
+      sorter: (a: any, b: any) => a.totalRequests - b.totalRequests,
+      sortOrder: sortedInfo.columnKey === 'totalRequests' && sortedInfo.order,
       render: (total: any) => (
         <span style={{ color: '#1890ff', fontWeight: 'bold' }}>
-          <OrderedListOutlined style={{ marginRight: 8 }} />
-          {total}
+          <WalletOutlined style={{ marginRight: 8 }} />
+          {total.toLocaleString()}
         </span>
       ),
+    },
+    {
+      title: 'Year',
+      dataIndex: 'year',
+      key: 'year',
+      width: '15%',
+      filters: [
+        { text: '2024', value: 2024 },
+        { text: '2023', value: 2023 },
+        { text: '2022', value: 2022 },
+      ],
+      onFilter: (value: any, record: any) => record.year === value,
     },
   ];
 
@@ -210,10 +184,10 @@ const OrderStatisticsTable = () => {
   const paginationConfig = {
     current: currentPage,
     pageSize: pageSize,
-    total: orderStatistics?.length,
+    total: withdrawals?.length,
     showSizeChanger: true,
     showQuickJumper: true,
-    showTotal: (total: any) => `Total ${total} orders`,
+    showTotal: (total: any) => `Total ${total} shops`,
     pageSizeOptions: ['5', '10', '20', '50'],
     locale: {
       items_per_page: '/ page',
@@ -224,13 +198,17 @@ const OrderStatisticsTable = () => {
     },
   };
 
-  const getTotalOrdersByStatus = (status: any) => {
-    return formatNumber(
-      orderStatistics
-        ?.filter((item) => item.orderStatus === status)
-        ?.reduce((acc, curr) => acc + curr.totalOrders, 0),
+  const getTotalStats = () => {
+    return withdrawals?.reduce(
+      (acc, curr) => ({
+        totalAmount: acc.totalAmount + curr.totalWithdrawalAmount,
+        totalRequests: acc.totalRequests + curr.totalRequests,
+      }),
+      { totalAmount: 0, totalRequests: 0 },
     );
   };
+
+  const totalStats = getTotalStats();
 
   return (
     <Card
@@ -248,8 +226,8 @@ const OrderStatisticsTable = () => {
         }}
       >
         <Title level={3} style={{ margin: 0, color: '#1890ff' }}>
-          <OrderedListOutlined style={{ marginRight: 12 }} />
-          Order Statistics Report
+          <WalletOutlined style={{ marginRight: 12 }} />
+          Withdrawal Statistics Report
         </Title>
         <Space>
           <Select
@@ -272,29 +250,33 @@ const OrderStatisticsTable = () => {
       </Space>
 
       <Space style={{ marginBottom: 16 }} wrap>
-        {[
-          'PENDING',
-          'COMPLETED',
-          'CANCELED',
-          'RETURNED',
-          'RETURN_REQUESTED',
-        ].map((status) => (
-          <Card key={status} size="small" style={{ marginRight: 8 }}>
-            <Statistic
-              title={status}
-              value={getTotalOrdersByStatus(status)}
-              prefix={<Tag color={getStatusColor(status)}>{status}</Tag>}
-            />
-          </Card>
-        ))}
+        <Card size="small" style={{ marginRight: 8 }}>
+          <Statistic
+            title="Total Withdrawal Amount"
+            value={totalStats.totalAmount}
+            prefix={<DollarOutlined />}
+            formatter={(value: any) =>
+              new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+              }).format(value)
+            }
+          />
+        </Card>
+        <Card size="small">
+          <Statistic
+            title="Total Withdrawal Requests"
+            value={totalStats.totalRequests}
+            prefix={<WalletOutlined />}
+            formatter={(value) => value.toLocaleString()}
+          />
+        </Card>
       </Space>
 
       <Table
         columns={columns}
-        dataSource={orderStatistics}
-        rowKey={(record) =>
-          `${record.shopOwnerId}-${record.orderStatus}-${record.month}`
-        }
+        dataSource={withdrawals}
+        rowKey={(record) => record.shopOwnerId}
         pagination={paginationConfig}
         bordered
         style={{ marginTop: 16 }}
@@ -304,4 +286,4 @@ const OrderStatisticsTable = () => {
   );
 };
 
-export default OrderStatisticsTable;
+export default WithdrawalStatisticsTable;

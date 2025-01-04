@@ -2,8 +2,8 @@ import express from 'express';
 import cartController from './cart.controller';
 const router = express.Router();
 
-import passport from '../access/auth/authentication.middleware';
-import Auth from '../access/auth/authorization.middleware';
+import passport from '../../libraries/auth/authentication.middleware';
+import Auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
@@ -18,7 +18,7 @@ router.post(
   body('size').optional().isString(),
   handleValidationErrors,
 
-  cartController.createCartItem
+  cartController.createCartItem,
 );
 
 router.get(
@@ -30,7 +30,7 @@ router.get(
   query('offset').optional().isNumeric().toInt(),
   handleValidationErrors,
 
-  cartController.getCartItems
+  cartController.getCartItems,
 );
 
 router.delete(
@@ -40,8 +40,8 @@ router.delete(
 
   param('cartItemId').isNumeric().toInt(),
   handleValidationErrors,
-  
-  cartController.deleteCartItem
+
+  cartController.deleteCartItem,
 );
 
 export default router;

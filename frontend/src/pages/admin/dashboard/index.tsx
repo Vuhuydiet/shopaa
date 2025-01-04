@@ -4,6 +4,7 @@ import RevenueProvider from '../../../context/RevenueContext';
 import OrderStatisticsTable from './orders';
 import ProductRevenueTable from './products';
 import RevenueTable from './revenue';
+import WithdrawalStatisticsTable from './withdrawls';
 
 const Dashboard: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const Dashboard: React.FC = () => {
       <OrderStatisticProvider>
         <OrderStatisticsTable />
       </OrderStatisticProvider>
+      <WithdrawalStatisticsTable />
     </>
   );
 };
