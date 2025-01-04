@@ -14,11 +14,15 @@ const userIdValidator = () => {
 
 const userProfileValidator = () => {
   return [
-    body('profile')             .isJSON()   .customSanitizer(JSON.parse as any),
-    body('profile.fullname')    .optional() .isString(),
-    body('profile.dateOfBirth') .optional() .isISO8601().toDate(),
-    body('profile.gender')      .optional() .custom((value) => ['male', 'female', 'other'].includes(value)),
-    body('profile.phoneNumber') .optional() .isMobilePhone('any'),
+    body('profile')
+      .isJSON()
+      .customSanitizer(JSON.parse as any),
+    body('profile.fullname').optional().isString(),
+    body('profile.dateOfBirth').optional().isISO8601().toDate(),
+    body('profile.gender')
+      .optional()
+      .custom((value) => ['male', 'female', 'other'].includes(value)),
+    body('profile.phoneNumber').optional().isMobilePhone('any'),
   ];
 };
 

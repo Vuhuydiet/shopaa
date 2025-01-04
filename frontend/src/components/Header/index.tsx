@@ -231,19 +231,23 @@ const HeaderComponent: React.FC = () => {
               />
             </Col>
 
-            <Col xs={5} sm={6} md={6} lg={3}>
-              <Badge count={cartItems?.count} offset={[3, 0]}>
-                <NavLink
-                  to="/cart"
-                  className={location.pathname === '/cart' ? 'active-link' : ''}
-                >
-                  <ShoppingCartOutlined
-                    style={{ fontSize: '40px', color: '#0033FF' }}
-                    className="header__icon"
-                  />
-                </NavLink>
-              </Badge>
-            </Col>
+            {user?.role === 'USER' && (
+              <Col xs={5} sm={6} md={6} lg={3}>
+                <Badge count={cartItems?.count} offset={[3, 0]}>
+                  <NavLink
+                    to="/cart"
+                    className={
+                      location.pathname === '/cart' ? 'active-link' : ''
+                    }
+                  >
+                    <ShoppingCartOutlined
+                      style={{ fontSize: '40px', color: '#0033FF' }}
+                      className="header__icon"
+                    />
+                  </NavLink>
+                </Badge>
+              </Col>
+            )}
           </Row>
         </div>
       </div>

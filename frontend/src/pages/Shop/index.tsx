@@ -31,7 +31,7 @@ const ShopPage: React.FC = () => {
       if (shopId) {
         try {
           const result = await getShop(parseInt(shopId ?? '0', 10));
-          setShopInfo(result.metadata.shop);
+          setShopInfo(result);
           dispatch(
             filterAsync({
               shopId: parseInt(shopId ?? '0', 10),

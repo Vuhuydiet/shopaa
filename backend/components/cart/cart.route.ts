@@ -18,7 +18,7 @@ router.post(
   body('size').optional().isString(),
   handleValidationErrors,
 
-  cartController.createCartItem
+  cartController.createCartItem,
 );
 
 router.get(
@@ -30,7 +30,7 @@ router.get(
   query('offset').optional().isNumeric().toInt(),
   handleValidationErrors,
 
-  cartController.getCartItems
+  cartController.getCartItems,
 );
 
 router.delete(
@@ -40,8 +40,8 @@ router.delete(
 
   param('cartItemId').isNumeric().toInt(),
   handleValidationErrors,
-  
-  cartController.deleteCartItem
+
+  cartController.deleteCartItem,
 );
 
 export default router;

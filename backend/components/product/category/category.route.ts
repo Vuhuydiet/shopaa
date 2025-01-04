@@ -9,52 +9,47 @@ import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../../libraries/validator/validator';
 
 const IdValidator = () => {
-  return [
-    param('categoryId').isNumeric().toInt(),
-  ]
-}
+  return [param('categoryId').isNumeric().toInt()];
+};
 
 const dataValidator = () => {
-  return [
-    body('name')        .isString(),
-    body('description') .isString(),
-  ];
-}
+  return [body('name').isString(), body('description').isString()];
+};
 
-router.post('/',
+router.post(
+  '/',
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.ADMIN]),
 
   dataValidator(),
   handleValidationErrors,
-  
-  categoryController.createProductCategory
+
+  categoryController.createProductCategory,
 );
 
-router.get('/',
-  categoryController.getAllProductCategories
-);
+router.get('/', categoryController.getAllProductCategories);
 
-router.patch('/', 
+router.patch(
+  '/',
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.ADMIN]),
-  
+
   IdValidator(),
   dataValidator(),
   handleValidationErrors,
-  
-  categoryController.updateProductCategory
+
+  categoryController.updateProductCategory,
 );
 
-router.delete('/:categoryId',
+router.delete(
+  '/:categoryId',
   passport.authenticate('jwt', { session: false }),
   Auth.authorize([Role.ADMIN]),
 
   IdValidator(),
   handleValidationErrors,
-  
-  categoryController.deleteProductCategory
-);
 
+  categoryController.deleteProductCategory,
+);
 
 export default router;

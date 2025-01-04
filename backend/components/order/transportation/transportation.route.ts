@@ -30,14 +30,14 @@ router.post(
   body('shippingFee').isFloat().notEmpty(),
   handleValidationErrors,
 
-  transportationController.createProvider
-)
+  transportationController.createProvider,
+);
 
 router.get(
   '/',
-  
-  transportationController.getAllProviders
-)
+
+  transportationController.getAllProviders,
+);
 
 router.get(
   '/:providerId',
@@ -45,8 +45,8 @@ router.get(
   param('providerId').isInt().toInt(),
   handleValidationErrors,
 
-  transportationController.getProviderById
-)
+  transportationController.getProviderById,
+);
 
 router.patch(
   '/',
@@ -59,8 +59,7 @@ router.patch(
   body('shippingFee').optional().isFloat(),
   handleValidationErrors,
 
-  transportationController.updateProvider
-)
-
+  transportationController.updateProvider,
+);
 
 export default router;

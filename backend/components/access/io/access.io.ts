@@ -1,6 +1,6 @@
-import { UserProfile } from "@prisma/client";
-import UserService from "../../user/user.service";
-import JWT from "../auth/JWT";
+import { UserProfile } from '@prisma/client';
+import UserService from '../../user/user.service';
+import JWT from '../auth/JWT';
 import { Socket } from 'socket.io';
 import IOController from '../../../core/socket/ioController';
 
@@ -11,12 +11,12 @@ ioController.use(async (socket: Socket, next: any) => {
   if (token) {
     const sub: any = JWT.verifyToken(token).sub;
     if (sub) {
-      socket.user = await UserService.getUserProfile(sub.userId) as UserProfile;
+      socket.user = (await UserService.getUserProfile(
+        sub.userId,
+      )) as UserProfile;
     }
   }
   next();
 });
 
-
 export default ioController;
-

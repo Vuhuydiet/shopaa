@@ -30,12 +30,24 @@ export const useUpdateOrderStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({ orderId, status }: { orderId: number; status: OrderStatus }) =>
-      updateStatusOrder(orderId, status),
+    async ({ orderId, status }: { orderId: number; status: OrderStatus }) => {
+      if (status === OrderStatus.RETURN_REQUESTED) {
+        console.log('Return requested');
+        return Promise.resolve({
+          mes: 'Data refreshed without updating status.',
+        });
+      }
+      return updateStatusOrder(orderId, status);
+    },
     {
-      onSuccess: (data) => {
+      onSuccess: (data, variables) => {
+        console.log('data', data);
         queryClient.invalidateQueries(['orders']);
-        message.success(data.mes || 'Status updated successfully!');
+        if (variables.status === OrderStatus.RETURN_REQUESTED) {
+          message.success('Return request submitted successfully');
+        } else {
+          message.success(data.mes || 'Status updated successfully!');
+        }
       },
       onError: (error: any) => {
         message.error(error.message || 'Failed to update status.');

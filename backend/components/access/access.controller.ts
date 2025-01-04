@@ -1,13 +1,15 @@
-import { Request, Response } from "express";
-import { CreatedResponse, OKResponse } from "../../core/responses/SuccessResponse";
-import AccessService from "./access.service";
-import OTPService from "./otp.service";
-import { BadRequestError } from "../../core/responses/ErrorResponse";
-import { matchedData } from "express-validator";
-import JWT from "./auth/JWT";
+import { Request, Response } from 'express';
+import {
+  CreatedResponse,
+  OKResponse,
+} from '../../core/responses/SuccessResponse';
+import AccessService from './access.service';
+import OTPService from './otp.service';
+import { BadRequestError } from '../../core/responses/ErrorResponse';
+import { matchedData } from 'express-validator';
+import JWT from './auth/JWT';
 
 export default {
-
   sendOtp: async (req: Request, res: Response) => {
     const { email } = matchedData(req);
 
@@ -26,7 +28,7 @@ export default {
 
     await AccessService.signUp(username, password, email);
     new CreatedResponse({
-      message: 'User created successfully'
+      message: 'User created successfully',
     }).send(res);
   },
 
@@ -36,7 +38,7 @@ export default {
     const { token, isAdmin } = await AccessService.signIn(username, password);
     new OKResponse({
       message: 'User signed in successfully',
-      metadata: { token, isAdmin }
+      metadata: { token, isAdmin },
     }).send(res);
   },
 
@@ -45,7 +47,7 @@ export default {
     const user = await AccessService.getUserAccount(userId);
     new OKResponse({
       message: 'User details fetched successfully',
-      metadata: { user }
+      metadata: { user },
     }).send(res);
   },
 
@@ -55,7 +57,7 @@ export default {
 
     await AccessService.changePassword(userId, oldPassword, newPassword);
     new OKResponse({
-      message: 'Password changed successfully'
+      message: 'Password changed successfully',
     }).send(res);
   },
 
@@ -65,7 +67,7 @@ export default {
     await AccessService.forgotPassword(email, otp, newPassword);
 
     new OKResponse({
-      message: 'Forgot password email sent successfully'
+      message: 'Forgot password email sent successfully',
     }).send(res);
   },
 
@@ -74,8 +76,7 @@ export default {
     const token = JWT.generateToken(userId);
     new CreatedResponse({
       message: 'User signed in successfully',
-      metadata: { token }
+      metadata: { token },
     }).send(res);
   },
-
-}
+};

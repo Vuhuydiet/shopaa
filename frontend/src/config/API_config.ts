@@ -58,3 +58,15 @@ export const SOCKET_EVENTS = {
 };
 
 export const SOCKET_URL = 'http://localhost:3080';
+
+export const WITHDRAW_API_ENDPOINTS = {
+  WITHDRAW: `${API_DOMAIN}api/v1/withdraw/`,
+  GET_LIST_WITHDRAW: `${API_DOMAIN}api/v1/withdraw/shop/`,
+};
+
+export const STATISTICS_API_ENDPOINTS = {
+  REVENUE: `${API_DOMAIN}api/v1/statistics/revenue`,
+  PRODUCTS: `${API_DOMAIN}api/v1/statistics/products`,
+  ORDERS: `${API_DOMAIN}api/v1/statistics/orders`,
+  WITHDRAWALS: `${API_DOMAIN}api/v1/statistics/withdrawals`,
+};

@@ -8,12 +8,11 @@ import {
   UnorderedListOutlined,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { ICategory } from '../../interfaces/ICategory';
 import { serializeDate } from '../../utils/date-convert';
 import { useCategories } from '../../service/hooks/useCategories';
 import { filterAsync } from '../../service/state/actions/filter-action';
-import { resetInitialState } from '../../service/state/reducers/filter-reducer';
 import { AppDispatch, RootState } from '../../service/state/store';
 import { PRODUCTS_FILTER } from '../../config/constants';
 

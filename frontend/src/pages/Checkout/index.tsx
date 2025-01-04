@@ -44,8 +44,16 @@ const CheckoutPage = () => {
   const listCartID = productsData?.map((product: any) => product.key);
 
   const handleSubmit = async () => {
-    setLoading(true);
     const formValues = await formRef.current.validateFields();
+
+    const hasEmptyField = Object.values(formValues).some(
+      (value) => value === null || value === '',
+    );
+
+    if (hasEmptyField) {
+      message.error('Please fill in all fields');
+      return;
+    }
     const shippingAddress =
       formValues.houseNumberAndStreet +
       ', ' +
@@ -72,8 +80,7 @@ const CheckoutPage = () => {
         products: filteredProducts,
       },
     };
-
-    console.log('Order Payload:', orderData);
+    setLoading(true);
     try {
       const response = await createOrder(orderData);
       console.log('Response:', response);
@@ -89,7 +96,8 @@ const CheckoutPage = () => {
         navigate('/user/orders');
       }
     } catch (error: any) {
-      console.error('Error creating order:', error);
+      message.error(error.message);
+      setLoading(false);
     }
   };
 

@@ -19,8 +19,8 @@ router.post(
   body('content').isString().notEmpty(),
   handleValidationErrors,
 
-  reviewController.createReview
-)
+  reviewController.createReview,
+);
 
 router.get(
   '/:reviewId',
@@ -28,8 +28,8 @@ router.get(
   param('reviewId').isInt().toInt(),
   handleValidationErrors,
 
-  reviewController.getReviewById
-)
+  reviewController.getReviewById,
+);
 
 router.get(
   '/',
@@ -45,8 +45,8 @@ router.get(
   query('order').optional().isString().isIn(['asc', 'desc']),
   handleValidationErrors,
 
-  reviewController.getReviews
-)
+  reviewController.getReviews,
+);
 
 router.delete(
   '/:reviewId',
@@ -56,8 +56,7 @@ router.delete(
   param('reviewId').isInt().toInt(),
   handleValidationErrors,
 
-  reviewController.deleteReview
-)
-
+  reviewController.deleteReview,
+);
 
 export default router;

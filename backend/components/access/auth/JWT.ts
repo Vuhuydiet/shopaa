@@ -9,7 +9,7 @@ class JWT {
     const expiresInSeconds = expiresInDays * 24 * 60 * 60; // 1 day in seconds
     const payload = {
       sub: {
-        userId: userId
+        userId: userId,
       },
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + expiresInSeconds,
@@ -19,7 +19,9 @@ class JWT {
   }
 
   static verifyToken(token: string) {
-    return jwt.verify(token, keyConfig.JWT_PUBLIC_KEY, { algorithms: ['RS256'] }) as jwt.JwtPayload;
+    return jwt.verify(token, keyConfig.JWT_PUBLIC_KEY, {
+      algorithms: ['RS256'],
+    }) as jwt.JwtPayload;
   }
 }
 
