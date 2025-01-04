@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { ORDER_API_ENDPOINTS } from './../../../config/API_config';
+import { ORDER_API_ENDPOINTS } from '../../../config/API_config';
 
 export const useOrderDetail = (id: string) => {
   return useQuery({

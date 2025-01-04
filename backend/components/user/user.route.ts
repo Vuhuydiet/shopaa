@@ -4,7 +4,7 @@ import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 import passport, {
   verifyTokenIfExists,
-} from '../access/auth/authentication.middleware';
+} from '../../libraries/auth/authentication.middleware';
 import upload from '../../libraries/utils/multer';
 const router = express.Router();
 
@@ -14,11 +14,15 @@ const userIdValidator = () => {
 
 const userProfileValidator = () => {
   return [
-    body('profile')             .isJSON()   .customSanitizer(JSON.parse as any),
-    body('profile.fullname')    .optional() .isString(),
-    body('profile.dateOfBirth') .optional() .isISO8601().toDate(),
-    body('profile.gender')      .optional() .custom((value) => ['male', 'female', 'other'].includes(value)),
-    body('profile.phoneNumber') .optional() .isMobilePhone('any'),
+    body('profile')
+      .isJSON()
+      .customSanitizer(JSON.parse as any),
+    body('profile.fullname').optional().isString(),
+    body('profile.dateOfBirth').optional().isISO8601().toDate(),
+    body('profile.gender')
+      .optional()
+      .custom((value) => ['male', 'female', 'other'].includes(value)),
+    body('profile.phoneNumber').optional().isMobilePhone('any'),
   ];
 };
 

@@ -25,10 +25,11 @@ import { ProductCart } from '../pages/product-cart';
 import OrderUser from '../components/OrderUser';
 import OrderUserDetail from '../components/OrderUser/orderDetails';
 import CheckoutPage from '../pages/Checkout';
+import DashboardPage from '../pages/admin/dashboard';
+import AdminWithdraw from '../components/ManagerWithdraw';
 import ManageReturnSlips from '../components/ReturnRequests';
 import InfoShop from '../components/InfoShop';
 import ShopWithdraw from '../components/WalletShop';
-import AdminWithdraw from '../components/ManagerWithdraw';
 import StatisticForShop from '../components/StatisticForShop';
 
 export const routes = [
@@ -45,7 +46,7 @@ export const routes = [
           },
           {
             path: 'dashboard',
-            // element:
+            element: <DashboardPage />,
           },
           {
             path: 'report',

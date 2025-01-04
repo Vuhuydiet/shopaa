@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import keyConfig from '../../../configs/key.config';
+import keyConfig from '../../configs/key.config';
 
 import passport from 'passport';
 
@@ -9,7 +9,7 @@ import { Algorithm } from 'jsonwebtoken';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import UserService from '../../user/user.service';
+import UserService from '../../components/user/user.service';
 import JWT from './JWT';
 import { NextFunction, Request, Response } from 'express';
 

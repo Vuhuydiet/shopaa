@@ -1,28 +1,38 @@
-import { BadRequestError, InternalServerError, NotFoundError } from "../../core/responses/ErrorResponse";
-import prisma from "../../models";
-import { getHashedPassword, comparePassword } from "../../libraries/utils/password";
-import JWT from "./auth/JWT";
-import UserService from "../user/user.service";
-import OTPService from "./otp.service";
-import { Role } from "@prisma/client";
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError,
+} from '../../core/responses/ErrorResponse';
+import prisma from '../../models';
+import {
+  getHashedPassword,
+  comparePassword,
+} from '../../libraries/utils/password';
+import JWT from '../../libraries/auth/JWT';
+import UserService from '../user/user.service';
+import OTPService from './otp.service';
+import { Role } from '@prisma/client';
 
 class AccessService {
-
   static async signUp(username: string, password: string, email: string) {
     let user = await prisma.userAccount.findUnique({
-      where: { username }
+      where: { username },
     });
     if (user) {
       throw new BadRequestError('User already exists');
     }
     user = await prisma.userAccount.findUnique({
-      where: { email }
+      where: { email },
     });
     if (user) {
       throw new BadRequestError('Email has already been reegistered');
     }
 
-    const newUser = await UserService.createUserAccount(username, getHashedPassword(password), email);
+    const newUser = await UserService.createUserAccount(
+      username,
+      getHashedPassword(password),
+      email,
+    );
     if (!newUser) {
       throw new InternalServerError('User creation failed');
     }
@@ -36,10 +46,10 @@ class AccessService {
         password: true,
         profile: {
           select: {
-            role: true
-          }
-        }
-      }
+            role: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -60,7 +70,7 @@ class AccessService {
       select: {
         username: true,
         email: true,
-      }
+      },
     });
 
     if (!user) {
@@ -70,9 +80,13 @@ class AccessService {
     return user;
   }
 
-  static async changePassword(userId: number, oldPassword: string, newPassword: string) {
-  const user = await prisma.userAccount.findUnique({
-      where: { userId: userId }
+  static async changePassword(
+    userId: number,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    const user = await prisma.userAccount.findUnique({
+      where: { userId: userId },
     });
 
     if (!user) {
@@ -85,13 +99,13 @@ class AccessService {
 
     await prisma.userAccount.update({
       where: { userId },
-      data: { password: getHashedPassword(newPassword) }
+      data: { password: getHashedPassword(newPassword) },
     });
   }
 
   static async forgotPassword(email: string, otp: number, newPassword: string) {
     const user = await prisma.userAccount.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -104,14 +118,14 @@ class AccessService {
 
     await prisma.userAccount.update({
       where: { email },
-      data: { password: getHashedPassword(newPassword) }
+      data: { password: getHashedPassword(newPassword) },
     });
   }
 
   static async signInWithOAuth(userId: number) {
     const profile = await prisma.userProfile.findUnique({
       where: { userId },
-      select: { role: true }
+      select: { role: true },
     });
     if (!profile) {
       throw new NotFoundError('User not found');

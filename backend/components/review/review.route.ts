@@ -1,8 +1,8 @@
 import express from 'express';
 const router = express.Router();
 
-import passport from '../access/auth/authentication.middleware';
-import auth from '../access/auth/authorization.middleware';
+import passport from '../../libraries/auth/authentication.middleware';
+import auth from '../../libraries/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import { body, param, query } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
@@ -19,8 +19,8 @@ router.post(
   body('content').isString().notEmpty(),
   handleValidationErrors,
 
-  reviewController.createReview
-)
+  reviewController.createReview,
+);
 
 router.get(
   '/:reviewId',
@@ -28,8 +28,8 @@ router.get(
   param('reviewId').isInt().toInt(),
   handleValidationErrors,
 
-  reviewController.getReviewById
-)
+  reviewController.getReviewById,
+);
 
 router.get(
   '/',
@@ -45,8 +45,8 @@ router.get(
   query('order').optional().isString().isIn(['asc', 'desc']),
   handleValidationErrors,
 
-  reviewController.getReviews
-)
+  reviewController.getReviews,
+);
 
 router.delete(
   '/:reviewId',
@@ -56,8 +56,7 @@ router.delete(
   param('reviewId').isInt().toInt(),
   handleValidationErrors,
 
-  reviewController.deleteReview
-)
-
+  reviewController.deleteReview,
+);
 
 export default router;
