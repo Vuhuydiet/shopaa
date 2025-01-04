@@ -45,3 +45,10 @@ export const RETURN_API_ENDPOINTS = {
   RETURN: `${API_DOMAIN}api/v1/return`,
   REASONS: `${API_DOMAIN}api/v1/return/reasons`,
 };
+
+export const STATISTICS_API_ENDPOINTS = {
+  REVENUE: `${API_DOMAIN}api/v1/statistics/revenue`,
+  PRODUCTS: `${API_DOMAIN}api/v1/statistics/products`,
+  ORDERS: `${API_DOMAIN}api/v1/statistics/orders`,
+  WITHDRAWALS: `${API_DOMAIN}api/v1/statistics/withdrawals`,
+};

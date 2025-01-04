@@ -25,6 +25,7 @@ import { ProductCart } from '../pages/product-cart';
 import OrderUser from '../components/OrderUser';
 import OrderUserDetail from '../components/OrderUser/orderDetails';
 import CheckoutPage from '../pages/Checkout';
+import DashboardPage from '../pages/admin/dashboard';
 
 export const routes = [
   {
@@ -40,7 +41,7 @@ export const routes = [
           },
           {
             path: 'dashboard',
-            // element:
+            element: <DashboardPage />,
           },
           {
             path: 'report',
