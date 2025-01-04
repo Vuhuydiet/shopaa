@@ -28,4 +28,5 @@ model UserProfile {
   reports              Report[]
   handledReportsResult ReportResult[]
   notifications        NotificationEvent[]
+  handlerWithdrwal WithdrawHistory[]
 }
