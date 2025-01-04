@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useReports } from '../service/api/useReports';
+import { useReports } from '../service/hooks/useReports';
 import { IReport } from '../interfaces/IReport';
 import {
   Button,
@@ -18,8 +18,8 @@ import {
   TableColumnsType,
 } from 'antd';
 import { InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
-import { useProduct } from '../service/api/useProduct';
-import { useShop } from '../service/api/useShop';
+import { useProduct } from '../service/hooks/useProduct';
+import { useShop } from '../service/hooks/useShop';
 import { Link } from 'react-router-dom';
 import modal from 'antd/es/modal';
 import TextArea from 'antd/es/input/TextArea';

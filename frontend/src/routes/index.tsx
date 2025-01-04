@@ -25,6 +25,11 @@ import { ProductCart } from '../pages/product-cart';
 import OrderUser from '../components/OrderUser';
 import OrderUserDetail from '../components/OrderUser/orderDetails';
 import CheckoutPage from '../pages/Checkout';
+import ManageReturnSlips from '../components/ReturnRequests';
+import InfoShop from '../components/InfoShop';
+import ShopWithdraw from '../components/WalletShop';
+import AdminWithdraw from '../components/ManagerWithdraw';
+import StatisticForShop from '../components/StatisticForShop';
 
 export const routes = [
   {
@@ -45,6 +50,10 @@ export const routes = [
           {
             path: 'report',
             element: <ReportPage />,
+          },
+          {
+            path: 'withdraw-request',
+            element: <AdminWithdraw />,
           },
         ],
       },
@@ -132,7 +141,7 @@ export const routes = [
               },
               {
                 path: 'shop-info',
-                // element: <Profile />, information of shop
+                element: <InfoShop />,
               },
               {
                 path: 'list-order',
@@ -141,6 +150,18 @@ export const routes = [
               {
                 path: 'list-order/:orderId',
                 element: <OrderShopDetail />,
+              },
+              {
+                path: 'return-requests',
+                element: <ManageReturnSlips />,
+              },
+              {
+                path: 'finance',
+                element: <ShopWithdraw />,
+              },
+              {
+                path: 'statistics',
+                element: <StatisticForShop />,
               },
             ],
           },

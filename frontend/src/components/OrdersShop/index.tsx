@@ -5,7 +5,7 @@ import { EditOutlined } from '@ant-design/icons';
 import {
   useOrders,
   useUpdateOrderStatus,
-} from '../../service/api/order/useOrders';
+} from '../../service/hooks/order/useOrders';
 import { OrderStatus } from '../../interfaces/Order/OrderEnums';
 import { IOrder } from '../../interfaces/Order/IOrder';
 import { getOrderStatusColor } from '../../utils/getColorStatusOrder';
@@ -143,7 +143,12 @@ const OrderShop: React.FC = () => {
             </span>
           </Dropdown>
         ) : (
-          <Tag color={getOrderStatusColor(status)}>{status}</Tag>
+          <Tag color={getOrderStatusColor(status)}>
+            {' '}
+            {status === OrderStatus.RETURN_REQUESTED
+              ? 'WAITING RETURN'
+              : status}
+          </Tag>
         ),
     },
     {

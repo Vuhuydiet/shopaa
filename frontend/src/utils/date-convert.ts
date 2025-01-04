@@ -9,3 +9,8 @@ export const deserializeDate = (dateString: string): Date => {
 export const getDateFormatted = (date: Date): string => {
   return date.toLocaleString();
 };
+
+export const stringToISOString = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toISOString();
+};

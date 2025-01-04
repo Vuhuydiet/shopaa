@@ -1,12 +1,12 @@
-import { List, message, Spin } from 'antd';
+import { List, Spin } from 'antd';
 import { ProductCard } from '../product-card/product-card';
 import { IProduct } from '../../interfaces/IProduct';
-import { useProducts } from '../../service/api/useProducts';
+import { useProducts } from '../../service/hooks/useProducts';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
 import { useEffect } from 'react';
-import { setPagination } from '../../service/state/slices/pagination-slice';
-import { setFilter } from '../../service/state/slices/filter-slice';
+import { setPagination } from '../../service/state/reducers/pagination-reducer';
+import { setFilter } from '../../service/state/reducers/filter-reducer';
 
 export const ProductGrid = () => {
   const filters = useSelector((state: RootState) => state.filters);

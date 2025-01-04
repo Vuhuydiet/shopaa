@@ -1,4 +1,4 @@
-import { Button, Col, Row, Table, Typography } from 'antd';
+import { Button, Col, message, Row, Table, Typography } from 'antd';
 import { CartContext } from '../../context/CartContext';
 import { useContext } from 'react';
 import { CART_PRODUCTS_FILTER } from '../../config/constants';
@@ -53,6 +53,13 @@ export const ProductCartTable = () => {
           <Button
             style={{ backgroundColor: 'purple', color: 'white' }}
             onClick={() => {
+              if (selectedProducts.length === 0) {
+                message.warning(
+                  'Please select products before proceeding to checkout.',
+                );
+                return;
+              }
+
               navigate('/checkout', {
                 state: { products: selectedProducts },
               });

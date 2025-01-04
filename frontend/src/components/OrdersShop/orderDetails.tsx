@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Table, Tag, Dropdown, message } from 'antd';
+import { Button, Table, Tag, Dropdown, message, Spin } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { getOrderDetail, updateStatusOrder } from '../../service/orderService';
 import { IOrderDetail } from '../../interfaces/Order/IOrderDetail';
@@ -25,10 +25,8 @@ const OrderShopDetail: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('ORDER ID: ', orderId);
     const fetchData = async () => {
       const res = await getOrderDetail(Number(orderId));
-      console.log('ORDER DETAIL UI : ', res);
       if (res) setOrder(res);
     };
     fetchData();
@@ -99,7 +97,18 @@ const OrderShopDetail: React.FC = () => {
   ];
 
   if (!order) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50vh',
+        }}
+      >
+        <Spin tip="Loading Order Details..." />
+      </div>
+    );
   }
 
   return (
@@ -211,7 +220,9 @@ const OrderShopDetail: React.FC = () => {
                   </Dropdown>
                 ) : (
                   <Tag color={getOrderStatusColor(order.status)}>
-                    {order.status}
+                    {order.status === OrderStatus.RETURN_REQUESTED
+                      ? 'WAITING RETURN'
+                      : order.status}
                   </Tag>
                 )}
               </td>

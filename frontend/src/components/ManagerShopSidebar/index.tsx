@@ -2,6 +2,9 @@ import {
   ProfileOutlined,
   ProfileFilled,
   OrderedListOutlined,
+  UndoOutlined,
+  BarChartOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import { NavLink } from 'react-router-dom';
@@ -22,6 +25,12 @@ const ManagerShopSidebar: React.FC = () => {
       label: <NavLink to="/manager-shop/shop-info">Information</NavLink>,
     },
     {
+      key: '/manager-shop/statistics',
+      icon: <BarChartOutlined style={{ color: '#8A2BE2' }} />,
+      title: 'Statistics',
+      label: <NavLink to="/manager-shop/statistics">Statistics</NavLink>,
+    },
+    {
       key: '/manager-shop/list-product',
       icon: <ProfileFilled style={{ color: '#EE4000' }} />,
       title: 'List product',
@@ -32,6 +41,20 @@ const ManagerShopSidebar: React.FC = () => {
       icon: <OrderedListOutlined style={{ color: '#33CC00' }} />,
       title: 'List order',
       label: <NavLink to="/manager-shop/list-order">List order</NavLink>,
+    },
+    {
+      key: '/manager-shop/return-requests',
+      icon: <UndoOutlined style={{ color: '#FF6A6A' }} />,
+      title: 'Return requests',
+      label: (
+        <NavLink to="/manager-shop/return-requests">Return requests</NavLink>
+      ),
+    },
+    {
+      key: '/manager-shop/finance',
+      icon: <WalletOutlined style={{ color: '#00B2BF' }} />,
+      title: 'Wallet',
+      label: <NavLink to="/manager-shop/finance">Wallet</NavLink>,
     },
   ];
 

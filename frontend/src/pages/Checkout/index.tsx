@@ -4,8 +4,8 @@ import { OrderSummary } from '../../components/Checkout/OrderSummary';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { createOrder } from '../../service/orderService';
-import { useCart } from '../../service/api/useCart';
-import { useOrders } from '../../service/api/order/useOrders';
+import { useCart } from '../../service/hooks/useCart';
+import { useOrders } from '../../service/hooks/order/useOrders';
 
 const CheckoutPage = () => {
   const formRef = useRef<any>(null);
@@ -44,8 +44,16 @@ const CheckoutPage = () => {
   const listCartID = productsData?.map((product: any) => product.key);
 
   const handleSubmit = async () => {
-    setLoading(true);
     const formValues = await formRef.current.validateFields();
+
+    const hasEmptyField = Object.values(formValues).some(
+      (value) => value === null || value === '',
+    );
+
+    if (hasEmptyField) {
+      message.error('Please fill in all fields');
+      return;
+    }
     const shippingAddress =
       formValues.houseNumberAndStreet +
       ', ' +
@@ -72,8 +80,7 @@ const CheckoutPage = () => {
         products: filteredProducts,
       },
     };
-
-    console.log('Order Payload:', orderData);
+    setLoading(true);
     try {
       const response = await createOrder(orderData);
       console.log('Response:', response);
@@ -89,7 +96,8 @@ const CheckoutPage = () => {
         navigate('/user/orders');
       }
     } catch (error: any) {
-      console.error('Error creating order:', error);
+      message.error(error.message);
+      setLoading(false);
     }
   };
 
