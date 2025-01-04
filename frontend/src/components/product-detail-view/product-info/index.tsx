@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../service/state/store';
 import { useNavigate } from 'react-router-dom';
 import { ProductQuantity } from './product-quantity';
+import { useUser } from '../../../context/UserContext';
 
 export const ProductInfo = () => {
   const [size, setSize] = useState<string>('');
@@ -22,6 +23,7 @@ export const ProductInfo = () => {
   const {
     cart: { refetch },
   } = useCart({ limit: 1, offset: 0 });
+  const { user } = useUser();
 
   const handleChooseSize = useCallback((e: any) => {
     setSize(e.target.innerText);
@@ -33,6 +35,20 @@ export const ProductInfo = () => {
 
   const handleAddToCart = useCallback(
     (e: any) => {
+      if (!user) {
+        message.error('Please login to add to cart');
+        navigate('/login');
+        return;
+      }
+      console.log('Product Data = add to cart: ', product);
+      if (product.sizes && product.sizes.length > 0 && !size) {
+        message.error('Please select a size');
+        return;
+      }
+      if (product.colors && product.colors.length > 0 && !color) {
+        message.error('Please select a color');
+        return;
+      }
       addItem({
         productId: product.id,
         color: color || undefined,
@@ -59,6 +75,19 @@ export const ProductInfo = () => {
 
   const handleCheckout = useCallback(
     (e: any) => {
+      if (!user) {
+        message.error('Please login to add to cart');
+        navigate('/login');
+        return;
+      }
+      if (product.sizes && product.sizes.length > 0 && !size) {
+        message.error('Please select a size');
+        return;
+      }
+      if (product.colors && product.colors.length > 0 && !color) {
+        message.error('Please select a color');
+        return;
+      }
       const productData = [
         {
           name: product.name,
@@ -100,7 +129,9 @@ export const ProductInfo = () => {
         quantity={quantityMemo}
         onQuantityChange={(value) => setQuantity(value)}
       />
-      <ProductButton addCart={handleAddToCart} checkout={handleCheckout} />
+      {user?.role !== 'SHOP_MANAGER' && user?.role !== 'ADMIN' && (
+        <ProductButton addCart={handleAddToCart} checkout={handleCheckout} />
+      )}
     </Card>
   );
 };
