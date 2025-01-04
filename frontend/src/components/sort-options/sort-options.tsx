@@ -1,19 +1,22 @@
 import { Button, Select, Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setFilter } from '../../service/state/reducers/filter-reducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { filterAsync } from '../../service/state/actions/filter-action';
+import { AppDispatch, RootState } from '../../service/state/store';
 
 export const SortOptions = () => {
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [order, setOrder] = useState<string | null>(null);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const filter = useSelector((state: RootState) => state.filters.filter);
 
   useEffect(() => {
     if (sortBy && order) {
       dispatch(
-        setFilter({
-          sortBy: sortBy,
-          order: order,
+        filterAsync({
+          ...filter,
+          sortBy,
+          order,
         }),
       );
     }

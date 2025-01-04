@@ -1,8 +1,8 @@
 import express from 'express';
 const router = express.Router();
 import reportController from './report.controller';
-import passport from '../../libraries/auth/authentication.middleware';
-import authorizationMiddleware from '../../libraries/auth/authorization.middleware';
+import passport from '../access/auth/authentication.middleware';
+import authorizationMiddleware from '../access/auth/authorization.middleware';
 import { ReportResultState, ReportType, Role } from '@prisma/client';
 import { body, query, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';

@@ -7,7 +7,7 @@ import AccessService from './access.service';
 import OTPService from './otp.service';
 import { BadRequestError } from '../../core/responses/ErrorResponse';
 import { matchedData } from 'express-validator';
-import JWT from '../../libraries/auth/JWT';
+import JWT from './auth/JWT';
 
 export default {
   sendOtp: async (req: Request, res: Response) => {

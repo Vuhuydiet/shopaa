@@ -46,6 +46,19 @@ export const RETURN_API_ENDPOINTS = {
   REASONS: `${API_DOMAIN}api/v1/return/reasons`,
 };
 
+export const NOTIFICATION_API_ENDPOINTS = {
+  NOTIFICATION: `${API_DOMAIN}api/v1/notification`,
+};
+
+export const SOCKET_EVENTS = {
+  CONNECT: 'connect',
+  DISCONNECT: 'disconnect',
+  NEW_NOTIFICATION: 'notification-new',
+  READ_NOTIFICATION: 'notification-read',
+};
+
+export const SOCKET_URL = 'http://localhost:3080';
+
 export const WITHDRAW_API_ENDPOINTS = {
   WITHDRAW: `${API_DOMAIN}api/v1/withdraw/`,
   GET_LIST_WITHDRAW: `${API_DOMAIN}api/v1/withdraw/shop/`,

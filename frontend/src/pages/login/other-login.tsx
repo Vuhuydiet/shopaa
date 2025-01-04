@@ -23,7 +23,7 @@ export const OtherLogin = () => {
               src={FacebookIcon}
               alt="Facebook"
               style={{
-                width: '2.8rem',
+                width: '2rem',
                 background: 'transparent',
               }}
             />
@@ -41,7 +41,7 @@ export const OtherLogin = () => {
               src={GoogleIcon}
               alt="Google"
               style={{
-                width: '2rem',
+                width: '1.4rem',
                 background: 'transparent',
               }}
             />

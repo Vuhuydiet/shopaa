@@ -12,6 +12,7 @@ import reportRouter from './report/report.route';
 import cartRouter from './cart/cart.route';
 import reviewRouter from './review/review.route';
 import returnRouter from './return/return.route';
+import notificationRouter from './notification/notification.route';
 import withdrawRouter from './withdraw/withdraw.route';
 import stastisticsRouter from './statistics/statistics.route';
 
@@ -26,7 +27,8 @@ router.use('/v1/report', reportRouter);
 router.use('/v1/cart', cartRouter);
 router.use('/v1/review', reviewRouter);
 router.use('/v1/return', returnRouter);
-router.use('/v1/withdraw',withdrawRouter);
-router.use('/v1/statistics',stastisticsRouter);
+router.use('/v1/notification', notificationRouter);
+router.use('/v1/withdraw', withdrawRouter);
+router.use('/v1/statistics', stastisticsRouter);
 
 export default router;

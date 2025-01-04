@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import passport from '../../libraries/auth/authentication.middleware';
+import passport from '../access/auth/authentication.middleware';
 import { query } from 'express-validator';
 import { NotificationStatus } from '@prisma/client';
 import notificationController from './notification.controller';

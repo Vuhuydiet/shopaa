@@ -8,7 +8,7 @@ import {
   getHashedPassword,
   comparePassword,
 } from '../../libraries/utils/password';
-import JWT from '../../libraries/auth/JWT';
+import JWT from './auth/JWT';
 import UserService from '../user/user.service';
 import OTPService from './otp.service';
 import { Role } from '@prisma/client';

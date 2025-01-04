@@ -1,6 +1,6 @@
 import { UserProfile } from '@prisma/client';
 import UserService from '../../user/user.service';
-import JWT from '../../../libraries/auth/JWT';
+import JWT from '../auth/JWT';
 import { Socket } from 'socket.io';
 import IOController from '../../../core/socket/ioController';
 

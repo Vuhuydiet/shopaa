@@ -4,7 +4,7 @@ import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 import passport, {
   verifyTokenIfExists,
-} from '../../libraries/auth/authentication.middleware';
+} from '../access/auth/authentication.middleware';
 import upload from '../../libraries/utils/multer';
 const router = express.Router();
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ForbiddenError } from '../../core/responses/ErrorResponse';
+import { ForbiddenError } from '../../../core/responses/ErrorResponse';
 import { Role } from '@prisma/client';
 
 function authorize(roles: Role[], message?: string) {

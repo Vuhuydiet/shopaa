@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import keyConfig from '../../configs/key.config';
+import keyConfig from '../../../configs/key.config';
 
 class JWT {
   static generateToken(userId: number, expiresInDays: number = 1) {

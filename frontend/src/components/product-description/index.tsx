@@ -29,7 +29,9 @@ export const ProductDescription = () => {
         </Typography.Text>
       </Row>
 
-      <Row style={{ marginLeft: '20px' }}>{product?.description}</Row>
+      <Row style={{ marginLeft: '20px', whiteSpace: 'pre-line' }}>
+        {product?.description}
+      </Row>
     </Space>
   );
 };

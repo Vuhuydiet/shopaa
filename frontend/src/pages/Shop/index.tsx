@@ -4,13 +4,16 @@ import { getShop } from '../../service/shopService';
 import HeaderShop from '../../components/Shop/HeaderShop';
 import { ProductCatalog } from '../../components/product-catalog/product-catalog';
 import { useDispatch } from 'react-redux';
-import { setFilter } from '../../service/state/reducers/filter-reducer';
 import { getUserProfile } from '../../service/userService';
+import { AppDispatch } from '../../service/state/store';
+import { filterAsync } from '../../service/state/actions/filter-action';
+import { PRODUCTS_FILTER } from '../../config/constants';
+
 const ShopPage: React.FC = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const [shopInfo, setShopInfo] = useState({});
   const [shopManagerInfo, setShopManagerInfo] = useState({});
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     const fetchShopManagerData = async () => {
@@ -30,8 +33,21 @@ const ShopPage: React.FC = () => {
           const result = await getShop(parseInt(shopId ?? '0', 10));
           setShopInfo(result);
           dispatch(
-            setFilter({
-              shopId: parseInt(shopId),
+            filterAsync({
+              shopId: parseInt(shopId ?? '0', 10),
+              offset: 0,
+              keyword: undefined,
+              category: undefined,
+              brand: undefined,
+              postedAfter: undefined,
+              postedBefore: undefined,
+              minPrice: undefined,
+              maxPrice: undefined,
+              minQuantity: undefined,
+              maxQuantity: undefined,
+              sortBy: undefined,
+              order: undefined,
+              limit: PRODUCTS_FILTER.ITEMS_PER_PAGE,
             }),
           );
           fetchShopManagerData();

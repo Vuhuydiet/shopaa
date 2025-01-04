@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Input, Badge, Dropdown, Avatar, Row, Col, MenuProps } from 'antd';
 import {
   BellOutlined,
@@ -16,6 +16,11 @@ import logo from '../../assets/images/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
 import { useCart } from '../../service/hooks/useCart';
+import NotificationPopover from '../notification/notification';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../service/state/store';
+import { filterAsync } from '../../service/state/actions/filter-action';
+import { PRODUCTS_FILTER } from '../../config/constants';
 
 const { Search } = Input;
 
@@ -32,13 +37,38 @@ const HeaderComponent: React.FC = () => {
       refreshUser();
     }
   }, [isAuthenticated]);
-  const unreadNotifications = 5;
 
   const handleLogout = () => {
     resetUser();
     logout();
   };
-  const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  const handleSearchKeyword = useCallback((value: string) => {
+    dispatch(
+      filterAsync({
+        shopId: undefined,
+        category: undefined,
+        brand: undefined,
+        postedAfter: undefined,
+        postedBefore: undefined,
+        minPrice: undefined,
+        maxPrice: undefined,
+        minQuantity: undefined,
+        maxQuantity: undefined,
+        sortBy: undefined,
+        order: undefined,
+        keyword: value,
+        offset: 0,
+        limit: PRODUCTS_FILTER.ITEMS_PER_PAGE,
+      }),
+    );
+
+    if (location.pathname !== '/home') {
+      navigate('/home');
+    }
+  }, []);
 
   const menuItems: MenuProps['items'] = [
     {
@@ -120,25 +150,7 @@ const HeaderComponent: React.FC = () => {
                     alignItems: 'flex-end',
                   }}
                 >
-                  <NavLink
-                    to="/notifications"
-                    className={
-                      location.pathname === '/notifications'
-                        ? 'active-link'
-                        : ''
-                    }
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-end',
-                    }}
-                  >
-                    <Badge count={unreadNotifications}>
-                      <BellOutlined
-                        style={{ fontSize: '28px' }}
-                        className="header__icon"
-                      />
-                    </Badge>
-                  </NavLink>
+                  <NotificationPopover />
                 </Col>
 
                 <Col
@@ -215,6 +227,7 @@ const HeaderComponent: React.FC = () => {
                     className="icon-search"
                   />
                 }
+                onSearch={handleSearchKeyword}
               />
             </Col>
 
