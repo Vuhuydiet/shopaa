@@ -1,5 +1,5 @@
 import { Form, Input, Card, Select } from 'antd';
-import { useReasons } from '../../service/api/useReasons';
+import { useReasons } from '../../service/hooks/useReasons';
 
 const { TextArea } = Input;
 

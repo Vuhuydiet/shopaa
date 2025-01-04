@@ -4,7 +4,7 @@ import './styles.css';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
 import { useShop } from '../../service/hooks/useShop';
-import { useUser } from '../../service/api/useUser';
+import { useUser } from '../../service/hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 
