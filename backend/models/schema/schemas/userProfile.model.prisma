@@ -19,7 +19,7 @@ model UserProfile {
   gender        Gender?
   avatarImageId Int?      @unique
 
-  avatarImage          Image?         @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
+  avatarImage          Image?              @relation(fields: [avatarImageId], references: [imageId], onDelete: SetNull)
   oAuthProvider        OAuthProvider?
   orders               Order[]
   shop                 Shop?
@@ -28,4 +28,5 @@ model UserProfile {
   reports              Report[]
   handledReportsResult ReportResult[]
   notifications        NotificationEvent[]
+  handlerWithdrwal     WithdrawHistory[]
 }
