@@ -3,7 +3,7 @@ import { ProductDescription } from '../../components/product-description';
 import { ProductDetailInfo } from '../../components/product-detail-info';
 import { ProductDetailView } from '../../components/product-detail-view';
 import { StoreInfo } from '../../components/store-info';
-import { useProduct } from '../../service/api/useProduct';
+import { useProduct } from '../../service/hooks/useProduct';
 import { useEffect } from 'react';
 import { setProduct } from '../../service/state/slices/product-slice';
 import { Card, Spin } from 'antd';

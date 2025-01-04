@@ -13,7 +13,7 @@ import { ICategory } from '../../interfaces/ICategory';
 import { setFilter } from '../../service/state/slices/filter-slice';
 import { setPagination } from '../../service/state/slices/pagination-slice';
 import { serializeDate } from '../../utils/date-convert';
-import { useCategories } from '../../service/api/useCategories';
+import { useCategories } from '../../service/hooks/useCategories';
 import { setCategories } from '../../service/state/slices/category-slice';
 
 export const CategoryFilter = () => {

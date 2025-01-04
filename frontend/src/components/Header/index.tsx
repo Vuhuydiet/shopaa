@@ -15,7 +15,7 @@ import './HeaderStyle.css';
 import logo from '../../assets/images/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
 import { useUser } from '../../context/UserContext';
-import { useCart } from '../../service/api/useCart';
+import { useCart } from '../../service/hooks/useCart';
 
 const { Search } = Input;
 

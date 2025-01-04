@@ -1,7 +1,7 @@
 import { List, message, Spin } from 'antd';
 import { ProductCard } from '../product-card/product-card';
 import { IProduct } from '../../interfaces/IProduct';
-import { useProducts } from '../../service/api/useProducts';
+import { useProducts } from '../../service/hooks/useProducts';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
 import { useEffect } from 'react';
