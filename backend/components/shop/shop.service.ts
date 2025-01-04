@@ -1,5 +1,5 @@
 import prisma from "../../models";
-import { BadRequestError, NotFoundError } from "../../core/ErrorResponse";
+import { BadRequestError, NotFoundError } from "../../core/responses/ErrorResponse";
 import { Role, Shop } from "@prisma/client";
 import UserService from "../user/user.service";
 

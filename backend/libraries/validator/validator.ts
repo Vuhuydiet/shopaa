@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ContextRunner, validationResult } from 'express-validator';
-import { BadRequestError } from '../../core/ErrorResponse';
+import { BadRequestError } from '../../core/responses/ErrorResponse';
 
 // can be reused by many routes
 const validate = (validations: ContextRunner[]) => {

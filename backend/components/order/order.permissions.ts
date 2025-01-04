@@ -1,6 +1,6 @@
 import { OrderStatus, Role } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
-import { ForbiddenError, NotFoundError } from "../../core/ErrorResponse";
+import { ForbiddenError, NotFoundError } from "../../core/responses/ErrorResponse";
 import OrderService from "./order.service";
 
 

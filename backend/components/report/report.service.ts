@@ -1,6 +1,6 @@
 import { ReportResultState, ReportType } from "@prisma/client";
 import prisma from "../../models";
-import { NotFoundError } from "../../core/ErrorResponse";
+import { NotFoundError } from "../../core/responses/ErrorResponse";
 
 type ShopReportData = {
 	reportReason: string;

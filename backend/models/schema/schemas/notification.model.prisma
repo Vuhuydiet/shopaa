@@ -1,0 +1,16 @@
+enum NotificationStatus {
+  NOT_SENT
+  SENT
+  READ
+}
+
+model NotificationEvent {
+  notificationId Int @id @default(autoincrement())
+  userId         Int
+  eventType      String
+  payload        String
+  createdAt      DateTime @default(now())
+  status         NotificationStatus @default(NOT_SENT)
+
+  user UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)  
+}

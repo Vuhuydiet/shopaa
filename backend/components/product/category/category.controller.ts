@@ -1,5 +1,5 @@
 
-import { OKResponse } from "../../../core/SuccessResponse";
+import { OKResponse } from "../../../core/responses/SuccessResponse";
 import ProductService from "../product.service";
 import { matchedData } from "express-validator";
 import { Request, Response } from "express";

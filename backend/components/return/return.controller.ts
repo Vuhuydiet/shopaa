@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import ReturnService from "./return.service";
-import { CreatedResponse, OKResponse } from "../../core/SuccessResponse";
+import { CreatedResponse, OKResponse } from "../../core/responses/SuccessResponse";
 
 export default {
   // Create  return

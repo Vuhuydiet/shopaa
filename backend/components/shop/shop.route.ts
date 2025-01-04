@@ -1,9 +1,9 @@
 import express from 'express'
 
-import Auth from '../../libraries/auth/authorization.middleware';
+import Auth from '../access/auth/authorization.middleware';
 import { Role } from '@prisma/client';
 import shopController from './shop.controller';
-import passport from '../../libraries/auth/authentication.middleware';
+import passport from '../access/auth/authentication.middleware';
 import { body, param } from 'express-validator';
 import { handleValidationErrors } from '../../libraries/validator/validator';
 
