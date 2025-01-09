@@ -13,6 +13,7 @@ export const PaginationProduct = () => {
     (state: RootState) =>
       state.filters.filter.offset / PRODUCTS_FILTER.ITEMS_PER_PAGE + 1,
   );
+  const filter = useSelector((state: RootState) => state.filters.filter);
 
   return (
     <Pagination
@@ -24,6 +25,7 @@ export const PaginationProduct = () => {
       onChange={(page: number, pageSize: number) => {
         dispatch(
           filterAsync({
+            ...filter,
             offset: (page - 1) * pageSize,
             limit: pageSize,
           }),
