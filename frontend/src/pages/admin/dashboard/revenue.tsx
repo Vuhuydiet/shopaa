@@ -1,4 +1,4 @@
-import React, { Key, useMemo, useState } from 'react';
+import { Key, useMemo, useState } from 'react';
 import {
   Table,
   Card,
@@ -8,7 +8,6 @@ import {
   Space,
   Button,
   Select,
-  TableColumnsType,
 } from 'antd';
 import {
   ShopOutlined,
@@ -18,6 +17,7 @@ import {
 } from '@ant-design/icons';
 import { FilterDropdownProps } from 'antd/lib/table/interface';
 import { useRevenue } from '../../../service/hooks/useRevenue';
+import { formatCurrency } from '../../../utils/format-number';
 
 const { Title } = Typography;
 
@@ -32,7 +32,7 @@ const RevenueTable = () => {
     columnKey: '',
     order: '',
   });
-  // Thêm state cho pagination
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -49,7 +49,7 @@ const RevenueTable = () => {
       columnKey: '',
       order: '',
     });
-    setCurrentPage(1); // Reset về trang đầu tiên
+    setCurrentPage(1);
   };
 
   const getColumnSearchProps = (dataIndex: string) => ({
@@ -159,11 +159,7 @@ const RevenueTable = () => {
       sortOrder: sortedInfo.columnKey === 'totalRevenue' && sortedInfo.order,
       render: (revenue: any) => (
         <span style={{ color: '#52c41a', fontWeight: 'bold' }}>
-          <DollarOutlined style={{ marginRight: 8 }} />
-          {new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
-          }).format(revenue)}
+          {formatCurrency(revenue)}
         </span>
       ),
     },
@@ -176,7 +172,6 @@ const RevenueTable = () => {
     setSortedInfo(sorter);
   };
 
-  // Cấu hình pagination
   const paginationConfig = {
     current: currentPage,
     pageSize: pageSize,

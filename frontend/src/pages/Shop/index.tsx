@@ -45,8 +45,8 @@ const ShopPage: React.FC = () => {
               maxPrice: undefined,
               minQuantity: undefined,
               maxQuantity: undefined,
-              sortBy: undefined,
-              order: undefined,
+              sortBy: 'publishedAt',
+              order: 'desc',
               limit: PRODUCTS_FILTER.ITEMS_PER_PAGE,
             }),
           );

@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import HeaderComponent from '../../components/Header';
 import {
   Button,
@@ -24,6 +24,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 export const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(true);
+  const location = useLocation();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -36,18 +37,28 @@ export const LayoutAdmin = () => {
       key: '1',
       icon: <DashboardOutlined />,
       label: 'Dashboard',
+      className:
+        location.pathname === '/admin/dashboard'
+          ? 'ant-menu-item-selected'
+          : '',
       onClick: () => navigate('/admin/dashboard'),
     },
     {
       key: '2',
       icon: <ContactsOutlined />,
       label: 'Report',
+      className:
+        location.pathname === '/admin/report' ? 'ant-menu-item-selected' : '',
       onClick: () => navigate('/admin/report'),
     },
     {
       key: '3',
       icon: <QuestionOutlined />,
       label: 'Withdraw Request',
+      className:
+        location.pathname === '/admin/withdraw-request'
+          ? 'ant-menu-item-selected'
+          : '',
       onClick: () => navigate('/admin/withdraw-request'),
     },
   ];
@@ -80,13 +91,7 @@ export const LayoutAdmin = () => {
                 )}
               </Space>
 
-              <Menu
-                defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}
-                mode="inline"
-                inlineCollapsed={collapsed}
-                items={items}
-              />
+              <Menu mode="inline" inlineCollapsed={collapsed} items={items} />
             </Sider>
             <Layout style={{ margin: '0 0 0 5px' }}>
               <Content>

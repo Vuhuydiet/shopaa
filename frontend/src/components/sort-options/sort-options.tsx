@@ -5,8 +5,8 @@ import { filterAsync } from '../../service/state/actions/filter-action';
 import { AppDispatch, RootState } from '../../service/state/store';
 
 export const SortOptions = () => {
-  const [sortBy, setSortBy] = useState<string | null>(null);
-  const [order, setOrder] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<string | null>('publishedAt');
+  const [order, setOrder] = useState<string | null>('desc');
   const dispatch = useDispatch<AppDispatch>();
   const filter = useSelector((state: RootState) => state.filters.filter);
 
@@ -69,7 +69,11 @@ export const SortOptions = () => {
       >
         Time
       </Button>
-      <Select placeholder="Order" onChange={(value) => setOrder(value)}>
+      <Select
+        placeholder="Order"
+        defaultValue={order}
+        onChange={(value) => setOrder(value)}
+      >
         <Select.Option value="asc">Ascending</Select.Option>
         <Select.Option value="desc">Descending</Select.Option>
       </Select>

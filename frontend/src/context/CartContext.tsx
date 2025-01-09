@@ -13,6 +13,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useCart } from '../service/hooks/useCart';
 import { CART_PRODUCTS_FILTER } from '../config/constants';
 import { AxiosResponse } from 'axios';
+import { formatCurrency } from '../utils/format-number';
 
 interface CartContextType {
   shopColumns: any;
@@ -95,12 +96,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       dataIndex: 'shopName',
     },
   ];
+
   const productColumns = [
     {
       key: 'image',
       title: 'Image',
       dataIndex: 'image',
-      render: (text: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <img
             key={`img-${record?.key}`}
@@ -115,7 +117,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       key: 'name',
       title: 'Name',
       dataIndex: 'name',
-      render: (text: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <span
             key={`name-${record?.key}`}
@@ -126,7 +128,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              maxWidth: '250px',
+              maxWidth: '150px',
             }}
           >
             {record?.name}
@@ -137,7 +139,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     {
       key: 'attributes',
       title: 'Attributes',
-      render: (text: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <Tooltip
             key={record?.key}
@@ -170,15 +172,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                   value: size,
                   label: size,
                   key: `${record?.key}-${size}`,
-                  disabled: shopDataState?.cart?.some((shop: any) => {
-                    if (shop.key !== record?.shopId) return false;
-                    return shop?.products?.some((product: any) => {
-                      return (
-                        product.key !== record?.key &&
-                        product.size === size &&
-                        product.color === record?.color
-                      );
-                    });
+                  disabled: selectedProducts.some((product) => {
+                    return (
+                      product.key !== record?.key &&
+                      product.size === size &&
+                      product.color === record?.color
+                    );
                   }),
                 }))}
                 style={{ width: '100%' }}
@@ -205,15 +204,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                   value: color,
                   label: color,
                   key: `${record?.key}-${color}`,
-                  disabled: shopDataState?.cart?.some((shop: any) => {
-                    if (shop.key !== record?.shopId) return false;
-                    return shop?.products?.some((product: any) => {
-                      return (
-                        product.key !== record?.key &&
-                        product.color === color &&
-                        product.size === record?.size
-                      );
-                    });
+                  disabled: selectedProducts.some((product) => {
+                    return (
+                      product.key !== record?.key &&
+                      product.color === color &&
+                      product.size === record?.size
+                    );
                   }),
                 }))}
                 style={{ width: '100%' }}
@@ -226,7 +222,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     {
       key: 'price',
       title: 'Price',
-      render: (text: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <Space direction="vertical" size={8} key={record?.key}>
             <Typography.Text
@@ -234,10 +230,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
               italic
               style={{ color: 'orange', fontSize: '0.8rem' }}
             >
-              ${record?.currentPrice}
+              {formatCurrency(record?.currentPrice)}
             </Typography.Text>
             <Typography.Text delete italic style={{ fontSize: '0.7rem' }}>
-              ${record?.originalPrice}
+              {formatCurrency(record?.originalPrice)}
             </Typography.Text>
           </Space>
         );
@@ -313,7 +309,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
             italic
             style={{ color: 'green', fontSize: '0.8rem' }}
           >
-            ${record?.currentPrice * record?.quantity}
+            {formatCurrency(record?.currentPrice * record?.quantity)}
           </Typography.Text>
         );
       },
@@ -327,7 +323,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
             type="text"
             danger
             onClick={() => {
-              deleteItem(record.key)
+              deleteItem
+                .mutateAsync(record.key)
                 .then((response: AxiosResponse) => {
                   messageApi.open({
                     type: 'success',

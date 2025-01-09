@@ -4,9 +4,11 @@ import React from 'react';
 
 export const ProductButton = React.memo(
   ({
+    addCartLoading,
     addCart,
     checkout,
   }: {
+    addCartLoading: boolean;
     addCart: (e: any) => void;
     checkout: (e: any) => void;
   }) => {
@@ -23,6 +25,7 @@ export const ProductButton = React.memo(
               color: 'blue',
             }}
             onClick={addCart}
+            loading={addCartLoading}
           >
             Add Cart
           </Button>

@@ -13,6 +13,10 @@ export const ProductSize = memo(
   }) => {
     const product = useSelector((state: RootState) => state.product);
 
+    if (!product?.sizes || product.sizes.length === 0) {
+      return null;
+    }
+
     return (
       <Row style={{ marginTop: '30px' }}>
         <Col

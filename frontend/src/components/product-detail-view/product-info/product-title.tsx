@@ -19,7 +19,7 @@ export const ProductTitle = React.memo(() => {
             margin: '0 10px 0 0',
           }}
         >
-          Yêu thích
+          Hot
         </Typography.Text>
       </Col>
       <Col>

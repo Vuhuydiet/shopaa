@@ -1,8 +1,14 @@
-import { Button, Col, message, Row, Table, Typography } from 'antd';
+import { Button, Card, Col, message, Row, Table, Typography } from 'antd';
 import { CartContext } from '../../context/CartContext';
 import { useContext } from 'react';
 import { CART_PRODUCTS_FILTER } from '../../config/constants';
 import { useNavigate } from 'react-router-dom';
+import { ShoppingCartOutlined } from '@ant-design/icons';
+import {
+  formatCurrency,
+  formatNumber,
+  formatShortenNumber,
+} from '../../utils/format-number';
 
 export const ProductCartTable = () => {
   const {
@@ -18,7 +24,21 @@ export const ProductCartTable = () => {
   const navigate = useNavigate();
 
   return (
-    <>
+    <Card
+      title={
+        <Typography.Title
+          style={{
+            margin: '10px 0 0 40px',
+            color: 'purple',
+            fontSize: '1.5rem',
+          }}
+        >
+          <ShoppingCartOutlined style={{ marginRight: '5px' }} />
+          Your Cart
+        </Typography.Title>
+      }
+      style={{ maxWidth: '900px', margin: '10px auto' }}
+    >
       <Table
         loading={isLoading}
         columns={shopColumns}
@@ -48,7 +68,8 @@ export const ProductCartTable = () => {
           }}
         >
           <Typography.Text strong style={{ color: 'red' }}>
-            Total ({totalItems} items): ${totalPrice}
+            Total ({formatShortenNumber(totalItems)} items): &nbsp;
+            {formatCurrency(totalPrice)}
           </Typography.Text>
           <Button
             style={{ backgroundColor: 'purple', color: 'white' }}
@@ -69,6 +90,6 @@ export const ProductCartTable = () => {
           </Button>
         </Row>
       </Col>
-    </>
+    </Card>
   );
 };

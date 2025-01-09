@@ -13,6 +13,10 @@ export const ProductColor = React.memo(
   }) => {
     const product = useSelector((state: RootState) => state.product);
 
+    if (!product?.colors || product.colors.length === 0) {
+      return null;
+    }
+
     return (
       <Row style={{ marginTop: '30px' }}>
         <Col

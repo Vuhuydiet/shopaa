@@ -18,13 +18,20 @@ export const useFormReview = (
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmitReview = () => {
-    if (!star) {
+    if (star === 0) {
       message.error('Please rate the product');
       return;
     }
 
-    if (!content) {
+    if (content === '') {
       message.error('Please write a review');
+      return;
+    }
+
+    if (content.length > 1000) {
+      message.error(
+        'Content exceeds the 1000 character limit! Please summarize.',
+      );
       return;
     }
 

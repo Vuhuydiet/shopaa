@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { store } from '../service/state/store';
 import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
 import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
-import { NotificationProvider } from './NotificationContext';
 
 interface GlobalProviderProps {
   children: ReactNode;
@@ -26,9 +25,7 @@ const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <RegisterProvider>
-            <UserProvider>
-              <NotificationProvider>{children} </NotificationProvider>
-            </UserProvider>
+            <UserProvider>{children}</UserProvider>
           </RegisterProvider>
         </AuthProvider>
       </QueryClientProvider>

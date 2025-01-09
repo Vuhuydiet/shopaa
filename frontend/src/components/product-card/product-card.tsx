@@ -1,10 +1,14 @@
 import './styles.css';
-import { Button, Card, Space, Typography } from 'antd';
+import { Card, Space, Typography } from 'antd';
 import { IProductCard } from '../../interfaces/IProductCard';
-import { ShoppingCartOutlined, StarFilled } from '@ant-design/icons';
-import numberAbbreviation from '../../utils/number-abbreviation';
+import { StarFilled } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { memo } from 'react';
+import {
+  formatNumber,
+  formatShortenNumber,
+  formatCurrency,
+} from '../../utils/format-number';
 
 export const ProductCard = memo((product: IProductCard) => {
   const navigate = useNavigate();
@@ -43,14 +47,20 @@ export const ProductCard = memo((product: IProductCard) => {
         delete
         style={{ fontSize: '0.8rem', margin: '0 20px 0 0' }}
       >
-        $ {product.originalPrice}
+        {formatCurrency(product.originalPrice, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        })}
       </Typography.Text>
       <Typography.Text style={{ color: 'red', fontSize: '1rem' }} italic>
-        $ {product.currentPrice}
+        {formatCurrency(product.currentPrice, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        })}
       </Typography.Text>
       <div style={{ marginTop: '5px' }}>
         <Typography.Text style={{ fontSize: '0.8rem', color: 'blue' }}>
-          <span>Quantity:</span> {product.quantity}
+          <span>Quantity:</span> {formatShortenNumber(product.quantity)}
         </Typography.Text>
       </div>
       <Space
@@ -63,10 +73,13 @@ export const ProductCard = memo((product: IProductCard) => {
       >
         <Typography.Text strong style={{ fontSize: '0.7rem' }}>
           <StarFilled style={{ margin: '0 3px 0 0', color: 'yellow' }} />
-          {product.star}
+          {formatNumber(product.star, {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1,
+          })}
         </Typography.Text>
         <Typography.Text italic strong style={{ fontSize: '0.7rem' }}>
-          {numberAbbreviation(product.soldCount)} sales
+          {formatShortenNumber(product.soldCount)} sales
         </Typography.Text>
       </Space>
     </Card>

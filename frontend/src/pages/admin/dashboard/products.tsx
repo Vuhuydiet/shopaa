@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Table,
   Card,
@@ -19,6 +19,7 @@ import {
 } from '@ant-design/icons';
 import { FilterDropdownProps } from 'antd/lib/table/interface';
 import { useProductRevenue } from '../../../service/hooks/useProductRevenue';
+import { formatCurrency } from '../../../utils/format-number';
 
 const { Title } = Typography;
 
@@ -174,11 +175,7 @@ const ProductRevenueTable = () => {
       sortOrder: sortedInfo.columnKey === 'totalRevenue' && sortedInfo.order,
       render: (revenue: any) => (
         <span style={{ color: '#52c41a', fontWeight: 'bold' }}>
-          <DollarOutlined style={{ marginRight: 8 }} />
-          {new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
-          }).format(revenue)}
+          {formatCurrency(revenue)}
         </span>
       ),
     },

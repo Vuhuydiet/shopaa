@@ -1,5 +1,5 @@
 import './styles.css';
-import { Button, DatePicker, InputNumber, Menu, Space } from 'antd';
+import { Button, DatePicker, InputNumber, Menu, message, Space } from 'antd';
 import {
   CalculatorOutlined,
   CalendarOutlined,
@@ -28,7 +28,6 @@ export const CategoryFilter = () => {
   const filter = useSelector((state: RootState) => state.filters.filter);
 
   const handleCategoryChange = (key: number | undefined) => {
-    console.log('category', key);
     dispatch(
       filterAsync({
         ...filter,
@@ -42,52 +41,107 @@ export const CategoryFilter = () => {
     minPrice: number | null,
     maxPrice: number | null,
   ) => {
-    if (minPrice !== null && maxPrice !== null && minPrice < maxPrice) {
-      dispatch(
-        filterAsync({
-          ...filter,
-          minPrice,
-          maxPrice,
-          offset: 0,
-        }),
-      );
+    const filterPrice = {
+      ...filter,
+      minPrice: undefined as number | undefined,
+      maxPrice: undefined as number | undefined,
+      offset: 0,
+    };
+
+    if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
+      message.error('Min price must be less than max price');
+      return;
     }
+
+    if (minPrice !== null) {
+      filterPrice.minPrice = minPrice;
+    }
+
+    if (maxPrice !== null) {
+      filterPrice.maxPrice = maxPrice;
+    }
+
+    console.log(filterPrice);
+
+    dispatch(
+      filterAsync({
+        ...filterPrice,
+      }),
+    );
   };
 
   const handleChangeQuantityRange = (
     minQuantity: number | null,
     maxQuantity: number | null,
   ) => {
+    const filterQuantity = {
+      ...filter,
+      minQuantity: undefined as number | undefined,
+      maxQuantity: undefined as number | undefined,
+      offset: 0,
+    };
+
     if (
-      minQuantity != null &&
-      maxQuantity != null &&
-      minQuantity < maxQuantity
+      minQuantity !== null &&
+      maxQuantity !== null &&
+      minQuantity > maxQuantity
     ) {
-      dispatch(
-        filterAsync({
-          ...filter,
-          minQuantity,
-          maxQuantity,
-          offset: 0,
-        }),
-      );
+      message.error('Min quantity must be less than max quantity');
+      return;
     }
+
+    if (minQuantity !== null) {
+      filterQuantity.minQuantity = minQuantity;
+    }
+
+    if (maxQuantity !== null) {
+      filterQuantity.maxQuantity = maxQuantity;
+    }
+
+    console.log(filterQuantity);
+
+    dispatch(
+      filterAsync({
+        ...filterQuantity,
+      }),
+    );
   };
 
   const handleChangeDateRange = (
     postedAfter: Date | null,
     postedBefore: Date | null,
   ) => {
-    if (postedAfter != null && postedBefore != null) {
-      dispatch(
-        filterAsync({
-          ...filter,
-          postedAfter: serializeDate(postedAfter),
-          postedBefore: serializeDate(postedBefore),
-          offset: 0,
-        }),
-      );
+    const filterDate = {
+      ...filter,
+      postedAfter: undefined as string | undefined,
+      postedBefore: undefined as string | undefined,
+      offset: 0,
+    };
+
+    if (
+      postedAfter !== null &&
+      postedBefore !== null &&
+      postedAfter > postedBefore
+    ) {
+      message.error('Start date must be less than end date');
+      return;
     }
+
+    if (postedAfter !== null) {
+      filterDate.postedAfter = serializeDate(postedAfter);
+    }
+
+    if (postedBefore !== null) {
+      filterDate.postedBefore = serializeDate(postedBefore);
+    }
+
+    console.log(filterDate);
+
+    dispatch(
+      filterAsync({
+        ...filterDate,
+      }),
+    );
   };
 
   return (

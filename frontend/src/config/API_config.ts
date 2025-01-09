@@ -1,4 +1,4 @@
-const API_DOMAIN = 'http://localhost:3000/';
+const API_DOMAIN = import.meta.env.VITE_API_DOMAIN;
 
 export const AUTH_API_ENDPOINTS = {
   SEND_OTP: `${API_DOMAIN}api/v1/access/send-otp`,
@@ -29,8 +29,11 @@ export const ORDER_API_ENDPOINTS = {
   TRANSPORTATION: `${API_DOMAIN}api/v1/transportation`,
 };
 
-export const ADMIN_API_ENDPOINTS = {
+export const REPORT_API_ENDPOINTS = {
   REPORTS: `${API_DOMAIN}api/v1/report/`,
+  SHOP: `${API_DOMAIN}api/v1/report/shop`,
+  PRODUCT: `${API_DOMAIN}api/v1/report/product`,
+  REASONS: `${API_DOMAIN}api/v1/report/reasons`,
 };
 
 export const CART_API_ENDPOINTS = {
