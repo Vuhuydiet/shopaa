@@ -3,7 +3,7 @@ import { getReportReasons } from '../api/report';
 
 export const useReportReasons = (type: string) => {
   const { data: reasons } = useQuery({
-    queryKey: ['reportReasons'],
+    queryKey: ['reportReasons', type],
     queryFn: () => getReportReasons(type),
   });
 
