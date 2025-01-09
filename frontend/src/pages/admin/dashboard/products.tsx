@@ -26,10 +26,6 @@ const { Title } = Typography;
 const ProductRevenueTable = () => {
   const { setYear, productRevenues } = useProductRevenue();
 
-  const [searchText, setSearchText] = useState('');
-  const [filteredInfo, setFilteredInfo] = useState({
-    month: null,
-  });
   const [sortedInfo, setSortedInfo] = useState({
     columnKey: '',
     order: '',
@@ -42,10 +38,6 @@ const ProductRevenueTable = () => {
   }, []);
 
   const handleReset = () => {
-    setSearchText('');
-    setFilteredInfo({
-      month: null,
-    });
     setSortedInfo({
       columnKey: '',
       order: '',
@@ -108,7 +100,7 @@ const ProductRevenueTable = () => {
         : '',
   });
 
-  const columns = [
+  const columns: any = [
     {
       title: 'Shop ID',
       dataIndex: 'shopOwnerId',
@@ -181,10 +173,9 @@ const ProductRevenueTable = () => {
     },
   ];
 
-  const handleChange = (pagination: any, filters: any, sorter: any) => {
+  const handleChange = (pagination: any, _: any, sorter: any) => {
     setCurrentPage(pagination.current);
     setPageSize(pagination.pageSize);
-    setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
 

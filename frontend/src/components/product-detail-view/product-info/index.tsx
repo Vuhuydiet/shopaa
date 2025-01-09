@@ -33,7 +33,7 @@ export const ProductInfo = () => {
   }, []);
 
   const handleAddToCart = useCallback(
-    async (e: any) => {
+    async (_: any) => {
       setIsLoadingAddToCart(true);
 
       addItem
@@ -66,7 +66,7 @@ export const ProductInfo = () => {
   const navigate = useNavigate();
 
   const handleCheckout = useCallback(
-    (e: any) => {
+    (_: any) => {
       if (!user) {
         message.error('Please login to add to cart');
         navigate('/login');
@@ -101,7 +101,6 @@ export const ProductInfo = () => {
 
   const colorMemo = useMemo(() => color, [color]);
   const sizeMemo = useMemo(() => size, [size]);
-  const quantityMemo = useMemo(() => quantity, [quantity]);
 
   return (
     <Card
@@ -119,10 +118,7 @@ export const ProductInfo = () => {
         <>
           <ProductColor currentColor={colorMemo} onClick={handleChooseColor} />
           <ProductSize currentSize={sizeMemo} onClick={handleChooseSize} />
-          <ProductQuantity
-            quantity={quantityMemo}
-            onQuantityChange={(value) => setQuantity(value)}
-          />
+          <ProductQuantity onQuantityChange={(value) => setQuantity(value)} />
           <ProductButton
             addCartLoading={isLoadingAddToCart}
             addCart={handleAddToCart}

@@ -1,4 +1,4 @@
-import { Card, Col, Row, Space, Typography } from 'antd';
+import { Card, Space, Typography } from 'antd';
 import React from 'react';
 import { RootState } from '../../../service/state/store';
 import { useSelector } from 'react-redux';

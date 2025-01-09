@@ -24,8 +24,8 @@ import {
   SearchOutlined,
   ShopOutlined,
 } from '@ant-design/icons';
-import { getProduct, useProduct } from '../service/hooks/useProduct';
-import { getDetailShop, useShop } from '../service/hooks/useShop';
+import { getProduct } from '../service/hooks/useProduct';
+import { getDetailShop } from '../service/hooks/useShop';
 import { Link } from 'react-router-dom';
 import modal from 'antd/es/modal';
 import TextArea from 'antd/es/input/TextArea';

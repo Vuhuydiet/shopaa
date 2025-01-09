@@ -13,7 +13,7 @@ export const useProducts = (params: IFilterProduct) => {
   });
 };
 
-async function getProducts(params: IFilterProduct = { limit: 24 }) {
+async function getProducts(params: IFilterProduct = { limit: 24, offset: 0 }) {
   try {
     const response = await axios.get(PRODUCT_API_ENDPOINTS.PRODUCTS, {
       params: params,
