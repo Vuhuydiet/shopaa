@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Table,
   Card,
@@ -18,19 +18,19 @@ import {
 } from '@ant-design/icons';
 import { useOrderStatistics } from '../../../service/hooks/useOrderStatistics';
 import { formatNumber } from '../../../utils/format-number';
+import { OrderStatus } from '../../../interfaces/Order/OrderEnums';
+import { SortOrder } from 'antd/es/table/interface';
 
 const { Title } = Typography;
 
 const OrderStatisticsTable = () => {
   const { setYear, orderStatistics } = useOrderStatistics();
-
-  const [searchText, setSearchText] = useState('');
-  const [filteredInfo, setFilteredInfo] = useState({
-    month: null,
-  });
-  const [sortedInfo, setSortedInfo] = useState({
+  const [sortedInfo, setSortedInfo] = useState<{
+    columnKey: string;
+    order: SortOrder | undefined;
+  }>({
     columnKey: '',
-    order: '',
+    order: undefined,
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -40,7 +40,7 @@ const OrderStatisticsTable = () => {
   }, []);
 
   const getStatusColor = (status: string) => {
-    const statusColors = {
+    const statusColors: Record<OrderStatus, string> = {
       PENDING: 'gold',
       CANCELED: 'red',
       ACCEPTED: 'blue',
@@ -52,17 +52,14 @@ const OrderStatisticsTable = () => {
       RETURNED: 'orange',
       RETURN_REQUESTED: 'magenta',
     };
-    return statusColors[status] || 'default';
+
+    return statusColors[status as OrderStatus] || 'default';
   };
 
   const handleReset = () => {
-    setSearchText('');
-    setFilteredInfo({
-      month: null,
-    });
     setSortedInfo({
       columnKey: '',
-      order: '',
+      order: undefined,
     });
     setCurrentPage(1);
   };
@@ -122,14 +119,15 @@ const OrderStatisticsTable = () => {
         : '',
   });
 
-  const columns = [
+  const columns: any = [
     {
       title: 'Shop ID',
       dataIndex: 'shopOwnerId',
       key: 'shopOwnerId',
       width: '10%',
       sorter: (a: any, b: any) => a.shopOwnerId - b.shopOwnerId,
-      sortOrder: sortedInfo.columnKey === 'shopOwnerId' && sortedInfo.order,
+      sortOrder:
+        sortedInfo.columnKey === 'shopOwnerId' ? sortedInfo.order : undefined,
       render: (id: any) => <Tag color="blue">{id}</Tag>,
     },
     {
@@ -139,7 +137,8 @@ const OrderStatisticsTable = () => {
       width: '20%',
       ...getColumnSearchProps('shopName'),
       sorter: (a: any, b: any) => a.shopName.localeCompare(b.shopName),
-      sortOrder: sortedInfo.columnKey === 'shopName' && sortedInfo.order,
+      sortOrder:
+        (sortedInfo.columnKey === 'shopName' && sortedInfo.order) ?? undefined,
       render: (name: any) => (
         <span>
           <ShopOutlined style={{ marginRight: 8, color: '#1890ff' }} />
@@ -190,7 +189,9 @@ const OrderStatisticsTable = () => {
       key: 'totalOrders',
       width: '15%',
       sorter: (a: any, b: any) => a.totalOrders - b.totalOrders,
-      sortOrder: sortedInfo.columnKey === 'totalOrders' && sortedInfo.order,
+      sortOrder:
+        (sortedInfo.columnKey === 'totalOrders' && sortedInfo.order) ??
+        undefined,
       render: (total: any) => (
         <span style={{ color: '#1890ff', fontWeight: 'bold' }}>
           <OrderedListOutlined style={{ marginRight: 8 }} />
@@ -200,10 +201,9 @@ const OrderStatisticsTable = () => {
     },
   ];
 
-  const handleChange = (pagination: any, filters: any, sorter: any) => {
+  const handleChange = (pagination: any, _: any, sorter: any) => {
     setCurrentPage(pagination.current);
     setPageSize(pagination.pageSize);
-    setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
 

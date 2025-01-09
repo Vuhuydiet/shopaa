@@ -19,7 +19,6 @@ import {
 } from '@ant-design/icons';
 import { useWithdrawals } from '../../../service/hooks/useWithdrawals';
 import {
-  formatCurrency,
   formatNumber,
   formatShortenNumber,
 } from '../../../utils/format-number';
@@ -29,8 +28,6 @@ const { Title } = Typography;
 const WithdrawalStatisticsTable = () => {
   const { setYear, withdrawals } = useWithdrawals();
 
-  const [searchText, setSearchText] = useState('');
-  const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({
     columnKey: '',
     order: '',
@@ -43,8 +40,6 @@ const WithdrawalStatisticsTable = () => {
   }, []);
 
   const handleReset = () => {
-    setSearchText('');
-    setFilteredInfo({});
     setSortedInfo({
       columnKey: '',
       order: '',
@@ -107,7 +102,7 @@ const WithdrawalStatisticsTable = () => {
         : '',
   });
 
-  const columns = [
+  const columns: any = [
     {
       title: 'Shop ID',
       dataIndex: 'shopOwnerId',
@@ -176,10 +171,9 @@ const WithdrawalStatisticsTable = () => {
     },
   ];
 
-  const handleChange = (pagination: any, filters: any, sorter: any) => {
+  const handleChange = (pagination: any, _: any, sorter: any) => {
     setCurrentPage(pagination.current);
     setPageSize(pagination.pageSize);
-    setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
 

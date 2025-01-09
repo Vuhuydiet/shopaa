@@ -87,7 +87,7 @@ const CheckoutPage = () => {
       if (response) {
         if (listCartID.length > 0) {
           listCartID.forEach(async (cartID: any) => {
-            await deleteItem(cartID);
+            await deleteItem.mutateAsync(cartID);
           });
         }
         await refetchCart();

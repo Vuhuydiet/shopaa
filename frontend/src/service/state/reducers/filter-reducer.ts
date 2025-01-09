@@ -28,7 +28,7 @@ export const filterReducer = createSlice({
     totalItems: 0 as number,
   },
   reducers: {
-    resetInitialState: (state) => {
+    resetInitialState: (state: any) => {
       state = {
         filter: {
           keyword: undefined,
@@ -50,6 +50,8 @@ export const filterReducer = createSlice({
         isLoading: false,
         totalItems: 0,
       };
+
+      return state;
     },
   },
   extraReducers: (builder) => {

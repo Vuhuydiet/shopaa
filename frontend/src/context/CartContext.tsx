@@ -243,7 +243,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       key: 'quantity',
       title: 'Quantity',
       dataIndex: 'quantity',
-      render: (text: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <Tooltip
             key={record?.key}
@@ -301,7 +301,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     {
       key: 'totalPrice',
       title: 'Total price',
-      render: (text: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <Typography.Text
             key={record?.key}
@@ -315,7 +315,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       },
     },
     {
-      render: (text: any, record: any) => {
+      render: (_: any, record: any) => {
         return (
           <Button
             key={record?.key}
@@ -325,7 +325,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
             onClick={() => {
               deleteItem
                 .mutateAsync(record.key)
-                .then((response: AxiosResponse) => {
+                .then((_: AxiosResponse) => {
                   messageApi.open({
                     type: 'success',
                     content: 'Item deleted successfully',
@@ -422,7 +422,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
                   });
                 });
 
-                setTotalPrice((price: any) => {
+                setTotalPrice((_: any) => {
                   return selectedRow.reduce(
                     (total: any, product: any) =>
                       total + product.currentPrice * product.quantity,

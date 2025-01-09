@@ -4,11 +4,7 @@ import { useContext } from 'react';
 import { CART_PRODUCTS_FILTER } from '../../config/constants';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined } from '@ant-design/icons';
-import {
-  formatCurrency,
-  formatNumber,
-  formatShortenNumber,
-} from '../../utils/format-number';
+import { formatCurrency, formatShortenNumber } from '../../utils/format-number';
 
 export const ProductCartTable = () => {
   const {
