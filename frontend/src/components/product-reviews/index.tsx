@@ -13,6 +13,8 @@ import { useReviews } from '../../service/hooks/useReviews';
 import { formatDateString } from '../../utils/formatDateString';
 import { IProduct } from '../../interfaces/IProduct';
 import { REVIEWS_FILTER } from '../../config/constants';
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const CommentList = ({ product }: { product: IProduct }) => {
   const {
@@ -23,6 +25,16 @@ const CommentList = ({ product }: { product: IProduct }) => {
     handleRateFilterChange,
     query: { data: commentsData, isLoading },
   } = useReviews(product);
+  const reviewRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#review-list' && reviewRef.current) {
+      reviewRef.current.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }
+  }, [location]);
 
   if (isLoading) {
     return (
@@ -118,6 +130,8 @@ const CommentList = ({ product }: { product: IProduct }) => {
         </Flex>
       </Card>
       <List
+        ref={reviewRef}
+        id="review-list"
         itemLayout="vertical"
         dataSource={commentsData?.reviews}
         renderItem={(comment) => (
@@ -129,7 +143,7 @@ const CommentList = ({ product }: { product: IProduct }) => {
                     <img
                       src={
                         comment.customerAvatar ??
-                        'https://res.cloudinary.com/dwkunsgly/image/upload/v1734524362/tfnsj3lungllyymy3u0t.jpg'
+                        'https://res.cloudinary.com/dwkunsgly/image/upload/v1736347325/brzw7ubnc2fnaxwlpas1.jpg'
                       }
                       width={200}
                       height={200}
@@ -140,7 +154,7 @@ const CommentList = ({ product }: { product: IProduct }) => {
               }
               title={
                 <>
-                  {comment.customerName}
+                  {comment.customerName ?? 'Anonymous'}
                   <span
                     style={{
                       marginLeft: '0.5rem',
@@ -156,12 +170,14 @@ const CommentList = ({ product }: { product: IProduct }) => {
                 <>
                   <Rate disabled defaultValue={comment.rating} />
                   <div>
-                    Color: <b>{comment.color}</b> | Size: <b>{comment.size}</b>
+                    {comment.color && 'Color: '} <b>{comment.color}</b>
+                    {comment.size && ' | Size: '}
+                    <b>{comment.size}</b>
                   </div>
                 </>
               }
             />
-            <p>{comment.reviewContent}</p>
+            <Typography.Paragraph>{comment.reviewContent}</Typography.Paragraph>
           </List.Item>
         )}
       />

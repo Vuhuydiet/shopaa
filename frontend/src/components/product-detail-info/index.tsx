@@ -19,7 +19,7 @@ export const ProductDetailInfo = () => {
       <Row>
         <Typography.Text
           style={{
-            padding: '5px 30px',
+            padding: '5px 0',
             color: 'gray',
             fontWeight: 'bold',
             fontSize: '1.3rem',
@@ -29,22 +29,30 @@ export const ProductDetailInfo = () => {
         </Typography.Text>
       </Row>
 
-      <Row style={{ marginLeft: '20px' }}>
-        <Col style={{ width: '140px' }}>Warehouse</Col>
-        <Col>{product?.quantity}</Col>
-      </Row>
-      <Row style={{ marginLeft: '20px' }}>
-        <Col style={{ width: '140px' }}>Brand</Col>
-        <Col>{product?.brand}</Col>
-      </Row>
-      <Row style={{ marginLeft: '20px' }}>
-        <Col style={{ width: '140px' }}>Material</Col>
-        <Col>{product?.material}</Col>
-      </Row>
-      <Row style={{ marginLeft: '20px' }}>
-        <Col style={{ width: '140px' }}>Origin</Col>
-        <Col>{product?.origin}</Col>
-      </Row>
+      {product?.quantity && (
+        <Row style={{ marginLeft: '20px' }}>
+          <Col style={{ width: '140px' }}>Warehouse</Col>
+          <Col>{product?.quantity}</Col>
+        </Row>
+      )}
+      {product?.brand && (
+        <Row style={{ marginLeft: '20px' }}>
+          <Col style={{ width: '140px' }}>Brand</Col>
+          <Col>{product?.brand}</Col>
+        </Row>
+      )}
+      {product?.material && (
+        <Row style={{ marginLeft: '20px' }}>
+          <Col style={{ width: '140px' }}>Material</Col>
+          <Col>{product?.material}</Col>
+        </Row>
+      )}
+      {product?.origin && (
+        <Row style={{ marginLeft: '20px' }}>
+          <Col style={{ width: '140px' }}>Origin</Col>
+          <Col>{product?.origin}</Col>
+        </Row>
+      )}
     </Space>
   );
 };

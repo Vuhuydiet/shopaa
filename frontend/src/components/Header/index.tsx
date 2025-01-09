@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Input, Badge, Dropdown, Avatar, Row, Col, MenuProps } from 'antd';
 import {
-  BellOutlined,
   UserOutlined,
   ShoppingCartOutlined,
   LogoutOutlined,
@@ -14,13 +13,14 @@ import {
 import './HeaderStyle.css';
 import logo from '../../assets/images/logo.png';
 import { useAuthContext } from '../../context/AuthContext';
-import { useUser } from '../../context/UserContext';
 import { useCart } from '../../service/hooks/useCart';
 import NotificationPopover from '../notification/notification';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../service/state/store';
 import { filterAsync } from '../../service/state/actions/filter-action';
 import { PRODUCTS_FILTER } from '../../config/constants';
+import { NotificationProvider } from '../../context/NotificationContext';
+import { useUser } from '../../context/UserContext';
 
 const { Search } = Input;
 
@@ -30,7 +30,7 @@ const HeaderComponent: React.FC = () => {
 
   const {
     cart: { data: cartItems },
-  } = useCart({ limit: 1, offset: 0 });
+  } = user?.role === 'USER' ? useCart({ limit: 1, offset: 0 }) : { cart: {} };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -57,8 +57,8 @@ const HeaderComponent: React.FC = () => {
         maxPrice: undefined,
         minQuantity: undefined,
         maxQuantity: undefined,
-        sortBy: undefined,
-        order: undefined,
+        sortBy: 'publishedAt',
+        order: 'desc',
         keyword: value,
         offset: 0,
         limit: PRODUCTS_FILTER.ITEMS_PER_PAGE,
@@ -143,15 +143,19 @@ const HeaderComponent: React.FC = () => {
           >
             {isAuthenticated ? (
               <>
-                <Col
-                  style={{
-                    marginRight: '20px',
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                  }}
-                >
-                  <NotificationPopover />
-                </Col>
+                {user?.role !== 'ADMIN' && (
+                  <Col
+                    style={{
+                      marginRight: '20px',
+                      display: 'flex',
+                      alignItems: 'flex-end',
+                    }}
+                  >
+                    <NotificationProvider>
+                      <NotificationPopover />
+                    </NotificationProvider>
+                  </Col>
+                )}
 
                 <Col
                   style={{

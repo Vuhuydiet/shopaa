@@ -147,9 +147,20 @@ const NotificationPopover = () => {
   const handleNotificationClick = (notification: INotification) => {
     markAsRead(notification.notificationId);
 
+    console.log(user?.role);
+
     switch (notification.eventType) {
       case 'order':
-        navigate(`/user/orders/${notification.payload.orderId}`);
+        if (user?.role === 'SHOP_MANAGER') {
+          navigate(`/manager-shop/list-order/${notification.payload.orderId}`);
+        } else if (user?.role === 'USER') {
+          navigate(`/user/orders/${notification.payload.orderId}`);
+        }
+        break;
+      case 'review':
+        navigate(
+          `/product-detail/${notification.payload.productId}#review-list`,
+        );
         break;
       default:
         console.log('Unknown notification type', notification.eventType);

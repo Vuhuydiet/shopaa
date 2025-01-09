@@ -1,6 +1,5 @@
 import {
   ProfileOutlined,
-  HomeOutlined,
   UserOutlined,
   ShopOutlined,
   FileTextOutlined,

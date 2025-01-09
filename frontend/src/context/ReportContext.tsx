@@ -16,10 +16,16 @@ import {
   message,
   Space,
   TableColumnsType,
+  Tag,
 } from 'antd';
-import { InfoCircleFilled, SearchOutlined } from '@ant-design/icons';
-import { useProduct } from '../service/hooks/useProduct';
-import { useShop } from '../service/hooks/useShop';
+import {
+  InfoCircleFilled,
+  ProductOutlined,
+  SearchOutlined,
+  ShopOutlined,
+} from '@ant-design/icons';
+import { getProduct, useProduct } from '../service/hooks/useProduct';
+import { getDetailShop, useShop } from '../service/hooks/useShop';
 import { Link } from 'react-router-dom';
 import modal from 'antd/es/modal';
 import TextArea from 'antd/es/input/TextArea';
@@ -78,10 +84,7 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
     report: { data, isLoading, refetch: refetchReport },
     postReportResult: postReportResult,
   } = useReports({});
-  const [productId, setProductId] = useState<string | undefined>(undefined);
-  const [shopId, setShopId] = useState<string | undefined>(undefined);
-  const { data: product, refetch: refetchProduct } = useProduct(productId);
-  const { data: shop, refetch: refetchShop } = useShop(shopId);
+
   const [reportId, setReportId] = useState<number | undefined>(undefined);
   const [modalApi, modalHolder] = modal.useModal();
   const [messageApi, messageHolder] = message.useMessage();
@@ -123,14 +126,19 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
     });
   };
 
-  const getReportDetail = (record: IReport) => {
+  const getReportDetail = async (record: IReport) => {
     setReportId(record.id);
     toggleModal();
-    setProductId(record.productId?.toString());
-    setShopId(record.shopId?.toString());
-    function getReportee(productId: string | undefined) {
+
+    async function getReportee(
+      productId: string | undefined,
+      shopId: string | undefined,
+    ) {
       if (productId) {
-        return (_: string | undefined) => [
+        const product = await getProduct(productId);
+        console.log('product', product);
+
+        return [
           {
             key: 'productId',
             label: 'Product ID',
@@ -189,122 +197,157 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
           },
         ];
       }
-      return (shopId: string | undefined) => {
-        if (!shopId) return [];
 
-        return [
-          {
-            key: 'shopOwnerId',
-            label: 'Shop Owner ID',
-            children: <Link to={`/shop/${shopId}`}>{shopId}</Link>,
-            span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
-          },
-          {
-            key: 'shopName',
-            label: 'Shop name',
-            children: shop?.name,
-            span: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2, xxl: 2 },
-          },
-          {
-            key: 'address',
-            label: 'Address',
-            children: shop?.address,
-            span: 3,
-          },
-          {
-            key: 'description',
-            label: 'Shop Description',
-            children: shop?.description,
-            span: 3,
-          },
-        ];
-      };
+      const shop = await getDetailShop(shopId);
+      console.log('shop', shop);
+
+      return [
+        {
+          key: 'shopOwnerId',
+          label: 'Shop Owner ID',
+          children: <Link to={`/shop/${shopId}`}>{shopId}</Link>,
+          span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
+        },
+        {
+          key: 'shopName',
+          label: 'Shop name',
+          children: shop?.name,
+          span: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2, xxl: 2 },
+        },
+        {
+          key: 'address',
+          label: 'Address',
+          children: shop?.address,
+          span: 3,
+        },
+        {
+          key: 'description',
+          label: 'Shop Description',
+          children: shop?.description,
+          span: 3,
+        },
+      ];
     }
 
     setIsProcessing(record.reportResult === null);
 
-    setReportDetail([
-      {
-        key: 'reportId',
-        label: 'Report ID',
-        children: record.id,
+    getReportee(record?.productId?.toString(), record?.shopId?.toString()).then(
+      (items) => {
+        setReportDetail([
+          {
+            key: 'reportId',
+            label: 'Report ID',
+            children: <Tag color="blue">{record.id}</Tag>,
+          },
+          {
+            key: 'reporterId',
+            label: 'Reporter ID',
+            children: <Tag color="blue">{record.reporterId}</Tag>,
+          },
+          {
+            key: 'createdAt',
+            label: 'Created At',
+            children: new Date(record.createdAt).toLocaleString(),
+            span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
+          },
+          {
+            key: 'type',
+            label: 'Type',
+            children:
+              record?.type === 'shop' ? (
+                <>
+                  <ShopOutlined style={{ marginRight: '3px', color: 'blue' }} />
+                  {toUpperCase(record.type as string)}
+                </>
+              ) : (
+                <>
+                  <ProductOutlined
+                    style={{ marginRight: '3px', color: 'blue' }}
+                  />
+                  {toUpperCase(record.type as string)}
+                </>
+              ),
+          },
+          {
+            key: 'category',
+            label: 'Category',
+            children:
+              toUpperCase(record.shopCategory as string) ||
+              toUpperCase(record.productCategory as string),
+            span: 2,
+          },
+          {
+            key: 'description',
+            label: 'Description',
+            span: 3,
+            children: record.description,
+          },
+          {
+            key: 'reportee',
+            label: 'Reportee',
+            children: <Descriptions items={items} />,
+            span: 3,
+          },
+          {
+            key: 'result',
+            label: 'Result',
+            children: (
+              <Descriptions
+                items={[
+                  {
+                    key: 'createdAt',
+                    label: 'Created At',
+                    children: record.reportResult?.createdAt
+                      ? new Date(
+                          record.reportResult?.createdAt,
+                        ).toLocaleString()
+                      : '',
+                  },
+                  {
+                    key: 'handlerId',
+                    label: 'Handler ID',
+                    children: record.reportResult?.handlerId ? (
+                      <Tag color="blue">{record.reportResult?.handlerId}</Tag>
+                    ) : (
+                      '-'
+                    ),
+                  },
+                  {
+                    key: 'result',
+                    label: 'Result',
+                    children: (
+                      <Tag
+                        color={
+                          record.reportResult?.result === 'accepted'
+                            ? 'green'
+                            : record.reportResult?.result === 'dismissed'
+                              ? 'red'
+                              : 'blue'
+                        }
+                        style={{
+                          textTransform: 'capitalize',
+                          height: '100%',
+                        }}
+                      >
+                        {record.reportResult?.result || 'Processing'}
+                      </Tag>
+                    ),
+                    span: 3,
+                  },
+                  {
+                    key: 'reason',
+                    label: 'Reason',
+                    children: record.reportResult?.reason,
+                    span: 3,
+                  },
+                ]}
+              />
+            ),
+            span: 3,
+          },
+        ]);
       },
-      {
-        key: 'reporterId',
-        label: 'Reporter ID',
-        children: record.reporterId,
-      },
-      {
-        key: 'createdAt',
-        label: 'Created At',
-        children: new Date(record.createdAt).toLocaleString(),
-        span: { xs: 3, sm: 3, md: 1, lg: 1, xl: 1, xxl: 1 },
-      },
-      {
-        key: 'type',
-        label: 'Type',
-        children: record.type,
-      },
-      {
-        key: 'category',
-        label: 'Category',
-        children: record.shopCategory || record.productCategory,
-        span: 2,
-      },
-      {
-        key: 'description',
-        label: 'Description',
-        span: 3,
-        children: record.description,
-      },
-      {
-        key: 'reportee',
-        label: 'Reportee',
-        children: (
-          <Descriptions
-            items={getReportee(record?.productId?.toString())(
-              record?.shopId?.toString(),
-            )}
-          />
-        ),
-        span: 3,
-      },
-      {
-        key: 'result',
-        label: 'Result',
-        children: (
-          <Descriptions
-            items={[
-              {
-                key: 'createdAt',
-                label: 'Created At',
-                children: record.reportResult?.createdAt
-                  ? new Date(record.reportResult?.createdAt).toLocaleString()
-                  : '',
-              },
-              {
-                key: 'handlerId',
-                label: 'Handler ID',
-                children: record.reportResult?.handlerId,
-              },
-              {
-                key: 'result',
-                label: 'Result',
-                children: record.reportResult?.result,
-                span: 3,
-              },
-              {
-                key: 'reason',
-                label: 'Reason',
-                children: record.reportResult?.reason,
-                span: 3,
-              },
-            ]}
-          />
-        ),
-        span: 3,
-      },
-    ]);
+    );
   };
 
   const toggleModal = () => {
@@ -491,6 +534,18 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
             value: 'product',
           },
         ],
+        render: (type: string) =>
+          type === 'shop' ? (
+            <>
+              <ShopOutlined style={{ marginRight: '3px', color: 'blue' }} />
+              {toUpperCase(type as string)}
+            </>
+          ) : (
+            <>
+              <ProductOutlined style={{ marginRight: '3px', color: 'blue' }} />
+              {toUpperCase(type as string)}
+            </>
+          ),
         onFilter: (value: Boolean | Key, record: ReportType) => {
           return record.type === value;
         },
@@ -498,7 +553,9 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
       {
         key: 'category',
         title: 'Category',
-        render: (record: any) => record.shopCategory || record.productCategory,
+        render: (record: any) =>
+          toUpperCase(record.shopCategory) ||
+          toUpperCase(record.productCategory),
         filterIcon: () => <SearchOutlined />,
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => {
           return (
@@ -535,7 +592,19 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
         key: 'reportResult',
         title: 'Report Result',
         dataIndex: 'reportResult',
-        render: (data: any) => data?.result,
+        render: (data: any) => (
+          <Tag
+            color={
+              data?.result === 'accepted'
+                ? 'green'
+                : data?.result === 'dismissed'
+                  ? 'red'
+                  : 'blue'
+            }
+          >
+            {data?.result || 'Processing'}
+          </Tag>
+        ),
         sorter: {
           compare: (a: ReportType, b: ReportType) => {
             if (a.reportResult === null) {
@@ -603,4 +672,9 @@ export const ReportProvider: React.FC<{ children: ReactNode }> = ({
       {children}
     </ReportContext.Provider>
   );
+};
+
+const toUpperCase = (str: string) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };

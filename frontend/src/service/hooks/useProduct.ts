@@ -7,12 +7,10 @@ export const useProduct = (id: string | undefined) => {
   return useQuery({
     queryKey: ['product', id],
     queryFn: () => getProduct(id),
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 };
 
-const getProduct = async (id: string | undefined) => {
+export const getProduct = async (id: string | undefined) => {
   if (!id) return {} as IProduct;
   try {
     const res = await axios.get(`${PRODUCT_API_ENDPOINTS.PRODUCTS}/${id}`);

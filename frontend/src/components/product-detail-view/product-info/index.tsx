@@ -1,4 +1,5 @@
 import { Card, message } from 'antd';
+import { AxiosError } from 'axios';
 import { ProductTitle } from './product-title';
 import { ProductReview } from './product-review';
 import { ProductPrice } from './product-price';
@@ -20,9 +21,7 @@ export const ProductInfo = () => {
   const { addItem } = useCart(undefined);
   const product = useSelector((state: RootState) => state.product);
   const [messageApi, messageHolder] = message.useMessage();
-  const {
-    cart: { refetch },
-  } = useCart({ limit: 1, offset: 0 });
+  const [isLoadingAddToCart, setIsLoadingAddToCart] = useState(false);
   const { user } = useUser();
 
   const handleChooseSize = useCallback((e: any) => {
@@ -34,39 +33,32 @@ export const ProductInfo = () => {
   }, []);
 
   const handleAddToCart = useCallback(
-    (e: any) => {
-      if (!user) {
-        message.error('Please login to add to cart');
-        navigate('/login');
-        return;
-      }
-      console.log('Product Data = add to cart: ', product);
-      if (product.sizes && product.sizes.length > 0 && !size) {
-        message.error('Please select a size');
-        return;
-      }
-      if (product.colors && product.colors.length > 0 && !color) {
-        message.error('Please select a color');
-        return;
-      }
-      addItem({
-        productId: product.id,
-        color: color || undefined,
-        size: size || undefined,
-      })
+    async (e: any) => {
+      setIsLoadingAddToCart(true);
+
+      addItem
+        .mutateAsync({
+          productId: product.id,
+          color: color || undefined,
+          size: size || undefined,
+        })
         .then(() => {
           messageApi.open({
             type: 'success',
             content: 'Added to cart',
           });
-          refetch();
+
+          setIsLoadingAddToCart(false);
         })
-        .catch((error) => {
+        .catch((error: AxiosError) => {
           console.log(error);
+          const axiosError = error as AxiosError<{ message: string }>;
           messageApi.open({
             type: 'error',
-            content: error?.response?.data?.message || 'Add to cart failed',
+            content: axiosError.response?.data?.message || 'Add to cart failed',
           });
+
+          setIsLoadingAddToCart(false);
         });
     },
     [product, color, size],
@@ -123,14 +115,20 @@ export const ProductInfo = () => {
       <ProductTitle />
       <ProductReview />
       <ProductPrice />
-      <ProductColor currentColor={colorMemo} onClick={handleChooseColor} />
-      <ProductSize currentSize={sizeMemo} onClick={handleChooseSize} />
-      <ProductQuantity
-        quantity={quantityMemo}
-        onQuantityChange={(value) => setQuantity(value)}
-      />
-      {user?.role !== 'SHOP_MANAGER' && user?.role !== 'ADMIN' && (
-        <ProductButton addCart={handleAddToCart} checkout={handleCheckout} />
+      {user && user?.role === 'USER' && (
+        <>
+          <ProductColor currentColor={colorMemo} onClick={handleChooseColor} />
+          <ProductSize currentSize={sizeMemo} onClick={handleChooseSize} />
+          <ProductQuantity
+            quantity={quantityMemo}
+            onQuantityChange={(value) => setQuantity(value)}
+          />
+          <ProductButton
+            addCartLoading={isLoadingAddToCart}
+            addCart={handleAddToCart}
+            checkout={handleCheckout}
+          />
+        </>
       )}
     </Card>
   );

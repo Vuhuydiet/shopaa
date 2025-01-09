@@ -83,6 +83,8 @@ export const getAccount = async (
 
     const data = await response.json();
 
+    console.log('Account data:', data);
+
     if (data?.metadata && data?.metadata.user) {
       return data;
     }

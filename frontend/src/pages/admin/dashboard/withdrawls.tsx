@@ -18,6 +18,11 @@ import {
   WalletOutlined,
 } from '@ant-design/icons';
 import { useWithdrawals } from '../../../service/hooks/useWithdrawals';
+import {
+  formatCurrency,
+  formatNumber,
+  formatShortenNumber,
+} from '../../../utils/format-number';
 
 const { Title } = Typography;
 
@@ -139,10 +144,7 @@ const WithdrawalStatisticsTable = () => {
       render: (amount: any) => (
         <span style={{ color: '#52c41a', fontWeight: 'bold' }}>
           <DollarOutlined style={{ marginRight: 8 }} />
-          {new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
-          }).format(amount)}
+          {formatNumber(amount)}
         </span>
       ),
     },
@@ -156,7 +158,7 @@ const WithdrawalStatisticsTable = () => {
       render: (total: any) => (
         <span style={{ color: '#1890ff', fontWeight: 'bold' }}>
           <WalletOutlined style={{ marginRight: 8 }} />
-          {total.toLocaleString()}
+          {formatShortenNumber(total)}
         </span>
       ),
     },
@@ -255,12 +257,7 @@ const WithdrawalStatisticsTable = () => {
             title="Total Withdrawal Amount"
             value={totalStats.totalAmount}
             prefix={<DollarOutlined />}
-            formatter={(value: any) =>
-              new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND',
-              }).format(value)
-            }
+            formatter={(value: any) => formatShortenNumber(value)}
           />
         </Card>
         <Card size="small">
@@ -268,7 +265,7 @@ const WithdrawalStatisticsTable = () => {
             title="Total Withdrawal Requests"
             value={totalStats.totalRequests}
             prefix={<WalletOutlined />}
-            formatter={(value) => value.toLocaleString()}
+            formatter={(value) => formatShortenNumber(value)}
           />
         </Card>
       </Space>

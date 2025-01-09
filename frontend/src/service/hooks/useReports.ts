@@ -1,10 +1,10 @@
 import { useQuery } from 'react-query';
 import { IReport } from '../../interfaces/IReport';
 import axios from 'axios';
-import { ADMIN_API_ENDPOINTS } from '../../config/API_config';
 import { IReportParams } from '../../interfaces/IReportParams';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
+import { REPORT_API_ENDPOINTS } from '../../config/API_config';
 
 export interface IPostReportResult {
   reportId: number;
@@ -25,7 +25,7 @@ export const useReports = (params: IReportParams) => {
     }
 
     try {
-      const response = await axios.get(ADMIN_API_ENDPOINTS.REPORTS, {
+      const response = await axios.get(REPORT_API_ENDPOINTS.REPORTS, {
         params: params,
         headers: {
           'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export const useReports = (params: IReportParams) => {
 
       const data = response.data.metadata.reports.map(
         (report: any, index: any): IReport => {
-          const temp = {
+          const result = {
             key: index,
             id: report?.reportId,
             reporterId: report?.reporterId,
@@ -61,8 +61,7 @@ export const useReports = (params: IReportParams) => {
               : null,
           };
 
-          console.log(temp);
-          return temp;
+          return result;
         },
       );
 
@@ -78,8 +77,6 @@ export const useReports = (params: IReportParams) => {
     report: useQuery({
       queryKey: ['reports', params],
       queryFn: () => getReports(params),
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
     }),
 
     postReportResult: postReportResult,
@@ -96,7 +93,7 @@ async function postReportResult(report: IPostReportResult) {
 
   try {
     await axios.post(
-      `${ADMIN_API_ENDPOINTS.REPORTS}/${report.reportId}/result`,
+      `${REPORT_API_ENDPOINTS.REPORTS}/${report.reportId}/result`,
       {
         result: report.result,
         reason: report.reason,

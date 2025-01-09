@@ -6,13 +6,11 @@ import { IShop } from '../../interfaces/IShop';
 export const useShop = (id: string | undefined) => {
   return useQuery({
     queryKey: ['shop', id],
-    queryFn: () => fetchShopDetail(id),
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    queryFn: () => getDetailShop(id),
   });
 };
 
-async function fetchShopDetail(id: string | undefined) {
+export async function getDetailShop(id: string | undefined) {
   if (!id) return {} as IShop;
 
   const res = await axios.get(`${SHOP_API_ENDPOINTS.SHOP}${id}`);

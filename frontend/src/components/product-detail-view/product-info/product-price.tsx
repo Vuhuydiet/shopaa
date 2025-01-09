@@ -1,36 +1,41 @@
-import { Col, Row, Typography } from 'antd';
+import { Card, Col, Row, Space, Typography } from 'antd';
 import React from 'react';
 import { RootState } from '../../../service/state/store';
 import { useSelector } from 'react-redux';
+import { formatCurrency } from '../../../utils/format-number';
 
 export const ProductPrice = React.memo(() => {
   const product = useSelector((state: RootState) => state.product);
 
   return (
-    <Row
+    <Card
       style={{
-        backgroundColor: 'lightgray',
         margin: '10px 0',
         width: '40%',
         padding: '5px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
       }}
     >
-      <Col>
+      <Space
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-evenly',
+        }}
+      >
         <Typography.Text
           strong
           italic
           style={{
-            fontSize: '1rem',
+            fontSize: '1.2rem',
             color: 'red',
           }}
         >
-          ${product.currentPrice}
+          {formatCurrency(product.currentPrice, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </Typography.Text>
-      </Col>
-      <Col>
+
         <Typography.Text
           italic
           delete
@@ -39,9 +44,12 @@ export const ProductPrice = React.memo(() => {
             color: 'gray',
           }}
         >
-          ${product.originalPrice}
+          {formatCurrency(product.originalPrice, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </Typography.Text>
-      </Col>
-    </Row>
+      </Space>
+    </Card>
   );
 });

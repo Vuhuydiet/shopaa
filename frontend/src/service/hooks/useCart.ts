@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ICart } from '../../interfaces/ICart';
 import axios, { AxiosResponse } from 'axios';
 import { CART_API_ENDPOINTS } from '../../config/API_config';
@@ -20,17 +20,27 @@ interface ICartResponse {
 }
 
 export const useCart = (params: ICartParams | undefined) => {
+  const queryClient = useQueryClient();
+
   return {
     cart: useQuery({
       queryKey: ['cart', params],
       queryFn: () => getAllProductsInCart(params),
     }),
-    deleteItem: async (cartItemId: number): Promise<AxiosResponse> => {
-      return await deleteItemInCart(cartItemId);
-    },
-    addItem: async (product: IProduct): Promise<AxiosResponse> => {
-      return await addItemToCart(product);
-    },
+    deleteItem: useMutation({
+      mutationKey: ['delete-cart'],
+      mutationFn: (cartItemId: number) => deleteItemInCart(cartItemId),
+      onSuccess: () => {
+        queryClient.invalidateQueries('cart');
+      },
+    }),
+    addItem: useMutation({
+      mutationKey: ['add-cart'],
+      mutationFn: (product: IProduct) => addItemToCart(product),
+      onSuccess: () => {
+        queryClient.invalidateQueries('cart');
+      },
+    }),
   };
 };
 

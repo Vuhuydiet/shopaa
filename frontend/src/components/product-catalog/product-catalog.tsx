@@ -4,24 +4,9 @@ import { SortOptions } from '../sort-options/sort-options';
 import { ProductGrid } from '../product-grid/product-grid';
 import './product-catalog.css';
 import { PaginationProduct } from '../pagination/pagination';
-import { AppDispatch, RootState } from '../../service/state/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { filterAsync } from '../../service/state/actions/filter-action';
 const { Content, Sider } = Layout;
 
 export const ProductCatalog = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const filter = useSelector((state: RootState) => state.filters.filter);
-
-  useEffect(() => {
-    dispatch(
-      filterAsync({
-        ...filter,
-      }),
-    );
-  }, []);
-
   return (
     <Layout
       style={{

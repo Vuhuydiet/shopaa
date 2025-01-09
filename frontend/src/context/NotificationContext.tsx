@@ -8,9 +8,8 @@ import { INotification } from '../interfaces/INotification';
 import { io } from 'socket.io-client';
 import { ReactNode } from 'react';
 import axios from 'axios';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { message } from 'antd';
-import { useUser } from './UserContext';
 
 interface NotificationContextType {
   notifications: INotification[];
@@ -22,7 +21,6 @@ export const NotificationContext =
 
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<INotification[]>([]);
-  const queryClient = useQueryClient();
 
   const { refetch } = useQuery({
     queryKey: ['notifications'],
@@ -94,7 +92,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
       console.log('Disconnecting from socket');
       socket.disconnect();
     };
-  }, []);
+  }, [socket]);
 
   const markAsRead = (notificationId: number) => {
     console.log(SOCKET_EVENTS.READ_NOTIFICATION, notificationId);

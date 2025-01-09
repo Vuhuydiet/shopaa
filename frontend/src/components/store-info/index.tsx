@@ -1,5 +1,5 @@
 import { ShopOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Divider, Rate, Row, Space } from 'antd';
+import { Button, Card, Col, Divider, Rate, Row, Space, Image } from 'antd';
 import './styles.css';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../service/state/store';
@@ -32,10 +32,13 @@ export const StoreInfo = () => {
         }}
       >
         <Col>
-          <img
-            src={seller?.avatar?.url}
+          <Image
+            src={
+              seller?.avatar?.url ??
+              'https://res.cloudinary.com/dwkunsgly/image/upload/v1736347325/brzw7ubnc2fnaxwlpas1.jpg'
+            }
             alt="avatar"
-            style={{ borderRadius: '50%', height: '100px' }}
+            style={{ borderRadius: '50%', height: '80px', width: '80px' }}
           />
         </Col>
         <Col style={{ display: 'flex', margin: '0 20px' }}>
