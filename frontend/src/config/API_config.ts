@@ -60,7 +60,7 @@ export const SOCKET_EVENTS = {
   READ_NOTIFICATION: 'notification-read',
 };
 
-export const SOCKET_URL = 'http://localhost:3080';
+export const SOCKET_URL = `${API_DOMAIN}:3080`;
 
 export const WITHDRAW_API_ENDPOINTS = {
   WITHDRAW: `${API_DOMAIN}api/v1/withdraw/`,
