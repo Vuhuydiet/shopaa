@@ -67,6 +67,19 @@ export const ProductInfo = () => {
 
   const handleCheckout = useCallback(
     (e: any) => {
+      if (!user) {
+        message.error('Please login to add to cart');
+        navigate('/login');
+        return;
+      }
+      if (product.sizes && product.sizes.length > 0 && !size) {
+        message.error('Please select a size');
+        return;
+      }
+      if (product.colors && product.colors.length > 0 && !color) {
+        message.error('Please select a color');
+        return;
+      }
       const productData = [
         {
           name: product.name,

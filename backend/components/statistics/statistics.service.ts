@@ -67,6 +67,7 @@ class StatisticsService {
       WHERE
           EXTRACT(YEAR FROM o."createdAt") = ${year}
           AND (${shopId}::INTEGER IS NULL OR o."shopId" = ${shopId}::INTEGER)
+          AND o."status"= 'COMPLETED'
       GROUP BY
           s."shopOwnerId",
           s."shopName",
