@@ -14,7 +14,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "jest",
     "seed": "tsx ./backend/scripts/seed.ts",
-    "prisma:generate": "prisma generate --sql",
+    "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev --name init && tsx ./backend/models/init.ts",
     "prisma:migrate:prod": "prisma migrate deploy && npm run seed",
     "prisma:studio": "prisma studio",
