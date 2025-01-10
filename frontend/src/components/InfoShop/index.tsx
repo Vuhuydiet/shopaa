@@ -15,6 +15,7 @@ const InfoShop: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm();
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +31,7 @@ const InfoShop: React.FC = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [hasChanges]);
 
   const handleFinish = async (values: any) => {
     try {
@@ -38,6 +39,7 @@ const InfoShop: React.FC = () => {
       console.log('shopData: ', values);
       await updateShop(token, values);
       setShop({ ...shop, ...values });
+      setHasChanges(!hasChanges);
       message.success('Shop information updated successfully!');
       setIsEditing(false);
     } catch (error) {
@@ -250,7 +252,10 @@ const InfoShop: React.FC = () => {
                   <strong>Average Rating:</strong>
                 </div>
                 <p style={{ margin: 0 }}>
-                  {(shop?.totalRating / shop?.numReviews).toFixed(1)} / 5
+                  {isNaN(shop?.totalRating / shop?.numReviews)
+                    ? 0
+                    : (shop?.totalRating / shop?.numReviews).toFixed(1)}{' '}
+                  / 5
                 </p>
               </div>
             </div>

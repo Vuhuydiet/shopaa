@@ -126,7 +126,7 @@ export const routes = [
             children: [
               {
                 index: true,
-                element: <Navigate to="/manager-shop/list-product" replace />,
+                element: <Navigate to="/manager-shop/shop-info" replace />,
               },
               {
                 path: 'list-product',
