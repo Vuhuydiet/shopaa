@@ -19,7 +19,7 @@ const ManagerShopSidebar: React.FC = () => {
 
   const menuItems = [
     {
-      key: '/manager-shop/info',
+      key: '/manager-shop/shop-info',
       icon: <ProfileOutlined style={{ color: '#FFD700' }} />,
       title: 'Information',
       label: <NavLink to="/manager-shop/shop-info">Information</NavLink>,

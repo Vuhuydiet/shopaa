@@ -2,6 +2,7 @@ import { AUTH_API_ENDPOINTS } from '../config/API_config';
 
 const handleResponse = async (response: Response): Promise<any> => {
   if (!response.ok) {
+    console.error('Error in handleResponse:', response);
     const errorData = await response.json();
     throw new Error(errorData.message || 'Sever error');
   }
@@ -9,6 +10,7 @@ const handleResponse = async (response: Response): Promise<any> => {
 };
 
 export const sendOtp = async (email: string): Promise<{ message: string }> => {
+  console.log('sendOtp:', email);
   const response = await fetch(AUTH_API_ENDPOINTS.SEND_OTP, {
     method: 'POST',
     headers: {

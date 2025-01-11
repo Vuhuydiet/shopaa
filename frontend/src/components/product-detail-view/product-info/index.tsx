@@ -114,7 +114,9 @@ export const ProductInfo = () => {
       <ProductTitle />
       <ProductReview />
       <ProductPrice />
-      {user && user?.role === 'USER' && (
+      {user && (user?.role === 'SHOP_MANAGER' || user?.role === 'ADMIN') ? (
+        ''
+      ) : (
         <>
           <ProductColor currentColor={colorMemo} onClick={handleChooseColor} />
           <ProductSize currentSize={sizeMemo} onClick={handleChooseSize} />
