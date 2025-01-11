@@ -154,7 +154,7 @@ const ProductRevenueTable = () => {
       ),
       filters: Array.from({ length: 12 }, (_, i) => ({
         text: `Month ${i + 1}`,
-        value: i + 1,
+        value: (i + 1).toString(),
       })),
       onFilter: (value: string, record: any) => record.month === value,
     },
