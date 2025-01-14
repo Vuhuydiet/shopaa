@@ -1,4 +1,0 @@
-model Key {
-  name  String @id
-  value String
-}

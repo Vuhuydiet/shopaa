@@ -1,9 +1,10 @@
 .ignored/
+dist/
 
 private_key.pem
 public_key.pem
 
-dist/
+migration.sql
 
 *.test.*
 

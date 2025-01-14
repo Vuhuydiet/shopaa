@@ -1,0 +1,5 @@
+
+export default {
+  MAX_CONNECTION: 200,
+  MAX_EVENT_QUEUE_SIZE: 1000
+}

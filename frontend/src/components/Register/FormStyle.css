@@ -1,0 +1,38 @@
+/* styles.css */
+.Register .large-font {
+  font-size: clamp(12px, 1vw, 16px);
+}
+
+.Register .large-font input,
+.Register .large-font .ant-input-password,
+.Register .large-font .ant-btn {
+  font-size: clamp(12px, 1vw, 16px);
+}
+
+.Register .large-font input,
+.Register .large-font .ant-input-password {
+  height: 4.5vh;
+  display: flex;
+  align-items: center;
+}
+
+.Register .large-button {
+  padding: 10px 0;
+  font-size: clamp(12px, 1vw, 16px);
+  height: auto;
+  background-color: rgb(100, 22, 218);
+}
+.Register .large-button-white {
+  padding: 10px 0;
+  font-size: clamp(12px, 1vw, 16px);
+  height: auto;
+}
+
+.Register .ant-input {
+  min-width: 15vw;
+}
+
+.Register .ant-form-item-explain-error {
+  white-space: normal;
+  max-width: 19vw;
+}

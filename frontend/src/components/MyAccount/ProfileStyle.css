@@ -1,0 +1,45 @@
+.custom-text {
+  font-size: clamp(12px, 2vw, 16px) !important;
+  color: black;
+}
+.custom-label .ant-form-item-label label,
+.custom-label .ant-input,
+.custom-label .ant-picker-input input {
+  font-size: clamp(12px, 2vw, 16px) !important;
+  margin-right: 20px;
+}
+
+.custom-label .ant-form-item-required::before {
+  content: '';
+  display: none !important;
+}
+
+.custom-radio .ant-radio-wrapper {
+  font-size: clamp(12x, 2vw, 16px);
+}
+
+.avatar-custom img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.editable-input input,
+.editable-input .ant-picker {
+  border: 2px solid #8a2be2;
+  background-color: #f5f5ff; /* Màu nền nhạt */
+  transition:
+    background-color 0.3s,
+    border 0.3s;
+}
+
+.editable-input input:focus,
+.editable-input .ant-picker:focus {
+  border-color: #6a0dad; /* Đổi màu khi focus */
+  box-shadow: 0 0 8px rgba(138, 43, 226, 0.6);
+}
+
+.editable-input .avatar-custom {
+  border: 2px solid #8a2be2;
+}

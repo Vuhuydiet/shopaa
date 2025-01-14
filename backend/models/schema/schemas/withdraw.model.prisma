@@ -1,0 +1,25 @@
+model WithdrawRequest {
+  requestId Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  amount Int @default(0)
+  shopOwnerId Int
+
+  shop Shop @relation(fields: [shopOwnerId], references: [shopOwnerId], onDelete: Restrict)
+  requesthistory WithdrawHistory?
+}
+
+enum WithdrawStatus {
+  ACCEPTED
+  DISMISSED
+}
+
+model WithdrawHistory {
+  requestId Int @id
+  createdAt DateTime @default(now())
+  status  WithdrawStatus? 
+  handler Int
+  note String
+
+  request WithdrawRequest @relation(fields: [requestId], references: [requestId], onDelete: Cascade)
+  withdrawhandler UserProfile @relation(fields: [handler],references: [userId], onDelete: Restrict)
+}
