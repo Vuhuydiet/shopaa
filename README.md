@@ -1,17 +1,21 @@
-#Overview
-A Shopee-inspired e-commerce platform built with modern web technologies. It includes features like user authentication, product listings, cart management, order processing, and more. Designed for scalability and efficiency, this project follows best practices in backend development.
-•	Technical Stack: 
--	Framework: ExpressJS
--	DBMS: PostgreSQL
+
+# Overview
+
+A Shopee-inspired e-commerce platform built with modern web technologies. It includes features like user authentication, product listings, cart management, order processing, and more. Designed for scalability and efficiency, this project follows best practices in backend development.  
+
+•	Technical Stack:  
+-	Framework: ExpressJS  
+-	DBMS: PostgreSQL  
 -	API Test: Postman
-•	Key Features:
+
+•	Key Features:  
 -	Authentication: Implemented JWT-based authentication.
 -	Sending Verification Email: Using Nodemailer for sending verification emails to users.
 -	Storing images: Enhanced Cloudinary for storing images.
 -	E-Commerce Flatform Features: Developed features for posting new products, searching for products, orders processing, notifications, report, statistics and more.
 
 
-#Steps for building & running:
+# Steps for building & running:
 
 1. Dependencies: 
 - NodeJS & npm:
