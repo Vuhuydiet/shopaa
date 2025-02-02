@@ -19,10 +19,10 @@ A Shopee-inspired e-commerce platform built with modern web technologies. It inc
 
 ## 1. Dependencies: 
 - NodeJS & npm:
-* Download and install NodeJS & npm: https://www.geeksforgeeks.org/how-to-download-and-install-node-js-and-npm/
+  Download and install NodeJS & npm: https://www.geeksforgeeks.org/how-to-download-and-install-node-js-and-npm/
 
 - PostgreSQL:
-* Download and install PostgreSQL: https://www.w3schools.com/postgresql/postgresql_install.php
+  Download and install PostgreSQL: https://www.w3schools.com/postgresql/postgresql_install.php
 
 ## 2. Before diving into the project:
 - Create a database named 'shopaa_db'
